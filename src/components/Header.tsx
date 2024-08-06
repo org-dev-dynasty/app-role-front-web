@@ -4,7 +4,7 @@ import dash from '../assets/Dashboard_1.png';
 export function Header() {
   return <> 
   <div className="w-1/3 flex justify-center flex-col gap-8 lg:ml-8 max-lg:w-[75%]">
-    <h1 className="text-6xl max-lg:text-center max-lg:text-5xl">O seu <span className="uppercase font-bold text-purple-600">role</span> ideal está aqui!</h1>
+    <h1 className="text-6xl max-lg:text-center max-lg:text-5xl">O seu <span className="uppercase font-bold text-violet">role</span> ideal está aqui!</h1>
 
     <p className="text-xl font-light max-lg:text-center">O app ROLE está vindo com tudo, encontre novas pessoas e descubra todos os eventos noturnos na sua cidade!</p>
     <p className="text-xl font-light max-lg:text-center">Tudo de acordo com as suas preferências e gostos, aproveitando do melhor que a vida noturna tem a oferecer!</p>
