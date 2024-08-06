@@ -1,6 +1,7 @@
 import Spline from "@splinetool/react-spline";
 import dash from './assets/Dashboard_1.png';
 
+
 export function App() {
   return (
     <>
