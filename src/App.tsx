@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Contact } from "./components/Contact";
 import { Header } from "./components/Header";
 import { Navbar } from "./components/Navbar";
-import { Section2 } from "./components/Section2";
+import { Section2 } from "./components/Section2.tsx";
 import { SectionContainer } from "./components/SectionContainer";
 import { Overlay } from "./components/Overlay";
 

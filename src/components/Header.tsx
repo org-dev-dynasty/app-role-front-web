@@ -19,7 +19,8 @@ export function Header() {
   </div>
   <div className="w-1/2 flex justify-center relative max-lg:w-full max-lg:hidden">
     <img src={dash} alt="Imagem de dashboard"/>
-    <Spline className="absolute top-0 pointer-events-auto"
+    <Spline
+      className="absolute top-0 pointer-events-auto"
       scene="https://prod.spline.design/YsywGClJ43grZrVj/scene.splinecode"
     />
   </div>

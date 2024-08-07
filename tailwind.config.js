@@ -6,7 +6,9 @@ export default {
   ],
   theme: {
     extend: {
-
+      spacing: {
+        '1/8': '12.5%', // Define 1/8 da largura do contêiner pai
+      },
       fontFamily: {
         'nunito': ['Nunito', 'sans-serif'],
       },
