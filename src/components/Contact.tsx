@@ -3,6 +3,7 @@ import { Phone, Envelope } from '@phosphor-icons/react';
 import { useState, useRef } from 'react';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
+import { sendMail } from '../api/api_requests';
 
 export function Contact() {
     const [email, setEmail] = useState('');
@@ -17,19 +18,28 @@ export function Contact() {
         setChecked(!checked);
     };
 
-    const validateEmail = (email: any) => {
+    const validateEmail = (email: string) => {
         const emailPattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
         return emailPattern.test(email);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!validateEmail(email)) {
             showError('Por favor, insira um endereço de e-mail válido.');
         } else {
             setEmailError('');
-            clearCheckBox();
-            clearForm();
-            showSuccess('Formulário enviado com sucesso.');
+            try {
+                const success = await sendMail(email, name, message);
+                if (success) {
+                    clearCheckBox();
+                    clearForm();
+                    showSuccess('Formulário enviado com sucesso.');
+                } else {
+                    showError('Erro ao enviar o formulário. Tente novamente mais tarde.');
+                }
+            } catch (error : any) {
+                showError(error.message);
+            }
         }
     };
 
