@@ -3,7 +3,7 @@ import { List } from '@phosphor-icons/react';
 import { NavbarItem } from './NavbarItem';
 import { NavbarMenu } from './NavbarMenu';
 
-export function Navbar({ onClickMenuResponsible, openMenu }: { onClickMenuResponsible: () => void, openMenu: boolean }) {
+export function Navbar({ onClickMenuResponsible, openMenu, openPopUp }: { onClickMenuResponsible: () => void, openMenu: boolean, openPopUp: () => void }) {
   return (
     <div className="w-screen h-14 bg-[rgba(29,29,29,0.4)] backdrop-blur flex rounded-b-3xl fixed top-0 z-40 max-sm:justify-between">
       <img src={AppRoleNavbarLogo} alt="AppRole Logo" className="h-10 m-2 mr-44" />        
@@ -12,7 +12,7 @@ export function Navbar({ onClickMenuResponsible, openMenu }: { onClickMenuRespon
         <NavbarItem>Benefícios</NavbarItem>
         <NavbarItem>Organizador</NavbarItem>
         <NavbarItem>Contato</NavbarItem>
-        <button className='
+        <button onClick={openPopUp} className='
         w-[16%] h-[100%] 
         bg-gradient-to-r from-dark-purple via-purple via-70% to-light-purple 
         rounded-2xl text-white cursor-pointer transform 
