@@ -1,6 +1,5 @@
 import {CaretCircleLeft, CaretCircleRight, CheckCircle, Heart, MagnifyingGlass} from '@phosphor-icons/react'
 import mock from '../assets/Mockup.png';
-import {ChevronRightIcon} from "primereact/icons/chevronright";
 
 export const Section2 = () => {
     return (

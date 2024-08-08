@@ -1,4 +1,3 @@
-import {Card} from "primereact/card";
 import image1 from "../assets/party_stock.png";
 import image2 from "../assets/party_stock2.png";
 import image3 from "../assets/party_stock3.png";
