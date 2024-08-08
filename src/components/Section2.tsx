@@ -3,7 +3,7 @@ import mock from '../assets/Mockup.png';
 
 export const Section2 = () => {
     return (
-        <div className="w-full bg-white justify-center rounded-3xl px-12 py-16">
+        <div id='beneficios' className="w-full bg-white justify-center rounded-3xl px-12 py-16">
             <h1 className="text-4xl text-center pb-12 text-">APROVEITE OS <span
                 className="font-bold text-light-purple">ROLE</span>s COM QUALIDADE</h1>
 
