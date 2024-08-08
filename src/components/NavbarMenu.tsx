@@ -21,6 +21,10 @@ export function NavbarMenu({ animationClass, handleMenu }: { animationClass: str
       }}>Benefícios</NavbarItem>
       <NavbarItem onClick={() => {
         handleMenu();
+        handleScroll('explorar');
+      }}>Explorar</NavbarItem>
+      <NavbarItem onClick={() => {
+        handleMenu();
         handleScroll('organizador');
       }}>Organizador</NavbarItem>
       <NavbarItem onClick={() => {

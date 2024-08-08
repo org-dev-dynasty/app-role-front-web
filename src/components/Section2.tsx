@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState } from 'react';
 import { CheckCircle, Heart, MagnifyingGlass, Medal } from '@phosphor-icons/react';
 import { Carousel } from './Carousel';
 
 export const Section2 = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    const getClassName = (index) => {
+    const getClassName = (index: any) => {
         return index === currentIndex
             ? "border-light-purple border-solid border-2 rounded-xl px-2 py-5 mb-8"
             : "border-white border-solid border-2 rounded-xl px-2 py-5 mb-8 hover:bg-gray-200 cursor-pointer";
     };
 
-    const hide = (index) => {
+    const hide = (index: any) => {
         return index === currentIndex
             ? "px-2 py-5 mb-8 md:w-1/2 mt-8 mx-auto"
             : "hidden";

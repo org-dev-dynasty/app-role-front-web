@@ -13,6 +13,7 @@ export function Navbar({ onClickMenuResponsible, openMenu, isAnimating, openPopU
       <div className='flex m-4 justify-around w-8/12 max-sm:hidden'>
         <NavbarItem onClick={() => handleScroll('quem_somos')}>Quem Somos</NavbarItem>
         <NavbarItem onClick={() => handleScroll('beneficios')}>Benefícios</NavbarItem>
+        <NavbarItem onClick={() => handleScroll('explorar')}>Explorar</NavbarItem>
         <NavbarItem onClick={() => handleScroll('organizador')}>Organizador</NavbarItem>
         <NavbarItem onClick={() => handleScroll('contato')}>Contato</NavbarItem>
         <button onClick={openPopUp} className='
