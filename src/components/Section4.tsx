@@ -4,7 +4,7 @@ import mock2 from "../assets/Mockup2.png";
 
 export const Section4 = () => {
     return (
-        <div className="w-full bg-white justify-center rounded-3xl py-16">
+        <div id="organizador" className="w-full bg-white justify-center rounded-3xl py-16">
             <h1 className="text-4xl text-center pb-12">PARA VOCÊ <span
                 className="font-bold text-light-purple">ORGANIZADOR</span></h1>
 

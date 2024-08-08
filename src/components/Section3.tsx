@@ -6,7 +6,7 @@ import image4 from "../assets/party_stock4.png";
 export const Section3 = () => {
 
     return(
-        <div className="flex flex-col justify-center">
+        <div id="explorar" className="flex flex-col justify-center">
             <div className="flex justify-center items-center py-24">
                 <p className="text-5xl text-white text-center">
                     <span className="font-bold">Encontre</span> Eventos, <span
@@ -17,21 +17,21 @@ export const Section3 = () => {
 
             <div className="flex overflow-hidden">
                 <div className="flex justify-center items-center w-[30vw] h-[65vh] relative mx-3 flex-shrink-0">
-                    <img alt="Card" src={image1} className="w-full h-full object-fill rounded-3xl"/>
+                    <img alt="Card" src={image1} className="w-full h-full object-cover rounded-3xl"/>
                     <div
                         className="absolute bottom-4 backdrop-blur rounded-3xl bg-[rgba(29,29,29,0.4)] w-[30vw] h-[15vh] flex items-center justify-center">
                         <p className="text-4xl text-white">O seu melhor <span className="text-violet">ROLE</span></p>
                     </div>
                 </div>
                 <div className="flex justify-center items-center w-[30vw] h-[65vh] relative mx-3 flex-shrink-0">
-                    <img alt="Card" src={image2} className="w-full h-full object-fill rounded-3xl"/>
+                    <img alt="Card" src={image2} className="w-full h-full object-cover rounded-3xl"/>
                     <div
                         className="absolute bottom-4 backdrop-blur rounded-3xl bg-[rgba(29,29,29,0.4)] w-[30vw] h-[15vh] flex items-center justify-center">
                         <p className="text-4xl text-white">Experiencias únicas</p>
                     </div>
                 </div>
                 <div className="flex justify-center items-center w-[30vw] h-[65vh] relative mx-3 flex-shrink-0">
-                    <img alt="Card" src={image3} className="w-full h-full object-fill rounded-3xl"/>
+                    <img alt="Card" src={image3} className="w-full h-full object-cover rounded-3xl"/>
                     <div
                         className="absolute bottom-4 backdrop-blur rounded-3xl bg-[rgba(29,29,29,0.4)] w-[30vw] h-[15vh] flex items-center justify-center">
                         <p className="text-4xl text-white">Encontre o seu <span
@@ -39,7 +39,7 @@ export const Section3 = () => {
                     </div>
                 </div>
                 <div className="flex justify-center items-center w-[30vw] h-[65vh] relative mx-3 flex-shrink-0">
-                    <img alt="Card" src={image4} className="w-full h-full object-fill rounded-3xl"/>
+                    <img alt="Card" src={image4} className="w-full h-full object-cover rounded-3xl"/>
                     <div
                         className="absolute bottom-4 backdrop-blur rounded-3xl bg-[rgba(29,29,29,0.4)] w-[30vw] h-[15vh] flex items-center justify-center">
                         <p className="text-4xl text-white">A sua melhor noite</p>
