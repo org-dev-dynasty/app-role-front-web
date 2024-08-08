@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { CaretCircleLeft, CaretCircleRight } from '@phosphor-icons/react';
 import mock from '../assets/Home 3 ESCULRO-portrait.png';
 import mock2 from '../assets/Filtros ESCURO-portrait.png';
@@ -28,7 +28,7 @@ export const Carousel = ({ currentIndex, prevSlide, nextSlide }) => {
                     className="flex transition-transform duration-500"
                     style={{ transform: `translateX(-${currentIndex * 100}%)` }}
                 >
-                    {images.map((image, index) => (
+                    {images.map((image: string, index) => (
                         <img
                             key={index}
                             src={image}
