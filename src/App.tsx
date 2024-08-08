@@ -38,7 +38,7 @@ export function App() {
 
 
 
-      <main className="bg-gradient-to-r from-dark-purple via-purple via-70% to-light-purple font-nunito">
+      <main className="bg-gradient-to-r from-dark-purple via-purple via-70% to-light-purple font-nunito ">
         {/* SECTION 1 - 3D */}
         <SectionContainer id="quem_somos">
           <Header />

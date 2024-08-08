@@ -3,6 +3,7 @@ import { Phone, Envelope } from '@phosphor-icons/react';
 import { useState, useRef } from 'react';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
+import { sendMail } from '../api/api_requests';
 
 export function Contact() {
     const [email, setEmail] = useState('');
@@ -17,19 +18,28 @@ export function Contact() {
         setChecked(!checked);
     };
 
-    const validateEmail = (email: any) => {
+    const validateEmail = (email: string) => {
         const emailPattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
         return emailPattern.test(email);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!validateEmail(email)) {
             showError('Por favor, insira um endereço de e-mail válido.');
         } else {
             setEmailError('');
-            clearCheckBox();
-            clearForm();
-            showSuccess('Formulário enviado com sucesso.');
+            try {
+                const success = await sendMail(email, name, message);
+                if (success) {
+                    clearCheckBox();
+                    clearForm();
+                    showSuccess('Formulário enviado com sucesso.');
+                } else {
+                    showError('Erro ao enviar o formulário. Tente novamente mais tarde.');
+                }
+            } catch (error : any) {
+                showError(error.message);
+            }
         }
     };
 
@@ -70,7 +80,7 @@ export function Contact() {
     return (
         <>
             <Toast ref={toast} position="top-center" className="toast-center mt-10" />
-            <div className="bg-[#1D1D1D] bg-opacity-40 rounded-[50px] flex flex-nowrap justify-center items-center w-[92%] py-10">
+            <div className="bg-[#1D1D1D] bg-opacity-40 rounded-[50px] flex  justify-center items-center w-[92%] py-10 mt-20" >
                 <div className="flex flex-col w-full  max-xl:hidden ">
                     <div className="flex">
                         <div id="container_esquerda" className="flex flex-col w-7/12 border-r-white border-r-2">
@@ -269,16 +279,16 @@ export function Contact() {
                                         />
                                     </div>
                                 </div>
-                            <div className='flex pt-11 justify-between items-center pb-10 w-full'>
-                                <div className="flex items-center">
+                            <div className='flex pt-11 justify-between pb-10 w-full'>
+                                <div className="flex items-center pr-3">
                                     <button
-                                        className={`w-[32px] h-[32px] rounded-[10px]  flex items-center justify-center ${checked ? "bg-[#5A189A]" : "bg-transparent border-2 border-white"
+                                        className={`w-[32px] h-[32px] rounded-[10px]  flex justify-center ${checked ? "bg-[#5A189A]" : "bg-transparent border-2 border-white"
                                             }`}
                                         onClick={handleButtonClick}
                                     >
                                         {checked && <i className="pi pi-check text-white"></i>}
                                     </button>
-                                    <p className="text-2xl ml-4">Organizador</p>
+                                    <p className="text-xl pl-3">Organizador</p>
                                 </div>
                                     <Button
                                         className={`bg-gradient-to-r from-[#5A189A] to-[#1E0834] w-44 h-9 border-1 rounded-3xl justify-center text-2xl font-bold shadow-2xl shadow-black  transition-transform duration-200 ${isButtonClicked ? 'transform scale-110' : ''}`}
@@ -293,13 +303,13 @@ export function Contact() {
                         <h1 className="text-5xl text-center font-bold">Contato</h1>
                         <div className='pt-16 flex flex-col items-start'>
                             <div>
-                                <div className='flex gap-3'>
+                                <div className='flex gap-3 items-center'>
                                     <Phone size={38} />
-                                    <p className='text-2xl'>(11) 99403-6227</p>
+                                    <p className='text-xl'>(11) 99403-6227</p>
                                 </div>
-                                <div className='flex gap-3 mt-8'>
-                                    <Envelope size={38} />
-                                    <p className='text-2xl'>contato@roleapp.com.br</p>
+                                <div className='flex gap-3 mt-8 items-center'>
+                                    <Envelope size={38}/>
+                                    <p className='text-xl'>contato@roleapp.com.br</p>
                                 </div>
                             </div>
                         </div>
