@@ -18,7 +18,7 @@ export function App() {
     <>
       <Navbar onClickMenuResponsible={handleMenuClick} openMenu={showMenuItems} />
 
-      <main className="bg-gradient-to-r from-dark-purple via-purple via-70% to-light-purple font-nunito">
+      <main className="bg-gradient-to-r from-dark-purple via-purple via-70% to-light-purple font-nunito ">
         {/* SECTION 1 - 3D */}
         <SectionContainer>
           <Header />
