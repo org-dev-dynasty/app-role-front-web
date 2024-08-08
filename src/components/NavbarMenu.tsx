@@ -7,7 +7,7 @@ export function NavbarMenu({ animationClass, handleMenu }: { animationClass: str
     <div className={`${animationClass} bg-slate-900 round bg-opacity-40 backdrop-blur z-50 w-screen h-[60vh] fixed top-0 right-0 flex flex-col justify-around items-center transform`}>
       <div className="flex w-full justify-between">
         <div className="w-[30%]"></div>
-        <NavbarItem className="pt-10" onClick={() => {
+        <NavbarItem className="mt-10" onClick={() => {
           handleMenu();
           handleScroll('quem_somos');
         }}>Quem Somos</NavbarItem>
