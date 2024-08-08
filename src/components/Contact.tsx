@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Phone, Envelope } from '@phosphor-icons/react';
 import { useState, useRef } from 'react';
 import { Button } from 'primereact/button';
