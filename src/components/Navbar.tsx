@@ -4,7 +4,7 @@ import { NavbarItem } from './NavbarItem';
 import { NavbarMenu } from './NavbarMenu';
 import { handleScroll } from '../utils/handle_scroll';
 
-export function Navbar({ onClickMenuResponsible, openMenu, isAnimating }: { onClickMenuResponsible: () => void, openMenu: boolean, isAnimating: boolean }) {
+export function Navbar({ onClickMenuResponsible, openMenu, isAnimating, openPopUp }: { onClickMenuResponsible: () => void, openMenu: boolean, isAnimating: boolean, openPopUp: () => void }) {
   const animationMenu = openMenu && !isAnimating ? 'animate-slideInRight' : 'animate-slideOutRight';
   
   return (
@@ -15,7 +15,7 @@ export function Navbar({ onClickMenuResponsible, openMenu, isAnimating }: { onCl
         <NavbarItem onClick={() => handleScroll('beneficios')}>Benefícios</NavbarItem>
         <NavbarItem onClick={() => handleScroll('organizador')}>Organizador</NavbarItem>
         <NavbarItem onClick={() => handleScroll('contato')}>Contato</NavbarItem>
-        <button className='
+        <button onClick={openPopUp} className='
         w-[16%] h-[100%] 
         bg-gradient-to-r from-dark-purple via-purple via-70% to-light-purple 
         rounded-2xl text-white cursor-pointer transform 
