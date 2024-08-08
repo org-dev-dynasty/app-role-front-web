@@ -1,4 +1,4 @@
-import {CaretCircleLeft, CaretCircleRight, CheckCircle, Folders, ChartBar, Megaphone} from "@phosphor-icons/react";
+import { Folders, ChartBar, Megaphone } from "@phosphor-icons/react";
 import mock from "../assets/Mockup.png";
 import mock2 from "../assets/Mockup2.png";
 
