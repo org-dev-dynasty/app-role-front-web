@@ -6,7 +6,7 @@ import image4 from "../assets/party_stock4.png";
 export const Section3 = () => {
 
     return(
-        <div className="flex flex-col justify-center">
+        <div id="organizador" className="flex flex-col justify-center">
             <div className="flex justify-center items-center py-24">
                 <p className="text-5xl text-white text-center">
                     <span className="font-bold">Encontre</span> Eventos, <span

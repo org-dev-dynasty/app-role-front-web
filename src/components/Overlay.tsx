@@ -1,7 +1,7 @@
-export function Overlay({ onClick }: { onClick: () => void }) {
+export function Overlay({ onClick, animationClass }: { onClick: () => void, animationClass: string }) {
   return (
     <div
-      className="fixed inset-0 w-screen h-[vh100] z-15 bg-[rgba(29,29,29,0.4)] bg-opacity-50"
+      className={`${animationClass} fixed inset-0 w-screen h-[vh100] z-15 bg-transparent bg-opacity-50`}
       onClick={onClick}
     />
   );
