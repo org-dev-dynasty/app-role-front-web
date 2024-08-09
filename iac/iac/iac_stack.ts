@@ -17,7 +17,7 @@ export class IacStack extends cdk.Stack {
         originAccessControlOriginType: 's3',
         signingBehavior: 'always',
         name: 'AppRoleFrontOAC',
-        signingProtocol: 'v4',
+        signingProtocol: 'sigv4',
       },
     }
   )
