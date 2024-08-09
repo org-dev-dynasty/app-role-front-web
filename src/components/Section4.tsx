@@ -1,6 +1,7 @@
 import { Folders, ChartBar, Megaphone } from "@phosphor-icons/react";
-import mock from "../assets/Mockup.png";
-import mock2 from "../assets/Mockup2.png";
+import mock from "../assets/Perfil Org ESCURO1-portrait.png";
+import mock2 from "../assets/Perfil Org ESCURO2-portrait.png";
+import {InteractableImage} from "./InteractableImage.tsx";
 
 export const Section4 = () => {
     return (
@@ -45,9 +46,10 @@ export const Section4 = () => {
                 <div className="w-2/12"/>
                 <div className="xl:w-5/12 max-xl:w-1/2 relative flex justify-end items-center">
                     <div className="relative w-full flex justify-center items-center">
-                        <img src={mock2} alt="Phone Mockup"
-                             className="absolute  transform -translate-x-1/2 w-full max-w-[320px] z-0"/>
-                        <img src={mock} alt="Phone Mockup" className=" w-full max-w-[320px] ml-24 z-10"/>
+                        <InteractableImage src={mock2} alt="Phone Mockup"
+                             className="absolute left:1/2 transform -translate-x-1/2 w-full max-w-[320px] z-0"/>
+                        <InteractableImage
+                            src={mock} alt="Phone Mockup" className=" w-full max-w-[320px] ml-24 z-10"/>
                     </div>
                 </div>
             </div>
@@ -85,10 +87,10 @@ export const Section4 = () => {
                     </p>
                 </div>
 
-                <div className="relative w-full flex justify-center items-center sm:gap-x-[25vw] max-sm:gap-x-[10vw]">
-                    <img src={mock} alt="Phone Mockup" className=" w-full max-w-[160px]"/>
-                    <img src={mock2} alt="Phone Mockup"
-                         className="w-full max-w-[160px]"/>
+                <div className="relative w-full flex justify-center sm:gap-x-[25vw] max-sm:gap-x-[10vw]">
+                    <InteractableImage src={mock} alt="Phone Mockup" className=" w-full max-w-[250px]"/>
+                    <InteractableImage src={mock2} alt="Phone Mockup"
+                         className="w-full max-w-[250px]"/>
                 </div>
             </div>
         </div>
