@@ -1,7 +1,8 @@
 import { Folders, ChartBar, Megaphone } from "@phosphor-icons/react";
-import mock from "../assets/Perfil Org ESCURO1-portrait.png";
-import mock2 from "../assets/Perfil Org ESCURO2-portrait.png";
 import {InteractableImage} from "./InteractableImage.tsx";
+
+const mock = "https://d1jwplf6mvpxl3.cloudfront.net/Perfil-Org-ESCURO1-portrait.png";
+const mock2 = "https://d1jwplf6mvpxl3.cloudfront.net/Perfil-Org-ESCURO2-portrait.png"
 
 export const Section4 = () => {
     return (
