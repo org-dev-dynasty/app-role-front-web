@@ -10,6 +10,7 @@ export class IacStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
       publicReadAccess: true,
+      blockPublicAccess: cdk.aws_s3.BlockPublicAccess.BLOCK_ALL,
     })
 
     const distribution = new cdk.aws_cloudfront.CloudFrontWebDistribution(this, 'AppRoleFrontDistribution', {
