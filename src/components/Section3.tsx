@@ -1,7 +1,7 @@
-import image1 from "../assets/party_stock.png";
-import image2 from "../assets/party_stock2.png";
-import image3 from "../assets/party_stock3.png";
-import image4 from "../assets/party_stock4.png";
+// import image1 from "../assets/party_stock.png";
+// import image2 from "../assets/party_stock2.png";
+// import image3 from "../assets/party_stock3.png";
+// import image4 from "../assets/party_stock4.png";
 
 export const Section3 = () => {
 
