@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+    font-family: "chillax";
+    src: url("assets/fonts/Chillax-Variable.ttf");
+}
+@font-face {
+    font-family: "satoshi";
+    src: url("assets/fonts/Satoshi-Variable.ttf");
+}
+
 .p-icon{
     width: 24px;
     height: 24px;
