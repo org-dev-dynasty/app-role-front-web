@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from 'react';
 import { Button } from "primereact/button";
 import { XCircle } from "@phosphor-icons/react";
