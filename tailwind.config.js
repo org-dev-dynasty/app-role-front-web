@@ -11,6 +11,8 @@ export default {
       },
       fontFamily: {
         'nunito': ['Nunito', 'sans-serif'],
+        'chillax': ['Chillax Variable', 'cursive'],
+        'satoshi': ['Satoshi Variable', 'sans-serif'],
       },
       colors: {
         'white-purple': '#F2E3FC',
