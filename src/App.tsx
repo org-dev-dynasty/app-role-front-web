@@ -8,6 +8,7 @@ import { Overlay } from "./components/Overlay";
 import {Section4} from "./components/Section4.tsx";
 import {Section3} from "./components/Section3.tsx";
 import {Popup} from "./components/PopUp.tsx";
+import { Footer } from "./components/Footer.tsx";
 
 
 export function App() {
@@ -49,6 +50,7 @@ export function App() {
          <SectionContainer id="contato">
           <Contact />
         </SectionContainer>
+          <Footer />
         {showMenuItems && <Overlay onClick={handleMenuClick} animationClass={animationMenu} />}
       </main>
     </>
