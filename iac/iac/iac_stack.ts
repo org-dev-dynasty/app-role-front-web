@@ -12,6 +12,16 @@ export class IacStack extends cdk.Stack {
       blockPublicAccess: cdk.aws_s3.BlockPublicAccess.BLOCK_ALL,
     })
 
+    const oac = new cdk.aws_cloudfront.CfnOriginAccessControl(this, 'AppRoleFrontOAC', {
+      originAccessControlConfig: {
+        originAccessControlOriginType: 's3',
+        signingBehavior: 'always',
+        name: 'AppRoleFrontOAC',
+        signingProtocol: 'v4',
+      },
+    }
+  )
+
     const distribution = new cdk.aws_cloudfront.CloudFrontWebDistribution(this, 'AppRoleFrontDistribution', {
       originConfigs: [
         {
@@ -21,6 +31,15 @@ export class IacStack extends cdk.Stack {
           behaviors: [
             {
               isDefaultBehavior: true,
+              allowedMethods: cdk.aws_cloudfront.CloudFrontAllowedMethods.ALL,
+              cachedMethods: cdk.aws_cloudfront.CloudFrontAllowedCachedMethods.GET_HEAD,
+              forwardedValues: {
+                queryString: true,
+                cookies: {
+                  forward: 'all',
+                },
+              },
+              viewerProtocolPolicy: cdk.aws_cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
             }
           ]
         }
@@ -28,11 +47,28 @@ export class IacStack extends cdk.Stack {
     })
 
     distribution.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY);
+    const cfnDistro = distribution.node.defaultChild as cdk.aws_cloudfront.CfnDistribution;
+
+    cfnDistro.addPropertyOverride('DistributionConfig.Origins.0.OriginAccessIdentity', oac.getAtt('id'));
+    
+
+    s3AssetsBucket.addToResourcePolicy(new cdk.aws_iam.PolicyStatement({
+      effect: cdk.aws_iam.Effect.ALLOW,
+      actions: ['s3:GetObject'],
+      resources: [s3AssetsBucket.arnForObjects('*')],
+      principals: [new cdk.aws_iam.ServicePrincipal('cloudfront.amazonaws.com')],
+    }));
 
     new cdk.CfnOutput(this, 'AppRoleFrontDistributionOutput', {
       value: distribution.distributionDomainName,
       description: 'The distribution domain',
       exportName: 'AppRoleFrontDistributionOutput'
+    });
+
+    new cdk.CfnOutput(this, 'AppRoleFrontCfnDistroIdOutput', {
+      value: distribution.distributionId,
+      description: 'The distribution ID',
+      exportName: 'AppRoleFrontCfnDistroIdOutput'
     });
 
     new cdk.CfnOutput(this, 'AppRoleFrontS3AssetsBucketOutput', {
