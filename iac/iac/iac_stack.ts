@@ -9,7 +9,6 @@ export class IacStack extends cdk.Stack {
       bucketName: 'app-role-front-assets-bucket',
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
-      publicReadAccess: true,
       blockPublicAccess: cdk.aws_s3.BlockPublicAccess.BLOCK_ALL,
     })
 
