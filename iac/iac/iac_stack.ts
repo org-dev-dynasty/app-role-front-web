@@ -49,7 +49,7 @@ export class IacStack extends cdk.Stack {
     distribution.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY);
     const cfnDistro = distribution.node.defaultChild as cdk.aws_cloudfront.CfnDistribution;
 
-    cfnDistro.addPropertyOverride('DistributionConfig.Origins.0.OriginAccessIdentity', oac.getAtt('id'));
+    cfnDistro.addPropertyOverride('DistributionConfig.Origins.0.OriginAccessIdentity', oac.ref);
     
 
     s3AssetsBucket.addToResourcePolicy(new cdk.aws_iam.PolicyStatement({
