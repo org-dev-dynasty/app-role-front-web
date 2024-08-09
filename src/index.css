@@ -4,11 +4,11 @@
 
 @font-face {
     font-family: "chillax";
-    src: url("assets/fonts/Chillax-Variable.ttf");
+    src: url("https://d1jwplf6mvpxl3.cloudfront.net/fonts/Chillax-Variable.ttf");
 }
 @font-face {
     font-family: "satoshi";
-    src: url("assets/fonts/Satoshi-Variable.ttf");
+    src: url("https://d1jwplf6mvpxl3.cloudfront.net/fonts/Satoshi-Variable.ttf");
 }
 
 .p-icon{
