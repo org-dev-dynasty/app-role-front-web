@@ -52,12 +52,12 @@ export function Contact() {
 
     const showError = (message: any) => {
         if (toast.current) {
-            toast.current.show({ summary: 'Erro', detail: message, life: 3000,  className: 'bg-transparent text-red-500 border-2 border-white border-opacity-60 font-extrabold rounded-[10px] p-2' });
+            toast.current.show({ summary: 'Erro', detail: message, life: 3000,  className: 'bg-transparent text-red-500 border-2 border-white border-opacity-60 p-2 rounded-xl' });
         }
     };
 
     const showSuccess = (message: any) => {
-        toast.current.show({ summary: 'Sucesso', detail: message, life: 3000, className: 'bg-transparent text-green-500 border-2 border-white border-opacity-60 rounded-[10px] p-2' });
+        toast.current.show({ summary: 'Sucesso', detail: message, life: 3000, className: 'bg-transparent text-green-500 border-2 border-white border-opacity-60 p-2 rounded-xl' });
     };
 
     const handleButtonAnimation = () => {
@@ -69,7 +69,16 @@ export function Contact() {
 
     return (
         <>
-            <Toast ref={toast} position="top-center" className="toast-center mt-10" />
+            <Toast ref={toast} position="top-center" className="toast-center mt-10 bg-[#1D1D1D] bg-opacity-40 rounded-xl"
+            pt={{
+                summary: {
+                    className: 'font-extrabold'
+                },
+                detail:{
+                    className: 'text-white'
+                }
+
+            }}/>
             <div className="bg-[#1D1D1D] bg-opacity-40 rounded-[50px] flex flex-nowrap justify-center items-center w-[92%] py-10">
                 <div className="flex flex-col w-full  max-xl:hidden ">
                     <div className="flex">
