@@ -12,30 +12,44 @@ import {Popup} from "./components/PopUp.tsx";
 
 export function App() {
   const [showMenuItems, setShowMenuItems] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleMenuClick = () => {
-    setShowMenuItems(!showMenuItems);
+    if (showMenuItems) {
+      setIsAnimating(true);
+      setTimeout(() => {
+        setShowMenuItems(!showMenuItems);
+        setIsAnimating(false);
+      }, 500);
+    } else {
+      setShowMenuItems(!showMenuItems);
+    }
+    
+
   }
+
+  const animationMenu = showMenuItems && !isAnimating ? 'animate-slideInRight' : 'animate-slideOutRight';
 
   return (
     <>
-      <Navbar onClickMenuResponsible={handleMenuClick} openMenu={showMenuItems} openPopUp={() => setIsPopupOpen(true)}/>
+      <Navbar onClickMenuResponsible={handleMenuClick} openMenu={showMenuItems} openPopUp={() => setIsPopupOpen(true)} isAnimating={isAnimating}/>
       <Popup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)}/>
 
 
-      <main className="bg-gradient-to-r from-dark-purple via-purple via-70% to-light-purple font-nunito">
+
+      <main className="bg-gradient-to-r from-dark-purple via-purple via-70% to-light-purple font-chillax font-medium">
         {/* SECTION 1 - 3D */}
-        <SectionContainer>
+        <SectionContainer id="quem_somos">
           <Header />
         </SectionContainer>
-        <Section2 />
+        <Section2/>
         <Section3/>
         <Section4 />
-        <SectionContainer>
+         <SectionContainer id="contato">
           <Contact />
         </SectionContainer>
-        {showMenuItems && <Overlay onClick={handleMenuClick} />}
+        {showMenuItems && <Overlay onClick={handleMenuClick} animationClass={animationMenu} />}
       </main>
     </>
   )

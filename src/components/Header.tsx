@@ -10,9 +10,15 @@ export function Header() {
     <p className="text-xl font-light max-lg:text-center">Tudo de acordo com as suas preferências e gostos, aproveitando do melhor que a vida noturna tem a oferecer!</p>
 
     <div className="flex gap-4 text-4xl max-lg:hidden">
-      <i className="cursor-pointer pi pi-instagram"></i>
-      <i className="cursor-pointer pi pi-tiktok"></i>
-      <i className="cursor-pointer pi pi-twitter"></i>
+      <i onClick={() => {
+        window.open('https://www.instagram.com/app.role/', '_blank');
+      }} className="cursor-pointer pi pi-instagram"></i>
+      <i onClick={() => {
+        window.open('https://www.tiktok.com/@approle', '_blank');
+      }} className="cursor-pointer pi pi-tiktok"></i>
+      <i onClick={() => {
+        window.open('https://x.com/AppRolee', '_blank');
+      }} className="cursor-pointer pi pi-twitter"></i>
     </div>
 
     <p className="max-lg:hidden">Acesse nossas redes sociais!</p>
@@ -31,9 +37,15 @@ export function Header() {
       scene="https://prod.spline.design/YsywGClJ43grZrVj/scene.splinecode"
     />
     <div className="flex flex-col gap-4 text-4xl lg:hidden">
-      <i className="cursor-pointer pi pi-instagram"></i>
-      <i className="cursor-pointer pi pi-tiktok"></i>
-      <i className="cursor-pointer pi pi-twitter"></i>
+      <i onClick={() => {
+        window.open('https://www.instagram.com/app.role/', '_blank');
+      }} className="cursor-pointer pi pi-instagram"></i>
+      <i onClick={() => {
+        window.open('https://www.tiktok.com/@approle', '_blank');
+      }} className="cursor-pointer pi pi-tiktok"></i>
+      <i onClick={() => {
+        window.open('https://x.com/AppRolee', '_blank');
+      }} className="cursor-pointer pi pi-twitter"></i>
     </div>
   </div>
 </>

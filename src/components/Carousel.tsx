@@ -1,4 +1,3 @@
-import React from 'react';
 import { CaretCircleLeft, CaretCircleRight } from '@phosphor-icons/react';
 import mock from '../assets/Home 3 ESCULRO-portrait.png';
 import mock2 from '../assets/Filtros ESCURO-portrait.png';
@@ -13,7 +12,7 @@ const images = [
     mock4
 ];
 
-export const Carousel = ({ currentIndex, prevSlide, nextSlide }) => {
+export const Carousel = ({ currentIndex, prevSlide, nextSlide }: { currentIndex: number, prevSlide: () => void, nextSlide: () => void }) => {
     return (
         <div className="relative w-full flex justify-center items-center">
             <button
