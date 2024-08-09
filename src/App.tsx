@@ -1,35 +1,56 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import { Contact } from "./components/Contact";
+import { Header } from "./components/Header";
+import { Navbar } from "./components/Navbar";
+import { Section2 } from "./components/Section2.tsx";
+import { SectionContainer } from "./components/SectionContainer";
+import { Overlay } from "./components/Overlay";
+import {Section4} from "./components/Section4.tsx";
+import {Section3} from "./components/Section3.tsx";
+import {Popup} from "./components/PopUp.tsx";
 
-function App() {
-  const [count, setCount] = useState(0)
+
+export function App() {
+  const [showMenuItems, setShowMenuItems] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  const handleMenuClick = () => {
+    if (showMenuItems) {
+      setIsAnimating(true);
+      setTimeout(() => {
+        setShowMenuItems(!showMenuItems);
+        setIsAnimating(false);
+      }, 500);
+    } else {
+      setShowMenuItems(!showMenuItems);
+    }
+    
+
+  }
+
+  const animationMenu = showMenuItems && !isAnimating ? 'animate-slideInRight' : 'animate-slideOutRight';
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Navbar onClickMenuResponsible={handleMenuClick} openMenu={showMenuItems} openPopUp={() => setIsPopupOpen(true)} isAnimating={isAnimating}/>
+      <Popup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)}/>
+
+
+
+      <main className="bg-gradient-to-r from-dark-purple via-purple via-70% to-light-purple font-chillax font-medium">
+        {/* SECTION 1 - 3D */}
+        <SectionContainer id="quem_somos">
+          <Header />
+        </SectionContainer>
+        <Section2/>
+        <Section3/>
+        <Section4 />
+         <SectionContainer id="contato">
+          <Contact />
+        </SectionContainer>
+        {showMenuItems && <Overlay onClick={handleMenuClick} animationClass={animationMenu} />}
+      </main>
     </>
   )
 }
-
-export default App
