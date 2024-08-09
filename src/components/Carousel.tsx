@@ -3,7 +3,7 @@ import mock from '../assets/Home 3 ESCULRO-portrait.png';
 import mock2 from '../assets/Filtros ESCURO-portrait.png';
 import mock3 from '../assets/Perfil escuro-portrait.png';
 import mock4 from '../assets/Perfil Org ESCURO1-portrait.png';
-import { Image } from 'primereact/image';
+import {InteractableImage} from "./InteractableImage.tsx";
 
 const images = [
     mock,
@@ -17,47 +17,32 @@ export const Carousel = ({ currentIndex, prevSlide, nextSlide }: { currentIndex:
         <div className="relative w-full flex justify-center items-center">
             <button
                 onClick={prevSlide}
-                className="absolute left-0 transform -translate-y-1/2 text-light-purple mx-4"
+                className="absolute carousel-button-left-spacing sm:carousel-button-left-spacing lg:carousel-button-left-spacing xl:carousel-button-left-spacing transform -translate-x-full translate-y-[-50%] text-light-purple p-2 rounded-full hover:bg-black hover:bg-opacity-20 transition-all duration-300"
             >
-                <CaretCircleLeft size={36} />
+                <CaretCircleLeft className="xl:w-14 xl:h-14 w-9 h-9 max-lg:w-16 max-lg:h-16 max-sm:w-12 max-sm:h-12" />
             </button>
 
-            <div className='w-1/6'/>
-
-            <div className="relative w-[250px] overflow-hidden">
+            <div className="relative w-[250px] lg:w-[200px] xl:w-[250px] overflow-hidden">
                 <div
                     className="flex transition-transform duration-500"
-                    style={{ transform: `translateX(-${currentIndex * 100}%)`}}
+                    style={{ transform: `translateX(-${currentIndex * 100}%)` }}
                 >
-                    {images.map((image, index) => (
+                    {images.map((image : string, index) => (
                         <div key={index} className="flex-shrink-0 w-full h-auto">
-                            <Image
+                            <InteractableImage
                                 src={image}
                                 alt={`Slide ${index}`}
-                                pt={{
-                                    image: {
-                                    },
-                                    toolbar: {
-                                        style: { gap: '10px', padding: 64 },
-                                    },
-                                    mask: {
-                                        style: { backgroundColor: 'rgba(0, 0, 0, 0.5)' }
-                                    },
-                                }}
-                                preview
                             />
                         </div>
                     ))}
                 </div>
             </div>
 
-            <div className='w-1/6'/>
-
             <button
                 onClick={nextSlide}
-                className="absolute right-0 transform -translate-y-1/2 text-light-purple mx-4"
+                className="absolute carousel-button-right-spacing sm:carousel-button-right-spacing lg:carousel-button-right-spacing xl:carousel-button-right-spacing transform translate-x-full translate-y-[-50%] text-light-purple p-2 rounded-full hover:bg-black hover:bg-opacity-20 transition-all duration-300"
             >
-                <CaretCircleRight size={36} />
+                <CaretCircleRight className="xl:w-14 xl:h-14 w-9 h-9 max-lg:w-16 max-lg:h-16 max-sm:w-12 max-sm:h-12" />
             </button>
         </div>
     );

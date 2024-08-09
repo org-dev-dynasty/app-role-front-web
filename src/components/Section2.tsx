@@ -8,8 +8,8 @@ export const Section2 = () => {
 
     const getClassName = (index: any) => {
         return index === currentIndex
-            ? "border-light-purple border-solid border-2 rounded-xl px-2 py-5 mb-8"
-            : "border-white border-solid border-2 rounded-xl px-2 py-5 mb-8 hover:bg-gray-200 cursor-pointer";
+            ? "border-light-purple border-solid border-2 rounded-2xl px-2 py-5 mb-8 bg-white drop-shadow-purple"
+            : "border-transparent border-solid border-2 rounded-2xl px-2 py-5 mb-8 bg-white hover:bg-gray-200 cursor-pointer";
     };
 
     const hide = (index: any) => {
@@ -31,26 +31,25 @@ export const Section2 = () => {
     };
 
     return (
-        <div id='beneficios' className="w-full bg-white justify-center rounded-3xl px-12 py-16">
-            <h1 className="text-4xl text-center pb-12 text-">APROVEITE OS <span
-                className="font-bold text-light-purple">ROLE</span>s COM QUALIDADE</h1>
+        <div className="w-full bg-white justify-center rounded-3xl py-16" id="beneficios">
+            <h1 className="text-4xl text-center pb-12 font-chillax font-medium px-2">APROVEITE OS <span className="font-semibold text-light-purple">ROLE</span>s COM QUALIDADE</h1>
 
-            <div className="flex flex-row max-lg:hidden">
-                <div className="w-1/3">
+            <div className="flex flex-row max-lg:hidden px-12 drop-shadow-xl">
+                <div className="w-1/3 my-auto">
                     <div className={getClassName(0)} onClick={() => setCurrentIndex(0)}>
                         <div className="flex flex-row">
                             <CheckCircle size={36} className="text-light-purple mr-1" />
-                            <p className="text-3xl font-nunito text-light-purple font-medium">RECOMENDAÇÃO</p>
+                            <p className="text-3xl font-chillax text-light-purple font-medium">RECOMENDAÇÃO</p>
                         </div>
-                        <p className="text-2xl font-nunito pl-10">Recomendação assertiva dos seus tipos de <span className="text-light-purple">ROLE</span>s preferidos e dos mais frequentados da sua cidade!</p>
+                        <p className="text-2xl pl-10">Recomendação assertiva dos seus tipos de <span className="text-light-purple">ROLE</span>s preferidos e dos mais frequentados da sua cidade!</p>
                     </div>
 
                     <div className={getClassName(1)} onClick={() => setCurrentIndex(1)}>
                         <div className="flex flex-row">
                             <MagnifyingGlass size={36} className="text-light-purple mr-1" />
-                            <p className="text-3xl font-nunito text-light-purple font-medium">PESQUISA</p>
+                            <p className="text-3xl font-chillax text-light-purple font-medium">PESQUISA</p>
                         </div>
-                        <p className="text-2xl font-nunito pl-10">Pesquisa avançada com diversos filtros e parâmetros para facilitar sua busca pelo seu <span className="text-light-purple">ROLE</span> ideal!</p>
+                        <p className="text-2xl pl-10">Pesquisa avançada com diversos filtros e parâmetros para facilitar sua busca pelo seu <span className="text-light-purple">ROLE</span> ideal!</p>
                     </div>
                 </div>
 
@@ -58,26 +57,26 @@ export const Section2 = () => {
                     <Carousel currentIndex={currentIndex} nextSlide={nextSlide} prevSlide={prevSlide}/>
                 </div>
 
-                <div className="w-1/3">
+                <div className="w-1/3 my-auto">
                     <div className={getClassName(2)} onClick={() => setCurrentIndex(2)}>
-                        <div className="flex flex-row">
-                            <Heart size={36} className="text-light-purple mr-1" />
-                            <p className="text-3xl font-nunito text-light-purple font-medium">SOCIAL</p>
+                        <div className="flex flex-row-reverse">
+                            <Heart size={36} className="text-light-purple ml-1" />
+                            <p className="text-3xl font-chillax text-light-purple font-medium">SOCIAL</p>
                         </div>
-                        <p className="text-2xl font-nunito pl-10">Siga pessoas, faça amizades e descubra os usuários que estarão presentes nos seus próximos <span className="text-light-purple">ROLE</span>s!</p>
+                        <p className="text-2xl pr-10 text-right">Siga pessoas, faça amizades e descubra os usuários que estarão presentes nos seus próximos <span className="text-light-purple">ROLE</span>s!</p>
                     </div>
 
                     <div className={getClassName(3)} onClick={() => setCurrentIndex(3)}>
-                        <div className="flex flex-row">
-                            <Medal size={36} className="text-light-purple mr-1" />
-                            <p className="text-3xl font-nunito text-light-purple font-medium">BENEFÍCIOS</p>
+                        <div className="flex flex-row-reverse">
+                            <Medal size={36} className="text-light-purple ml-1" />
+                            <p className="text-3xl font-chillax text-light-purple font-medium">BENEFÍCIOS</p>
                         </div>
-                        <p className="text-2xl font-nunito pl-10">Confirme sua presença, mostre para seus amigos qual o <span className="text-light-purple">ROLE</span> da vez e ganhe benefícios!</p>
+                        <p className="text-2xl pr-10 text-right">Confirme sua presença, mostre para seus amigos qual o <span className="text-light-purple">ROLE</span> da vez e ganhe benefícios!</p>
                     </div>
                 </div>
             </div>
 
-            <div className="lg:hidden ">
+            <div className="lg:hidden mx-12">
                 <div className="flex flex-row justify-center items-center">
                     <Carousel currentIndex={currentIndex} nextSlide={nextSlide} prevSlide={prevSlide}/>
 
@@ -85,38 +84,38 @@ export const Section2 = () => {
 
                 <div className={hide(0)}>
                     <div className="flex flex-row items-center justify-center">
-                        <CheckCircle size={48} className="text-light-purple mr-1"/>
-                        <p className="text-3xl font-nunito text-light-purple font-medium">RECOMENDAÇÃO</p>
+                        <CheckCircle size={48} className="text-light-purple mr-1 flex-shrink-0"/>
+                        <p className="text-3xl font-chillax text-light-purple font-medium">RECOMENDAÇÃO</p>
                     </div>
-                    <p className="text-2xl font-nunito text-center">Recomendação assertiva dos seus tipos de <span
+                    <p className="text-2xl text-center">Recomendação assertiva dos seus tipos de <span
                         className="text-light-purple">ROLE</span>s preferidos e dos mais frequentados da sua cidade!</p>
                 </div>
 
                 <div className={hide(1)}>
                     <div className="flex flex-row items-center justify-center">
-                        <MagnifyingGlass size={48} className="text-light-purple mr-1"/>
-                        <p className="text-3xl font-nunito text-light-purple font-medium">PESQUISA</p>
+                        <MagnifyingGlass size={48} className="text-light-purple mr-1 flex-shrink-0"/>
+                        <p className="text-3xl font-chillax text-light-purple font-medium">PESQUISA</p>
                     </div>
-                    <p className="text-2xl font-nunito text-center">Pesquisa avançada com diversos filtros e parâmetros
+                    <p className="text-2xl text-center">Pesquisa avançada com diversos filtros e parâmetros
                         para
                         facilitar sua busca pelo seu <span className="text-light-purple">ROLE</span> ideal!</p>
                 </div>
 
                 <div className={hide(2)}>
                     <div className="flex flex-row items-center justify-center">
-                        <Heart size={48} className="text-light-purple mr-1"/>
-                        <p className="text-3xl font-nunito text-light-purple font-medium">SOCIAL</p>
+                        <Heart size={48} className="text-light-purple mr-1 flex-shrink-0"/>
+                        <p className="text-3xl font-chillax text-light-purple font-medium">SOCIAL</p>
                     </div>
-                    <p className="text-2xl font-nunito text-center">Siga pessoas, faça amizades e descubra os usuários que
+                    <p className="text-2xl text-center">Siga pessoas, faça amizades e descubra os usuários que
                         estarão presentes nos seus próximos <span className="text-light-purple">ROLE</span>s!</p>
                 </div>
 
                 <div className={hide(3)}>
                     <div className="flex flex-row items-center justify-center">
-                        <Medal size={48} className="text-light-purple mr-1"/>
-                        <p className="text-3xl font-nunito text-light-purple font-medium">BENEFÍCIOS</p>
+                        <Medal size={48} className="text-light-purple mr-1 flex-shrink-0"/>
+                        <p className="text-3xl font-chillax text-light-purple font-medium">BENEFÍCIOS</p>
                     </div>
-                    <p className="text-2xl font-nunito text-center">Confirme sua presença, mostre para seus amigos qual
+                    <p className="text-2xl text-center">Confirme sua presença, mostre para seus amigos qual
                         o <span className="text-light-purple">ROLE</span> da vez e ganhe benefícios!</p>
                 </div>
 

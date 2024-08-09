@@ -62,12 +62,12 @@ export function Contact() {
 
     const showError = (message: any) => {
         if (toast.current) {
-            toast.current.show({ summary: 'Erro', detail: message, life: 3000,  className: 'bg-transparent text-red-500 border-2 border-white border-opacity-60 font-extrabold rounded-[10px] p-2' });
+            toast.current.show({ summary: 'Erro', detail: message, life: 3000,  className: 'bg-transparent text-red-500 border-2 border-white border-opacity-60 p-2 rounded-xl' });
         }
     };
 
     const showSuccess = (message: any) => {
-        toast.current.show({ summary: 'Sucesso', detail: message, life: 3000, className: 'bg-transparent text-green-500 border-2 border-white border-opacity-60 rounded-[10px] p-2' });
+        toast.current.show({ summary: 'Sucesso', detail: message, life: 3000, className: 'bg-transparent text-green-500 border-2 border-white border-opacity-60 p-2 rounded-xl' });
     };
 
     const handleButtonAnimation = () => {
@@ -79,12 +79,21 @@ export function Contact() {
 
     return (
         <>
-            <Toast ref={toast} position="top-center" className="toast-center mt-10" />
-            <div className="bg-[#1D1D1D] bg-opacity-40 rounded-[50px] flex  justify-center items-center w-[92%] py-10 mt-20" >
+            <Toast ref={toast} position="top-center" className="toast-center mt-10 bg-[#1D1D1D] bg-opacity-40 rounded-xl"
+            pt={{
+                summary: {
+                    className: 'font-extrabold'
+                },
+                detail:{
+                    className: 'text-white'
+                }
+
+            }}/>
+            <div className="bg-[#1D1D1D] bg-opacity-40 rounded-[50px] flex flex-nowrap justify-center items-center w-[92%] py-10">
                 <div className="flex flex-col w-full  max-xl:hidden ">
                     <div className="flex">
-                        <div id="container_esquerda" className="flex flex-col w-7/12 border-r-white border-r-2">
-                            <h1 className="text-5xl text-center font">Fale Conosco</h1>
+                        <div id="container_esquerda" className="flex flex-col w-8/12 border-r-white border-r-2">
+                            <h1 className="text-5xl text-center font-nunito font-bold">Fale Conosco</h1>
                             <div className="flex flex-col mt-[40px] justify-center items-center">
                                 <div className='flex'>
                                     <div className="flex flex-col">
@@ -126,17 +135,17 @@ export function Contact() {
                                 <div className='flex pt-11 items-center'>
                                     <div className="flex items-center">
                                         <button
-                                            className={`w-[32px] h-[32px] rounded-[10px] ml-[68px] flex items-center justify-center ${checked ? "bg-[#5A189A]" : "bg-transparent border-2 border-white"
+                                            className={`w-[32px] h-[32px] rounded-[10px] ml-[68px] flex items-center justify-center transform duration-300 border-2 ${checked ? "bg-light-purple border-light-purple" : "bg-transparent border-white"
                                                 }`}
                                             onClick={handleButtonClick}
                                         >
-                                            {checked && <i className="pi pi-check text-white"></i>}
+                                            <i className={`${checked ? "pi pi-check text-white transform duration-300" : "text-transparent"}`}></i>
                                         </button>
                                         <p className="text-2xl ml-4">Organizador</p>
                                     </div>
                                     <div className='ml-40'>
                                         <Button
-                                            className={`bg-gradient-to-r from-[#5A189A] to-[#1E0834] w-44 h-9 border-1 rounded-3xl justify-center text-2xl font-bold shadow-2xl shadow-black ml-32 transition-transform duration-200 ${isButtonClicked ? 'transform scale-110' : ''}`}
+                                            className={`bg-gradient-to-r from-[#5A189A] to-[#1E0834] w-44 h-9 border-1 rounded-3xl justify-center text-2xl font-bold shadow-2xl shadow-black ml-32 transition-transform duration-200 hover:brightness-75 ${isButtonClicked ? 'transform scale-110' : ''}`}
                                             onClick={() => { handleSubmit(); handleButtonAnimation(); }}
                                             label='Enviar'
                                         >
@@ -145,7 +154,7 @@ export function Contact() {
                                 </div>
                             </div>
                         </div>
-                        <div id="container_direita" className="w-5/12">
+                        <div id="container_direita" className="w-4/12">
                             <h1 className="text-5xl text-center font-bold">Contato</h1>
                             <div className='pt-16 px-20 flex flex-col items-center'>
                                 <div>
