@@ -38,12 +38,12 @@ export function App() {
 
 
 
-      <main className="bg-gradient-to-r from-dark-purple via-purple via-70% to-light-purple font-chillax font-medium">
+      <main className="bg-gradient-to-r from-dark-purple via-purple via-70% to-light-purple font-satoshi">
         {/* SECTION 1 - 3D */}
         <SectionContainer id="quem_somos">
           <Header />
         </SectionContainer>
-        <Section2/>
+        <Section2 />
         <Section3/>
         <Section4 />
          <SectionContainer id="contato">
