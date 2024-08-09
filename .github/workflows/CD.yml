@@ -34,10 +34,6 @@ jobs:
             cd iac
             npm i -g aws-cdk
             npm i
-        - name: Installing Dependencies to AppRoleMailService
-          run: |
-            npm i
-            npm run build
         - name: Setup envs
           run: |
             echo AWS_REGION=${{ secrets.AWS_REGION }} >> $GITHUB_ENV
