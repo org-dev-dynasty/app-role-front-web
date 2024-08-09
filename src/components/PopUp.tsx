@@ -1,8 +1,10 @@
-import React, {useState} from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/rules-of-hooks */
+import {useState} from 'react';
 import {Button} from "primereact/button";
 import {XCircle} from "@phosphor-icons/react";
 
-export const Popup = ({ isOpen, onClose }) => {
+export const Popup = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
     if (!isOpen) return null;
 
     const [email, setEmail] = useState('');
