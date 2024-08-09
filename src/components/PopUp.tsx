@@ -1,9 +1,8 @@
-
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "primereact/button";
 import { XCircle } from "@phosphor-icons/react";
 
-export const Popup = ({ isOpen, onClose }) => {
+export const Popup = ({ isOpen, onClose } : any) => {
     const [showPopup, setShowPopup] = useState(false);
     const [animateIn, setAnimateIn] = useState(false);
 
