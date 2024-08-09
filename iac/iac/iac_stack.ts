@@ -22,28 +22,16 @@ export class IacStack extends cdk.Stack {
     }
   )
 
-    const distribution = new cdk.aws_cloudfront.CloudFrontWebDistribution(this, 'AppRoleFrontDistribution', {
-      originConfigs: [
-        {
-          s3OriginSource: {
-            s3BucketSource: s3AssetsBucket,
-          },
-          behaviors: [
-            {
-              isDefaultBehavior: true,
-              allowedMethods: cdk.aws_cloudfront.CloudFrontAllowedMethods.ALL,
-              cachedMethods: cdk.aws_cloudfront.CloudFrontAllowedCachedMethods.GET_HEAD,
-              forwardedValues: {
-                queryString: true,
-                cookies: {
-                  forward: 'all',
-                },
-              },
-              viewerProtocolPolicy: cdk.aws_cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-            }
-          ]
-        }
-      ],
+    const distribution = new cdk.aws_cloudfront.Distribution(this, 'AppRoleFrontDistribution', {
+      defaultBehavior: {
+        origin: new cdk.aws_cloudfront_origins.S3Origin(s3AssetsBucket, {
+          originId: oac.ref
+        }),
+        allowedMethods: cdk.aws_cloudfront.AllowedMethods.ALLOW_GET_HEAD,
+        cachedMethods: cdk.aws_cloudfront.CachedMethods.CACHE_GET_HEAD,
+        viewerProtocolPolicy: cdk.aws_cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        cachePolicy: cdk.aws_cloudfront.CachePolicy.CACHING_OPTIMIZED,
+      }
     })
 
     distribution.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY);
