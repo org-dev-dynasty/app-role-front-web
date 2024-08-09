@@ -4,24 +4,27 @@ import dash from '../assets/Dashboard_1.png';
 export function Header() {
   return <> 
   <div className="w-1/3 flex justify-center flex-col gap-8 lg:ml-8 max-lg:w-[75%]">
-    <h1 className="text-6xl max-lg:text-center max-lg:text-5xl">O seu <span className="uppercase font-bold text-violet">role</span> ideal está aqui!</h1>
+    <h1 className="text-6xl max-lg:text-center max-lg:text-5xl font-chillax font-medium drop-shadow-purple-mid bg-fodace">O seu <span className="uppercase text-violet drop-shadow-purple-strong">role</span> ideal está aqui!</h1>
 
-    <p className="text-xl font-light max-lg:text-center">O app ROLE está vindo com tudo, encontre novas pessoas e descubra todos os eventos noturnos na sua cidade!</p>
-    <p className="text-xl font-light max-lg:text-center">Tudo de acordo com as suas preferências e gostos, aproveitando do melhor que a vida noturna tem a oferecer!</p>
+    <p className="text-xl font-light max-lg:text-center drop-shadow-purple-mid">O app ROLE está vindo com tudo, encontre novas pessoas e descubra todos os eventos noturnos na sua cidade!</p>
+    <p className="text-xl font-light max-lg:text-center drop-shadow-purple-mid">Tudo de acordo com as suas preferências e gostos, aproveitando do melhor que a vida noturna tem a oferecer!</p>
 
     <div className="flex gap-4 text-4xl max-lg:hidden">
       <i onClick={() => {
         window.open('https://www.instagram.com/app.role/', '_blank');
-      }} className="cursor-pointer pi pi-instagram"></i>
+      }} className="cursor-pointer pi pi-instagram transform
+        hover:scale-125 ease-in-out duration-300"></i>
       <i onClick={() => {
         window.open('https://www.tiktok.com/@approle', '_blank');
-      }} className="cursor-pointer pi pi-tiktok"></i>
+      }} className="cursor-pointer pi pi-tiktok transform
+        hover:scale-125 ease-in-out duration-300"></i>
       <i onClick={() => {
         window.open('https://x.com/AppRolee', '_blank');
-      }} className="cursor-pointer pi pi-twitter"></i>
+      }} className="cursor-pointer pi pi-twitter transform
+        hover:scale-125 ease-in-out duration-300"></i>
     </div>
 
-    <p className="max-lg:hidden">Acesse nossas redes sociais!</p>
+    <p className="max-lg:hidden text-xl drop-shadow-purple">Acesse nossas redes sociais!</p>
   </div>
   <div className="w-1/2 flex justify-center relative max-lg:w-full max-lg:hidden">
     <img src={dash} alt="Imagem de dashboard"/>

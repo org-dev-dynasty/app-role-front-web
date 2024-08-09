@@ -18,30 +18,42 @@
 
 @media (max-width: 576px) {
     .sm\:carousel-button-left-spacing {
-        left: calc(50% - 120px);
+        left: calc(50% - 125px);
     }
 
     .sm\:carousel-button-right-spacing {
-        right: calc(50% - 120px);
+        right: calc(50% - 125px);
     }
 }
 
 @media (min-width: 1024px) {
     .lg\:carousel-button-left-spacing {
-        left: calc(50% - 100px);
+        left: calc(50% - 105px);
     }
 
     .lg\:carousel-button-right-spacing {
-        right: calc(50% - 100px);
+        right: calc(50% - 105px);
     }
 }
 
 @media (min-width: 1280px) {
     .xl\:carousel-button-left-spacing {
-        left: calc(50% - 120px);
+        left: calc(50% - 125px);
     }
 
     .xl\:carousel-button-right-spacing {
-        right: calc(50% - 120px);
+        right: calc(50% - 125px);
     }
+}
+
+.drop-shadow-purple {
+    filter: drop-shadow(0 0.3rem 0.5rem rgba(109, 53, 163, 0.5));
+}
+
+.drop-shadow-purple-mid{
+    filter: drop-shadow(0 0.7rem 0.5rem rgba(109, 53, 163, 1));
+}
+
+.drop-shadow-purple-strong {
+    filter: drop-shadow(0rem 0rem 0.1rem rgba(109, 53, 163, 0.5)) drop-shadow(0rem 0rem 0.1rem rgba(109, 53, 163, 0.5)) drop-shadow(0rem 0rem 0.1rem rgba(109, 53, 163, 0.5));
 }
