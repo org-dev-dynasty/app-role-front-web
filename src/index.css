@@ -5,4 +5,43 @@
 .p-icon{
     width: 24px;
     height: 24px;
+    color: white;
+}
+
+.carousel-button-left-spacing {
+    left: calc(50% - 150px);
+}
+
+.carousel-button-right-spacing {
+    right: calc(50% - 150px);
+}
+
+@media (max-width: 576px) {
+    .sm\:carousel-button-left-spacing {
+        left: calc(50% - 120px);
+    }
+
+    .sm\:carousel-button-right-spacing {
+        right: calc(50% - 120px);
+    }
+}
+
+@media (min-width: 1024px) {
+    .lg\:carousel-button-left-spacing {
+        left: calc(50% - 100px);
+    }
+
+    .lg\:carousel-button-right-spacing {
+        right: calc(50% - 100px);
+    }
+}
+
+@media (min-width: 1280px) {
+    .xl\:carousel-button-left-spacing {
+        left: calc(50% - 120px);
+    }
+
+    .xl\:carousel-button-right-spacing {
+        right: calc(50% - 120px);
+    }
 }
