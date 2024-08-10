@@ -1,5 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
+import { Distribution, OriginAccessIdentity } from 'aws-cdk-lib/aws-cloudfront';
+import { Effect, PolicyStatement, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 
 export class IacStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -12,43 +14,41 @@ export class IacStack extends cdk.Stack {
       blockPublicAccess: cdk.aws_s3.BlockPublicAccess.BLOCK_ALL,
     })
 
-    const oac = new cdk.aws_cloudfront.CfnOriginAccessControl(this, 'AppRoleFrontOAC', {
-      originAccessControlConfig: {
-        originAccessControlOriginType: 's3',
-        signingBehavior: 'always',
-        name: 'AppRoleFrontOAC',
-        signingProtocol: 'sigv4',
-      },
-    }
-  )
+    const originAccessIdentity = new OriginAccessIdentity(this, 'AppRoleFrontOAI', {
+      comment: 'OAI for S3 bucket',
+    });
 
-    const distribution = new cdk.aws_cloudfront.Distribution(this, 'AppRoleFrontDistribution', {
+    const distribution = new Distribution(this, 'AppRoleFrontDistribution', {
       defaultBehavior: {
         origin: new cdk.aws_cloudfront_origins.S3Origin(s3AssetsBucket, {
-          originId: oac.ref
+          originAccessIdentity: originAccessIdentity,
         }),
         allowedMethods: cdk.aws_cloudfront.AllowedMethods.ALLOW_GET_HEAD,
         cachedMethods: cdk.aws_cloudfront.CachedMethods.CACHE_GET_HEAD,
         viewerProtocolPolicy: cdk.aws_cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         cachePolicy: cdk.aws_cloudfront.CachePolicy.CACHING_OPTIMIZED,
-      }
-    })
+      },
+    });
 
     distribution.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY);
-    const cfnDistro = distribution.node.defaultChild as cdk.aws_cloudfront.CfnDistribution;
 
-    cfnDistro.addPropertyOverride('DistributionConfig.Origins.0.OriginAccessIdentity', oac.ref);
-    
-
-    s3AssetsBucket.addToResourcePolicy(new cdk.aws_iam.PolicyStatement({
-      effect: cdk.aws_iam.Effect.ALLOW,
+    s3AssetsBucket.addToResourcePolicy(new PolicyStatement({
+      effect: Effect.ALLOW,
       actions: ['s3:GetObject'],
       resources: [s3AssetsBucket.arnForObjects('*')],
-      principals: [new cdk.aws_iam.ServicePrincipal('cloudfront.amazonaws.com')],
+      principals: [new ServicePrincipal('cloudfront.amazonaws.com', {
+        conditions: {
+          StringEquals: {
+            'AWS:SourceArn': `arn:aws:cloudfront::${this.account}:distribution/${distribution.distributionId}`,
+          },
+        },
+      })],
     }));
 
+    
+
     new cdk.CfnOutput(this, 'AppRoleFrontDistributionOutput', {
-      value: distribution.distributionDomainName,
+      value: distribution.domainName,
       description: 'The distribution domain',
       exportName: 'AppRoleFrontDistributionOutput'
     });

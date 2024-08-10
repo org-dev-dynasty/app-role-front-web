@@ -64,12 +64,12 @@ export const Section3 = () => {
     }, [textRefs.current]);
 
 
-    return (
+    return(
         <div id="explorar" className="flex flex-col justify-center font-chillax">
             <div className="flex justify-center items-center py-24">
-                <p className="text-5xl text-white text-center drop-shadow-purple-mid px-2 max-sm:text-4xl">
-                    <span className="font-bold">Encontre</span> Eventos, <span
-                    className="font-bold">Conheça</span> Pessoas e <span className="font-bold">Crie</span> Histórias
+                <p className="text-5xl text-white text-center drop-shadow-purple-mid px-2 max-sm:text-4xl font-medium">
+                    <span className="font-semibold">Encontre</span> Eventos, <span
+                    className="font-semibold">Conheça</span> Pessoas e <span className="font-semibold">Crie</span> Histórias
                 </p>
             </div>
 
@@ -90,7 +90,7 @@ export const Section3 = () => {
             </div>
 
             <div className="flex justify-center items-center py-24 font-chillax">
-                <p className="text-5xl text-white text-center drop-shadow-purple-mid px-2 max-sm:text-4xl">
+                <p className="text-5xl text-white text-center drop-shadow-purple-mid px-2 max-sm:text-4xl font-semibold">
                     O <span className="font-semibold text-violet drop-shadow-purple-strong">ROLE</span> vai revolucionar
                     a sua vida noturna!
                 </p>

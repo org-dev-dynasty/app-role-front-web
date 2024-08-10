@@ -8,8 +8,8 @@ export const Section2 = () => {
 
     const getClassName = (index: any) => {
         return index === currentIndex
-            ? "border-light-purple border-solid border-2 rounded-2xl px-2 py-5 mb-8 bg-white drop-shadow-purple"
-            : "border-transparent border-solid border-2 rounded-2xl px-2 py-5 mb-8 bg-white hover:bg-gray-200 cursor-pointer";
+            ? "border-light-purple border-solid border-2 rounded-2xl px-2 py-5 bg-white drop-shadow-purple"
+            : "border-transparent border-solid border-2 rounded-2xl px-2 py-5 bg-white hover:bg-gray-200 cursor-pointer";
     };
 
     const hide = (index: any) => {
@@ -35,13 +35,13 @@ export const Section2 = () => {
             <h1 className="text-4xl text-center pb-12 font-chillax font-medium px-2">APROVEITE OS <span className="font-semibold text-light-purple">ROLE</span>s COM QUALIDADE</h1>
 
             <div className="flex flex-row max-lg:hidden px-12 drop-shadow-xl">
-                <div className="w-1/3 my-auto">
+                <div className="flex flex-col gap-y-16 w-1/3 my-auto">
                     <div className={getClassName(0)} onClick={() => setCurrentIndex(0)}>
                         <div className="flex flex-row">
                             <CheckCircle size={36} className="text-light-purple mr-1" />
                             <p className="text-3xl font-chillax text-light-purple font-medium">RECOMENDAÇÃO</p>
                         </div>
-                        <p className="text-2xl pl-10">Recomendação assertiva dos seus tipos de <span className="text-light-purple">ROLE</span>s preferidos e dos mais frequentados da sua cidade!</p>
+                        <p className="font-chillax text-2xl pl-10">Recomendação assertiva dos seus tipos de <span className="text-light-purple">ROLE</span>s preferidos e dos mais frequentados da sua cidade!</p>
                     </div>
 
                     <div className={getClassName(1)} onClick={() => setCurrentIndex(1)}>
@@ -49,7 +49,7 @@ export const Section2 = () => {
                             <MagnifyingGlass size={36} className="text-light-purple mr-1" />
                             <p className="text-3xl font-chillax text-light-purple font-medium">PESQUISA</p>
                         </div>
-                        <p className="text-2xl pl-10">Pesquisa avançada com diversos filtros e parâmetros para facilitar sua busca pelo seu <span className="text-light-purple">ROLE</span> ideal!</p>
+                        <p className=" font-chillax text-2xl pl-10">Pesquisa avançada com diversos filtros e parâmetros para facilitar sua busca pelo seu <span className="text-light-purple">ROLE</span> ideal!</p>
                     </div>
                 </div>
 
@@ -57,13 +57,13 @@ export const Section2 = () => {
                     <Carousel currentIndex={currentIndex} nextSlide={nextSlide} prevSlide={prevSlide}/>
                 </div>
 
-                <div className="w-1/3 my-auto">
+                <div className="flex flex-col gap-y-16 w-1/3 my-auto">
                     <div className={getClassName(2)} onClick={() => setCurrentIndex(2)}>
                         <div className="flex flex-row-reverse">
                             <Heart size={36} className="text-light-purple ml-1" />
                             <p className="text-3xl font-chillax text-light-purple font-medium">SOCIAL</p>
                         </div>
-                        <p className="text-2xl pr-10 text-right">Siga pessoas, faça amizades e descubra os usuários que estarão presentes nos seus próximos <span className="text-light-purple">ROLE</span>s!</p>
+                        <p className="font-chillax text-2xl pr-10 text-right">Siga pessoas, faça amizades e descubra os usuários que estarão presentes nos seus próximos <span className="text-light-purple">ROLE</span>s!</p>
                     </div>
 
                     <div className={getClassName(3)} onClick={() => setCurrentIndex(3)}>
@@ -71,7 +71,7 @@ export const Section2 = () => {
                             <Medal size={36} className="text-light-purple ml-1" />
                             <p className="text-3xl font-chillax text-light-purple font-medium">BENEFÍCIOS</p>
                         </div>
-                        <p className="text-2xl pr-10 text-right">Confirme sua presença, mostre para seus amigos qual o <span className="text-light-purple">ROLE</span> da vez e ganhe benefícios!</p>
+                        <p className="font-chillax text-2xl pr-10 text-right">Confirme sua presença, mostre para seus amigos qual o <span className="text-light-purple">ROLE</span> da vez e ganhe benefícios!</p>
                     </div>
                 </div>
             </div>

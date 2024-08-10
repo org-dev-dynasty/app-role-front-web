@@ -3,11 +3,11 @@ import dash from '../assets/Dashboard_1.png';
 
 export function Header() {
   return <> 
-  <div className="w-1/3 flex justify-center flex-col gap-8 lg:ml-8 max-lg:w-[75%]">
-    <h1 className="text-6xl max-lg:text-center max-lg:text-5xl font-chillax font-medium drop-shadow-purple-mid bg-fodace">O seu <span className="uppercase text-violet drop-shadow-purple-strong">role</span> ideal está aqui!</h1>
+  <div className="w-5/12 flex justify-center flex-col gap-8 lg:ml-12 max-lg:w-[75%] pt-12">
+    <h1 className="text-6xl max-lg:text-center max-lg:text-5xl font-chillax font-medium drop-shadow-purple-mid">O seu <span className="uppercase text-violet drop-shadow-purple-strong">role</span> ideal está aqui!</h1>
 
-    <p className="text-xl font-light max-lg:text-center drop-shadow-purple-mid">O app ROLE está vindo com tudo, encontre novas pessoas e descubra todos os eventos noturnos na sua cidade!</p>
-    <p className="text-xl font-light max-lg:text-center drop-shadow-purple-mid">Tudo de acordo com as suas preferências e gostos, aproveitando do melhor que a vida noturna tem a oferecer!</p>
+    <p className="text-xl font-chillax font-light max-lg:text-center drop-shadow-purple-mid pr-9">O app ROLE está vindo com tudo, encontre novas pessoas e descubra todos os eventos noturnos na sua cidade!</p>
+    <p className="text-xl font-chillax font-light max-lg:text-center drop-shadow-purple-mid pr-9">Tudo de acordo com as suas preferências e gostos, aproveitando do melhor que a vida noturna tem a oferecer!</p>
 
     <div className="flex gap-4 text-4xl max-lg:hidden">
       <i onClick={() => {

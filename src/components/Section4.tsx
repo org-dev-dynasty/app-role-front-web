@@ -1,11 +1,12 @@
 import { Folders, ChartBar, Megaphone } from "@phosphor-icons/react";
-import mock from "../assets/Perfil Org ESCURO1-portrait.png";
-import mock2 from "../assets/Perfil Org ESCURO2-portrait.png";
 import {InteractableImage} from "./InteractableImage.tsx";
+
+const mock = "https://d1jwplf6mvpxl3.cloudfront.net/Perfil-Org-ESCURO1-portrait.png";
+const mock2 = "https://d1jwplf6mvpxl3.cloudfront.net/Perfil-Org-ESCURO2-portrait.png"
 
 export const Section4 = () => {
     return (
-        <div id="organizador" className="w-full bg-white justify-center rounded-3xl py-16">
+        <div id="organizador" className="w-full bg-white justify-center rounded-3xl py-16 font-chillax">
             <h1 className="text-4xl text-center pb-12 font-chillax font-medium">PARA VOCÊ <span
                 className="font-semibold text-light-purple">ORGANIZADOR</span></h1>
 

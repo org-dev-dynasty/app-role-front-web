@@ -67,7 +67,7 @@ export function Contact() {
     };
 
     const showSuccess = (message: any) => {
-        toast.current.show({ summary: 'Sucesso', detail: message, life: 3000, className: 'bg-transparent text-green-500 border-2 border-white border-opacity-60 p-2 rounded-xl' });
+        toast.current.show({ summary: 'Sucesso', detail: message, life: 3000, className: 'bg-transparent text-green-400 border-2 border-white border-opacity-60 p-2 rounded-xl' });
     };
 
     const handleButtonAnimation = () => {
@@ -89,7 +89,7 @@ export function Contact() {
                 }
 
             }}/>
-            <div className="bg-[#1D1D1D] bg-opacity-40 rounded-[50px] flex flex-nowrap justify-center items-center w-[92%] py-10">
+            <div className="bg-[#1D1D1D] bg-opacity-40 rounded-[50px] flex flex-nowrap justify-center items-center w-[92%] py-10 shadow-2xl shadow-dark-purple font-chillax">
                 <div className="flex flex-col w-full  max-xl:hidden ">
                     <div className="flex">
                         <div id="container_esquerda" className="flex flex-col w-8/12 border-r-white border-r-2">
