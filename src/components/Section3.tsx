@@ -57,7 +57,7 @@ export const Section3 = () => {
             if (ref) {
                 const paragraphs = ref.querySelectorAll("p");
                 paragraphs.forEach(paragraph => {
-                    fitty(paragraph, { minSize: 12, maxSize: 48 });
+                    fitty(paragraph, {minSize: 12, maxSize: 48});
                 });
             }
         });
@@ -65,10 +65,11 @@ export const Section3 = () => {
 
 
     return (
-        <div id="explorar" className="flex flex-col justify-center">
+        <div id="explorar" className="flex flex-col justify-center font-chillax">
             <div className="flex justify-center items-center py-24">
                 <p className="text-5xl text-white text-center drop-shadow-purple-mid px-2 max-sm:text-4xl">
-                    <span className="font-bold">Encontre</span> Eventos, <span className="font-bold">Conheça</span> Pessoas e <span className="font-bold">Crie</span> Histórias
+                    <span className="font-bold">Encontre</span> Eventos, <span
+                    className="font-bold">Conheça</span> Pessoas e <span className="font-bold">Crie</span> Histórias
                 </p>
             </div>
 
@@ -76,11 +77,12 @@ export const Section3 = () => {
                 {json.map((item, index) => (
                     <div
                         key={item.id}
-                        ref={(el : any) => (cardsRef.current[index] = el)}
+                        ref={(el: any) => (cardsRef.current[index] = el)}
                         className="flex justify-center items-center max-sm:size-5/6 max-md:size-2/3 max-lg:size-1/2 size-1/3 relative mx-3 flex-shrink-0"
                     >
-                        <img alt={item.name} src={item.image} className="w-full h-full object-cover rounded-3xl" />
-                        <div ref={(el : any) => (textRefs.current[index] = el)} className="absolute bottom-4 backdrop-blur rounded-3xl bg-[rgba(29,29,29,0.4)] w-11/12 flex items-center justify-center">
+                        <img alt={item.name} src={item.image} className="w-full h-full object-cover rounded-3xl"/>
+                        <div ref={(el: any) => (textRefs.current[index] = el)}
+                             className="absolute bottom-4 backdrop-blur rounded-3xl bg-[rgba(29,29,29,0.4)] w-11/12 flex items-center justify-center">
                             <p className="max-md:text-lg max-lg:text-3xl text-2xl text-white inline text-center py-2 xl:py-6 px-6">{item.name}</p>
                         </div>
                     </div>
@@ -89,9 +91,10 @@ export const Section3 = () => {
 
             <div className="flex justify-center items-center py-24 font-chillax">
                 <p className="text-5xl text-white text-center drop-shadow-purple-mid px-2 max-sm:text-4xl">
-                    O <span className="font-semibold text-violet drop-shadow-purple-strong">ROLE</span> vai revolucionar a sua vida noturna!
+                    O <span className="font-semibold text-violet drop-shadow-purple-strong">ROLE</span> vai revolucionar
+                    a sua vida noturna!
                 </p>
             </div>
-        </div>
-    );
-};
+        </div>);
+}
+
