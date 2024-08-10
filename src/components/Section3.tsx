@@ -1,7 +1,7 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import fitty from "fitty";
-import {useEffect, useLayoutEffect, useRef} from "react";
+import {useEffect, useRef} from "react";
 
 const json = [{
     "id": 1,
