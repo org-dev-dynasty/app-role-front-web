@@ -1,9 +1,7 @@
-import AppRoleNavbarLogo from '../assets/approle_logo_navbar.png';
-
 export function Footer() {
     return (
         <>
-            <div className="flex flex-col items-center justify-center p-4 text-white">
+            <div className="flex flex-col items-center justify-center p-4 text-white font-chillax">
                 <div className="w-full mb-10 text-center px-4 lg:w-[60%]">
                     <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
                         Suas <span className="font-semibold">Melhores Histórias Começam</span> Dando Um <span className="text-[#9C4EDC] font-semibold">ROLE</span>!
@@ -23,7 +21,7 @@ export function Footer() {
                     </button>
                 </div>
                 <div className="pt-10 lg:pt-16">
-                    <img src={AppRoleNavbarLogo} alt="AppRole Logo" className="w-20 md:w-24 lg:w-32" />
+                    <img src={"https://d1jwplf6mvpxl3.cloudfront.net/approle_logo_navbar.png"} alt="AppRole Logo" className="w-20 md:w-24 lg:w-32" />
                 </div>
                 <p className="font-nunito font-medium text-lg md:text-xl lg:text-xl pt-4">
                     © ROLE, Todos os direitos reservados.

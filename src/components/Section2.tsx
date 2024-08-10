@@ -41,7 +41,7 @@ export const Section2 = () => {
                             <CheckCircle size={36} className="text-light-purple mr-1" />
                             <p className="text-3xl font-chillax text-light-purple font-medium">RECOMENDAÇÃO</p>
                         </div>
-                        <p className="text-2xl pl-10">Recomendação assertiva dos seus tipos de <span className="text-light-purple">ROLE</span>s preferidos e dos mais frequentados da sua cidade!</p>
+                        <p className="font-chillax text-2xl pl-10">Recomendação assertiva dos seus tipos de <span className="text-light-purple">ROLE</span>s preferidos e dos mais frequentados da sua cidade!</p>
                     </div>
 
                     <div className={getClassName(1)} onClick={() => setCurrentIndex(1)}>
@@ -49,7 +49,7 @@ export const Section2 = () => {
                             <MagnifyingGlass size={36} className="text-light-purple mr-1" />
                             <p className="text-3xl font-chillax text-light-purple font-medium">PESQUISA</p>
                         </div>
-                        <p className="text-2xl pl-10">Pesquisa avançada com diversos filtros e parâmetros para facilitar sua busca pelo seu <span className="text-light-purple">ROLE</span> ideal!</p>
+                        <p className=" font-chillax text-2xl pl-10">Pesquisa avançada com diversos filtros e parâmetros para facilitar sua busca pelo seu <span className="text-light-purple">ROLE</span> ideal!</p>
                     </div>
                 </div>
 
@@ -63,7 +63,7 @@ export const Section2 = () => {
                             <Heart size={36} className="text-light-purple ml-1" />
                             <p className="text-3xl font-chillax text-light-purple font-medium">SOCIAL</p>
                         </div>
-                        <p className="text-2xl pr-10 text-right">Siga pessoas, faça amizades e descubra os usuários que estarão presentes nos seus próximos <span className="text-light-purple">ROLE</span>s!</p>
+                        <p className="font-chillax text-2xl pr-10 text-right">Siga pessoas, faça amizades e descubra os usuários que estarão presentes nos seus próximos <span className="text-light-purple">ROLE</span>s!</p>
                     </div>
 
                     <div className={getClassName(3)} onClick={() => setCurrentIndex(3)}>
@@ -71,7 +71,7 @@ export const Section2 = () => {
                             <Medal size={36} className="text-light-purple ml-1" />
                             <p className="text-3xl font-chillax text-light-purple font-medium">BENEFÍCIOS</p>
                         </div>
-                        <p className="text-2xl pr-10 text-right">Confirme sua presença, mostre para seus amigos qual o <span className="text-light-purple">ROLE</span> da vez e ganhe benefícios!</p>
+                        <p className="font-chillax text-2xl pr-10 text-right">Confirme sua presença, mostre para seus amigos qual o <span className="text-light-purple">ROLE</span> da vez e ganhe benefícios!</p>
                     </div>
                 </div>
             </div>

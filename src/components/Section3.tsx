@@ -6,7 +6,7 @@
 export const Section3 = () => {
 
     return(
-        <div id="explorar" className="flex flex-col justify-center">
+        <div id="explorar" className="flex flex-col justify-center font-chillax">
             <div className="flex justify-center items-center py-24">
                 <p className="text-5xl text-white text-center drop-shadow-purple-mid px-2 max-sm:text-4xl">
                     <span className="font-bold">Encontre</span> Eventos, <span
