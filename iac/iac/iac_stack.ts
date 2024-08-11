@@ -12,6 +12,14 @@ export class IacStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
       blockPublicAccess: cdk.aws_s3.BlockPublicAccess.BLOCK_ALL,
+      cors: [
+        {
+          allowedOrigins: ['*'],
+          allowedMethods: [cdk.aws_s3.HttpMethods.GET, cdk.aws_s3.HttpMethods.HEAD],
+          allowedHeaders: ['*'],
+          exposedHeaders: ['Access-Control-Allow-Origin'],
+        }
+      ]
     })
 
     const originAccessIdentity = new OriginAccessIdentity(this, 'AppRoleFrontOAI', {
