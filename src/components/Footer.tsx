@@ -1,6 +1,6 @@
 import { BackgroundBubbles } from "./BackgroundBubbles"
 
-export function Footer({ isNavbarOpened }: { isNavbarOpened: boolean }) {
+export function Footer({ isNavbarOpened, openPopUp }: { isNavbarOpened: boolean, openPopUp: () => void }) {
     return (
         <>
             <div className="flex flex-col items-center justify-center p-4 text-white font-chillax pb-5">
@@ -14,7 +14,7 @@ export function Footer({ isNavbarOpened }: { isNavbarOpened: boolean }) {
                     <p className="text-2xl md:text-3xl lg:text-4xl font-nunito">Não fique de fora dessa!</p>
                 </div>
                 <div className="pt-8 md:pt-10 lg:pt-11">
-                    <button className="w-48 h-12 md:w-56 md:h-14 lg:w-64 lg:h-16 
+                    <button onClick={openPopUp} className="w-48 h-12 md:w-56 md:h-14 lg:w-64 lg:h-16 
                         bg-gradient-to-r from-dark-purple via-purple via-70% to-light-purple 
                         rounded-[30px] md:rounded-[35px] lg:rounded-[41px] 
                         text-white cursor-pointer transform 

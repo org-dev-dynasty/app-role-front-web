@@ -50,7 +50,7 @@ export function App() {
          <SectionContainer id="contato">
           <Contact />
         </SectionContainer>
-        <Footer isNavbarOpened={showMenuItems}/>
+        <Footer openPopUp={() => setIsPopupOpen(true)} isNavbarOpened={showMenuItems}/>
         {showMenuItems && <Overlay onClick={handleMenuClick} animationClass={animationMenu} />}
       </main>
     </>
