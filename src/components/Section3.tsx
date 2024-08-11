@@ -2,27 +2,28 @@
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {useEffect, useRef, useState} from "react";
+import { envs } from "../utils/envs";
 
 const json = [{
     "id": 1,
     "name": "Viva os ROLEs com Qualidade!",
-    "image": "https://d1jwplf6mvpxl3.cloudfront.net/section3_girl_in_pandora.jpeg"
+    "image": `${envs.cloudfrontUrl}/section3_girl_in_pandora.jpeg`
 }, {
     "id": 2,
     "name": "Crie Memórias",
-    "image": "https://d1jwplf6mvpxl3.cloudfront.net/section3_girls.jpeg"
+    "image": `${envs.cloudfrontUrl}/section3_girls.jpeg`
 }, {
     "id": 3,
     "name": "O seu ROLE Ideal!",
-    "image": "https://d1jwplf6mvpxl3.cloudfront.net/section3_holding_phone.jpg"
+    "image": `${envs.cloudfrontUrl}/section3_holding_phone.jpg`
 }, {
     "id": 4,
     "name": "Experiências Únicas",
-    "image": "https://d1jwplf6mvpxl3.cloudfront.net/section3_party_fire.jpg"
+    "image": `${envs.cloudfrontUrl}/section3_party_fire.jpg`
 },{
     "id": 5,
     "name": "Viva os ROLEs com Qualidade!",
-    "image": "https://d1jwplf6mvpxl3.cloudfront.net/section3_girl_in_pandora.jpeg"
+    "image": `${envs.cloudfrontUrl}/section3_girl_in_pandora.jpeg`
 },];
 
 export const Section3 = () => {

@@ -1,3 +1,4 @@
+import { envs } from "../utils/envs"
 import { BackgroundBubbles } from "./BackgroundBubbles"
 
 export function Footer({ isNavbarOpened, openPopUp, isPopUpOpened }: { isNavbarOpened: boolean, openPopUp: () => void, isPopUpOpened: boolean }) {
@@ -24,7 +25,7 @@ export function Footer({ isNavbarOpened, openPopUp, isPopUpOpened }: { isNavbarO
                     </button>
                 </div>
                 <div className="pt-10 lg:pt-16">
-                    <img src={"https://d1jwplf6mvpxl3.cloudfront.net/approle_logo_navbar.png"} alt="AppRole Logo" className="w-20 md:w-24 lg:w-32" />
+                    <img src={`${envs.cloudfrontUrl}/approle_logo_navbar.png`} alt="AppRole Logo" className="w-20 md:w-24 lg:w-32" />
                 </div>
                 <p className="font-nunito font-medium text-lg md:text-xl lg:text-xl pt-4">
                     © ROLE, Todos os direitos reservados.
