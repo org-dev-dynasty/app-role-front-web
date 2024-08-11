@@ -45,7 +45,40 @@ export default {
           '100%': { 
             transform: 'translateX(-100%)', // Termina fora da tela à esquerda
           },
-        }
+        },
+        floatMockup: {
+          '0%': { 
+            transform: 'translateY(0)', // Começa na posição normal
+          },
+          '50%': { 
+            transform: 'translateY(-5%)', // Flutua para cima
+          },
+          '100%': { 
+            transform: 'translateY(0)', // Retorna à posição normal
+          },
+        },
+        floatEmojisLeft: {
+          '0%': { 
+            transform: 'translateY(0)', // Começa na posição normal
+          },
+          '50%': { 
+            transform: 'translateY(-30%)', // Flutua para cima
+          },
+          '100%': { 
+            transform: 'translateY(0)', // Retorna à posição normal
+          },
+        },
+        floatingEmojisRight: {
+          '0%': { 
+            transform: 'translateY(0)', // Começa na posição normal
+          },
+          '50%': { 
+            transform: 'translateY(-50%)', // Flutua para cima
+          },
+          '100%': { 
+            transform: 'translateY(0)', // Retorna à posição normal
+          },
+        },
       },
       animation: {
         slideInRight: 'slideInRight 0.5s ease-in-out forwards',  // Animação rápida e suave
@@ -53,6 +86,9 @@ export default {
         infiniteSpin: 'infiniteSpin 30s linear infinite', // Animação contínua e suave
         slideandSpinInfiniteRightToLeft: 'slideandSpinInfiniteRightToLeft 24s linear infinite', // Animação contínua e suave
         carrouselSlider: 'carrouselSlider 5000ms linear initial backwards', // Animação contín
+        floatMockup: 'floatMockup 6s ease-in-out infinite', // Animação contín
+        floatEmojisLeft: 'floatEmojisLeft 3s ease-in-out infinite', // Animação contín
+        floatingEmojisRight: 'floatingEmojisRight 5s ease-in-out infinite', // An
       },
       boxShadow: {
         bubbleShadow: '0 0 40px 30px rgba(255, 255, 255, 0.5)', // Sombra suave
