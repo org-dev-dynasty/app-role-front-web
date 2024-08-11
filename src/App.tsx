@@ -42,7 +42,7 @@ export function App() {
       <main className="bg-gradient-to-r from-dark-purple via-purple via-70% to-light-purple">
         {/* SECTION 1 - 3D */}
         <SectionContainer id="quem_somos">
-          <Header isNavbarOpened={showMenuItems} />
+          <Header isNavbarOpened={showMenuItems} isPopUpOpened={isPopupOpen} />
         </SectionContainer>
         <Section2 />
         <Section3/>
@@ -50,7 +50,7 @@ export function App() {
          <SectionContainer id="contato">
           <Contact />
         </SectionContainer>
-        <Footer openPopUp={() => setIsPopupOpen(true)} isNavbarOpened={showMenuItems}/>
+        <Footer openPopUp={() => setIsPopupOpen(true)} isNavbarOpened={showMenuItems} isPopUpOpened={isPopupOpen}/>
         {showMenuItems && <Overlay onClick={handleMenuClick} animationClass={animationMenu} />}
       </main>
     </>

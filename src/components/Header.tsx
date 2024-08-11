@@ -2,9 +2,9 @@ import Spline from "@splinetool/react-spline";
 import dash from '../assets/Dashboard_1.png';
 import { BackgroundBubbles } from "./BackgroundBubbles";
 
-export function Header({ isNavbarOpened }: { isNavbarOpened: boolean }) {
+export function Header({ isNavbarOpened, isPopUpOpened }: { isNavbarOpened: boolean, isPopUpOpened: boolean }) {
   return <>
-  <BackgroundBubbles isNavbarOpened={isNavbarOpened} />
+  <BackgroundBubbles isNavbarOpened={isNavbarOpened} isPopUpOpened={isPopUpOpened} />
   <div className="w-5/12 flex justify-center flex-col gap-8 lg:ml-12 max-lg:w-[75%] pt-12">
     <h1 className="text-6xl max-lg:text-center max-lg:text-5xl font-chillax font-medium drop-shadow-purple-mid">O seu <span className="uppercase text-violet drop-shadow-purple-strong">role</span> ideal está aqui!</h1>
 

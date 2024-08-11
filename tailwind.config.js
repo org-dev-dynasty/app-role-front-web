@@ -32,7 +32,7 @@ export default {
         },
         slideandSpinInfiniteRightToLeft: {
           '0%': { 
-            transform: 'translateX(195%) rotate(0deg)', // Começa fora da tela à direita e sem rotação
+            transform: 'translateX(192%) rotate(0deg)', // Começa fora da tela à direita e sem rotação
           },
           '100%': { 
             transform: 'translateX(-199%) rotate(360deg)', // Termina fora da tela à esquerda e com rotação
@@ -51,7 +51,7 @@ export default {
         slideInRight: 'slideInRight 0.5s ease-in-out forwards',  // Animação rápida e suave
         slideOutRight: 'slideOutRight 0.5s ease-in-out forwards', // Animação rápida e suave
         infiniteSpin: 'infiniteSpin 30s linear infinite', // Animação contínua e suave
-        slideandSpinInfiniteRightToLeft: 'slideandSpinInfiniteRightToLeft 30s linear infinite', // Animação contínua e suave
+        slideandSpinInfiniteRightToLeft: 'slideandSpinInfiniteRightToLeft 24s linear infinite', // Animação contínua e suave
         carrouselSlider: 'carrouselSlider 5000ms linear initial backwards', // Animação contín
       },
       boxShadow: {
