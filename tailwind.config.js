@@ -30,11 +30,24 @@ export default {
           '0%': { transform: 'translateX(0)' },      // Começa na posição normal
           '100%': { transform: 'translateX(100%)' }, // Termina fora da tela à direita
         },
+        slideandSpinInfiniteRightToLeft: {
+          '0%': { 
+            transform: 'translateX(195%) rotate(0deg)', // Começa fora da tela à direita e sem rotação
+          },
+          '100%': { 
+            transform: 'translateX(-199%) rotate(360deg)', // Termina fora da tela à esquerda e com rotação
+          },
+        },
       },
       animation: {
         slideInRight: 'slideInRight 0.5s ease-in-out forwards',  // Animação rápida e suave
         slideOutRight: 'slideOutRight 0.5s ease-in-out forwards', // Animação rápida e suave
+        infiniteSpin: 'infiniteSpin 30s linear infinite', // Animação contínua e suave
+        slideandSpinInfiniteRightToLeft: 'slideandSpinInfiniteRightToLeft 10s linear infinite', // Animação contínua e suave
       },
+      boxShadow: {
+        bubbleShadow: '0 0 40px 30px rgba(255, 255, 255, 0.5)', // Sombra suave
+      }
     }
   },
   plugins: [],

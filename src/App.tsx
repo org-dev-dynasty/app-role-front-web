@@ -39,10 +39,10 @@ export function App() {
 
 
 
-      <main className="bg-gradient-to-r from-dark-purple via-purple via-70% to-light-purple font-satoshi">
+      <main className="bg-gradient-to-r from-dark-purple via-purple via-70% to-light-purple">
         {/* SECTION 1 - 3D */}
         <SectionContainer id="quem_somos">
-          <Header />
+          <Header isNavbarOpened={showMenuItems} />
         </SectionContainer>
         <Section2 />
         <Section3/>
@@ -50,7 +50,7 @@ export function App() {
          <SectionContainer id="contato">
           <Contact />
         </SectionContainer>
-          <Footer />
+        <Footer isNavbarOpened={showMenuItems}/>
         {showMenuItems && <Overlay onClick={handleMenuClick} animationClass={animationMenu} />}
       </main>
     </>

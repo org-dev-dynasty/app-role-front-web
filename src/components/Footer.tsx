@@ -1,13 +1,16 @@
-export function Footer() {
+import { BackgroundBubbles } from "./BackgroundBubbles"
+
+export function Footer({ isNavbarOpened }: { isNavbarOpened: boolean }) {
     return (
         <>
-            <div className="flex flex-col items-center justify-center p-4 text-white font-chillax">
-                <div className="w-full mb-10 text-center px-4 lg:w-[60%]">
+            <div className="flex flex-col items-center justify-center p-4 text-white font-chillax pb-5">
+                {<BackgroundBubbles isNavbarOpened={isNavbarOpened} />}
+                <div className="w-full mb-10 text-center px-4 lg:w-[60%] z-10">
                     <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
                         Suas <span className="font-semibold">Melhores Histórias Começam</span> Dando Um <span className="text-[#9C4EDC] font-semibold">ROLE</span>!
                     </h1>
                 </div>
-                <div className="pt-8 md:pt-10 lg:pt-16 text-center">
+                <div className="pt-8 md:pt-10 lg:pt-16 text-center z-10">
                     <p className="text-2xl md:text-3xl lg:text-4xl font-nunito">Não fique de fora dessa!</p>
                 </div>
                 <div className="pt-8 md:pt-10 lg:pt-11">
