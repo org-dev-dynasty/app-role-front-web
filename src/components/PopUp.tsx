@@ -2,10 +2,24 @@
 import { useState, useEffect } from 'react';
 import { Button } from "primereact/button";
 import { XCircle } from "@phosphor-icons/react";
+import { sendMailParticpant } from '../api/api_requests';
 
 export const Popup = ({ isOpen, onClose } : any) => {
     const [showPopup, setShowPopup] = useState(false);
     const [animateIn, setAnimateIn] = useState(false);
+    const [email, setEmail] = useState('');
+    
+    const handleEmailSend =  async () => {
+        if (email === '') {
+            alert('Digite um e-mail válido');
+        }
+        const resp = await sendMailParticpant(email);
+        if (resp) {
+            alert('E-mail enviado com sucesso!');
+            setEmail('');
+            onClose();
+        }
+    }
 
     // Atualiza o estado para mostrar ou esconder o popup
     useEffect(() => {
@@ -41,12 +55,14 @@ export const Popup = ({ isOpen, onClose } : any) => {
                         type="email"
                         className="bg-transparent border-opacity-60 border-2 border-white text-lg rounded-[15px] placeholder-[#838383] text-white h-[48px] w-full pl-[14px]"
                         placeholder="Digite seu e-mail..."
+                        onChange={(e) => {setEmail(e.target.value)}}
                     />
                 </div>
                 <div className="flex justify-center items-center">
                     <Button
                         className={`bg-gradient-to-r from-[#5A189A] to-[#1E0834] w-36 h-8 rounded-3xl text-xl text-white shadow-2xl shadow-black transition-transform duration-200 hover:brightness-75`}
                         label='Enviar'
+                        onClick={handleEmailSend}
                     >
                     </Button>
                 </div>
