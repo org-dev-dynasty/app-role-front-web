@@ -5,7 +5,7 @@ import { handleScroll } from "../utils/handle_scroll";
 export function NavbarMenu({ animationClass, handleMenu, openPopUp }: { animationClass: string, handleMenu: () => void, openPopUp: () => void  }) {
   return <>
     <div
-        className={`${animationClass} bg-slate-900 bg-opacity-40 backdrop-blur z-50 w-screen h-full fixed top-0 right-0 `}>
+        className={`${animationClass} bg-slate-900 bg-opacity-40 backdrop-blur z-40 w-screen h-full fixed top-0 right-0 `}>
 
       <div className="h-[60vh] round flex flex-col justify-around items-center transform">
         <button onClick={handleMenu}
