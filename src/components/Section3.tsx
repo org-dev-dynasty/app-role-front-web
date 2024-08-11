@@ -1,10 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import fitty from "fitty";
-import {useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 
 const json = [{
     "id": 1,
@@ -29,42 +26,84 @@ const json = [{
 },];
 
 export const Section3 = () => {
-    const cardsRef = useRef<HTMLDivElement[]>([]);
-    const containerRef = useRef<HTMLDivElement>(null);
-    const textRefs = useRef<HTMLDivElement[]>([]);
+    // const cardsRef = useRef<HTMLDivElement[]>([]);
+    // const containerRef = useRef<HTMLDivElement>(null);
+    // const textRefs = useRef<HTMLDivElement[]>([]);
 
-    useEffect(() => {
-        gsap.registerPlugin(ScrollTrigger);
+    // useEffect(() => {
+    //     gsap.registerPlugin(ScrollTrigger);
 
-        const container = containerRef.current;
-        const totalWidth = container?.scrollWidth! - container?.clientWidth!;
-        gsap.to(cardsRef.current, {
-            scrollTrigger: {
-                toggleActions: "none none none none",
-                trigger: cardsRef.current,
-                start: "20px 95%",
-                scrub: true,
-            },
-            x: -totalWidth,
-            ease: "none",
-            duration: 1,
-        });
-        return () => {
-            gsap.killTweensOf(cardsRef.current);
-        };
-    }, []);
+    //     const container = containerRef.current;
+    //     const totalWidth = container?.scrollWidth! - container?.clientWidth!;
+    //     gsap.to(cardsRef.current, {
+    //         scrollTrigger: {
+    //             toggleActions: "none none none none",
+    //             trigger: cardsRef.current,
+    //             start: "20px 95%",
+    //             scrub: true,
+    //         },
+    //         x: -totalWidth,
+    //         ease: "none",
+    //         duration: 1,
+    //     });
+    //     return () => {
+    //         gsap.killTweensOf(cardsRef.current);
+    //     };
+    // }, []);
 
-    useEffect(() => {
-        // Limpa as referências
-        textRefs.current.forEach((ref: HTMLDivElement) => {
-            if (ref) {
-                const paragraphs = ref.querySelectorAll("p");
-                paragraphs.forEach(paragraph => {
-                    fitty(paragraph, {minSize: 12, maxSize: 48});
-                });
-            }
-        });
-    }, [textRefs.current]);
+    // useEffect(() => {
+    //     // Limpa as referências
+    //     textRefs.current.forEach((ref: HTMLDivElement) => {
+    //         if (ref) {
+    //             const paragraphs = ref.querySelectorAll("p");
+    //             paragraphs.forEach(paragraph => {
+    //                 fitty(paragraph, {minSize: 12, maxSize: 48});
+    //             });
+    //         }
+    //     });
+    // }, [textRefs.current]);
+
+  const sectionToScroll = useRef<HTMLDivElement>(null);
+  const [scrollDirection, setScrollDirection] = useState(1);
+
+  useEffect(() => {
+    const sectionToScrollElement = sectionToScroll.current;
+    let isScrolling: any;
+
+    const smoothScroll = () => {
+      const maxScrollLeft = sectionToScrollElement ? Math.round(
+        sectionToScrollElement.scrollWidth - sectionToScrollElement.clientWidth
+      ) : 0;
+
+      if (
+        sectionToScrollElement &&
+        Math.round(sectionToScrollElement.scrollLeft) >= maxScrollLeft &&
+        scrollDirection === 1
+      ) {
+        setTimeout(() => {
+          setScrollDirection(-1);
+        }, 2000);
+      } else if (
+        sectionToScrollElement &&
+        Math.round(sectionToScrollElement.scrollLeft) <= 0 &&
+        scrollDirection === -1
+      ) {
+        setTimeout(() => {
+          setScrollDirection(1);
+        }, 2000);
+      }
+
+      if (sectionToScrollElement) sectionToScrollElement.scrollLeft = sectionToScrollElement ? sectionToScrollElement.scrollLeft + scrollDirection * 2 : 0;
+
+      isScrolling = requestAnimationFrame(smoothScroll);
+    };
+
+    smoothScroll();
+
+    return () => {
+      cancelAnimationFrame(isScrolling);
+    };
+  }, [scrollDirection]);
 
 
     return(
@@ -76,15 +115,14 @@ export const Section3 = () => {
                 </p>
             </div>
 
-            <div ref={containerRef} className="flex overflow-hidden font-nunito">
-                {json.map((item, index) => (
+            <div ref={sectionToScroll} className="flex overflow-hidden font-nunito">
+                {json.map((item) => (
                     <div
                         key={item.id}
-                        ref={(el: any) => (cardsRef.current[index] = el)}
                         className="flex justify-center items-center max-sm:size-5/6 max-md:size-2/3 max-lg:size-1/2 size-1/3 relative mx-3 flex-shrink-0"
                     >
                         <img alt={item.name} src={item.image} className="w-full h-full object-cover rounded-3xl"/>
-                        <div ref={(el: any) => (textRefs.current[index] = el)}
+                        <div
                              className="absolute bottom-4 backdrop-blur rounded-3xl bg-[rgba(29,29,29,0.4)] w-11/12 flex items-center justify-center">
                             <p className="max-md:text-lg max-lg:text-3xl text-2xl text-white inline text-center py-2 xl:py-6 px-6">{item.name}</p>
                         </div>
