@@ -5,7 +5,7 @@ export function BackgroundBubbles({ isNavbarOpened }: { isNavbarOpened: boolean 
     backdropFilter: 'blur(100px)', // Ajuste o valor do desfoque conforme necessário
   };
   return (
-    <div style={style} className={`${isNavbarOpened ? 'hidden' : ''} animate-slideandSpinInfiniteRightToLeft w-[36%] rounded-full h-[70%] absolute z-0 shadow-bubbleShadow opacity-50 blur-xl max-sm:w-[60%] max-sm:h-[30%] max-lg:w-[38%] max-lg:h-[30%]`}></div>
+    <div style={style} className={`${isNavbarOpened ? 'hidden' : ''} animate-slideandSpinInfiniteRightToLeft w-[36%] rounded-full h-[60%] absolute z-0 shadow-bubbleShadow opacity-50 blur-xl max-sm:w-[60%] max-sm:h-[30%] max-lg:w-[38%] max-lg:h-[30%]`}></div>
   );
 }
 // bg-gradient-to-tr from-dark-purple via-purple via-70% to-light-purple

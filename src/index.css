@@ -77,3 +77,7 @@
 .bubbles {
   z-index: 0; /* Isso fará com que as bolas fiquem atrás */
 }
+
+html, body {
+    background-color: #5A189A;
+}
