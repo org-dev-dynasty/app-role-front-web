@@ -43,7 +43,7 @@ export default {
         slideInRight: 'slideInRight 0.5s ease-in-out forwards',  // Animação rápida e suave
         slideOutRight: 'slideOutRight 0.5s ease-in-out forwards', // Animação rápida e suave
         infiniteSpin: 'infiniteSpin 30s linear infinite', // Animação contínua e suave
-        slideandSpinInfiniteRightToLeft: 'slideandSpinInfiniteRightToLeft 10s linear infinite', // Animação contínua e suave
+        slideandSpinInfiniteRightToLeft: 'slideandSpinInfiniteRightToLeft 30s linear infinite', // Animação contínua e suave
       },
       boxShadow: {
         bubbleShadow: '0 0 40px 30px rgba(255, 255, 255, 0.5)', // Sombra suave
