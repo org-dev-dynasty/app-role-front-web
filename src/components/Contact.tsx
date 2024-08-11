@@ -89,7 +89,7 @@ export function Contact() {
                 }
 
             }}/>
-            <div className="bg-[#1D1D1D] bg-opacity-40 rounded-[50px] flex flex-nowrap justify-center items-center w-[92%] py-10 shadow-2xl shadow-dark-purple font-chillax">
+            <div className="bg-[#1D1D1D] bg-opacity-40 rounded-[50px] flex flex-nowrap justify-center items-center w-[92%] py-10 shadow-2xl shadow-dark-purple font-nunito">
                 <div className="flex flex-col w-full  max-xl:hidden ">
                     <div className="flex">
                         <div id="container_esquerda" className="flex flex-col w-8/12 border-r-white border-r-2">
