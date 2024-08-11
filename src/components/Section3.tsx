@@ -1,3 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import fitty from "fitty";
@@ -26,15 +29,15 @@ const json = [{
 },];
 
 export const Section3 = () => {
-    const cardsRef = useRef([]);
-    const containerRef = useRef(null);
-    const textRefs = useRef([]);
+    const cardsRef = useRef<HTMLDivElement[]>([]);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const textRefs = useRef<HTMLDivElement[]>([]);
 
     useEffect(() => {
         gsap.registerPlugin(ScrollTrigger);
 
         const container = containerRef.current;
-        const totalWidth = container.scrollWidth - container.clientWidth;
+        const totalWidth = container?.scrollWidth! - container?.clientWidth!;
         gsap.to(cardsRef.current, {
             scrollTrigger: {
                 toggleActions: "none none none none",
@@ -53,7 +56,7 @@ export const Section3 = () => {
 
     useEffect(() => {
         // Limpa as referências
-        textRefs.current.forEach(ref => {
+        textRefs.current.forEach((ref: HTMLDivElement) => {
             if (ref) {
                 const paragraphs = ref.querySelectorAll("p");
                 paragraphs.forEach(paragraph => {
