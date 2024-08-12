@@ -1,4 +1,7 @@
 import { envs } from "../utils/envs";
+import { IoTicket } from "react-icons/io5";
+import { FaHeart, FaStar, FaGlassCheers } from "react-icons/fa"
+import { FaLocationDot } from "react-icons/fa6"
 import { BackgroundBubbles } from "./BackgroundBubbles";
 
 export function Header({ isNavbarOpened, isPopUpOpened }: { isNavbarOpened: boolean, isPopUpOpened: boolean }) {
@@ -29,14 +32,14 @@ export function Header({ isNavbarOpened, isPopUpOpened }: { isNavbarOpened: bool
   </div>
   <div className="w-1/2 flex h-2/3 justify-center relative max-lg:w-full max-lg:hidden">
     <div className="flex flex-col pl-10 absolute z-40 left-[28%] top-1/3">
-      <img src={`${envs.cloudfrontUrl}/purple_heart_emoji.png`} className="animate-floatEmojisLeft z-40 absolute -top-[60px] -right-[60px]"/>
-      <img src={`${envs.cloudfrontUrl}/speaking_head_emoji.png`}  className="animate-floatEmojisLeft z-40 absolute right-[40px] top-[160px]"/>
+      <FaHeart size={32} className="animate-floatEmojisLeft z-40 absolute -top-[60px] -right-[60px]" />
+      <FaStar size={32} className="animate-floatEmojisLeft z-40 absolute right-[40px] top-[160px]" />
     </div>
     <img className="animate-floatMockup w-[56%] h-[56%] object-contain mt-5" src={`${envs.cloudfrontUrl}/mockup_header_role.png`} alt="mockup_approle"/>
     <div className="flex flex-col">
-      <img src={`${envs.cloudfrontUrl}/star_emoji.png`}  className="animate-floatingEmojisRight absolute right-[160px] top-[10px] w-[40px] h-[40px] object-contain"/>
-      <img src={`${envs.cloudfrontUrl}/admission_tickets_emoji.png`}  className="animate-floatingEmojisRight absolute right-[190px] top-[200px] w-[40px] h-[40px] object-contain"/>
-      <img src={`${envs.cloudfrontUrl}/beers_emoji.png`} className="animate-floatingEmojisRight absolute right-[270px] top-[364px] w-[40px] h-[40px] object-contain"/>
+      <IoTicket size={32} className="animate-floatingEmojisRight absolute right-[160px] top-[10px] w-[40px] h-[40px] object-contain"/>
+      <FaLocationDot size={32} className="animate-floatingEmojisRight absolute right-[190px] top-[200px] w-[40px] h-[40px] object-contain" />
+      <FaGlassCheers size={32} className="animate-floatingEmojisRight absolute right-[270px] top-[364px] w-[40px] h-[40px] object-contain" />
     </div>
 
   </div>
