@@ -16,7 +16,7 @@ export function NavbarMenu({ animationClass, handleMenu, openPopUp }: { animatio
         <NavbarItem className="mt-10" onClick={() => {
           handleMenu();
           handleScroll('beneficios');
-        }}>O App</NavbarItem>
+        }}>O Role</NavbarItem>
         <NavbarItem onClick={() => {
           handleMenu();
           handleScroll('o_app');
