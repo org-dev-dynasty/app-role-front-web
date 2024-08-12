@@ -32,10 +32,10 @@ export default {
         },
         slideandSpinInfiniteRightToLeft: {
           '0%': { 
-            transform: 'translateX(192%) rotate(0deg)', // Começa fora da tela à direita e sem rotação
+            transform: 'translateX(100vw) rotate(0deg)', // Começa fora da tela à direita
           },
           '100%': { 
-            transform: 'translateX(-199%) rotate(360deg)', // Termina fora da tela à esquerda e com rotação
+            transform: 'translateX(-100vw) rotate(360deg)', // Termina fora da tela à esquerda
           },
         },
         carrouselSlider: {
