@@ -1,132 +1,89 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {useEffect, useRef, useState} from "react";
+import { useEffect, useRef } from "react";
 import { envs } from "../utils/envs";
 
 const json = [
-  {
-    "id": 1,
-    "name": "Crie Memórias",
-    "image": `${envs.cloudfrontUrl}/section3_girls.jpeg`
-  }, 
-  {
-    "id": 2,
-    "name": "O seu ROLE Ideal!",
-    "image": `${envs.cloudfrontUrl}/section3_holding_phone.jpg`
-  }, 
-  {
-    "id": 3,
-    "name": "Experiências Únicas",
-    "image": `${envs.cloudfrontUrl}/section3_party_fire.jpg`
-  },
-  {
-    "id": 4,
-    "name": "Viva os ROLEs com Qualidade!",
-    "image": `${envs.cloudfrontUrl}/section3_girl_in_pandora.jpeg`
-  },
+    {
+        id: 1,
+        name: "Crie Memórias",
+        image: `${envs.cloudfrontUrl}/section3_girls.jpeg`,
+    },
+    {
+        id: 2,
+        name: "O seu ROLE Ideal!",
+        image: `${envs.cloudfrontUrl}/section3_holding_phone.jpg`,
+    },
+    {
+        id: 3,
+        name: "Experiências Únicas",
+        image: `${envs.cloudfrontUrl}/section3_party_fire.jpg`,
+    },
+    {
+        id: 4,
+        name: "Viva os ROLEs com Qualidade!",
+        image: `${envs.cloudfrontUrl}/section3_girl_in_pandora.jpeg`,
+    },
 ];
 
 export const Section3 = () => {
-    // const cardsRef = useRef<HTMLDivElement[]>([]);
-    // const containerRef = useRef<HTMLDivElement>(null);
-    // const textRefs = useRef<HTMLDivElement[]>([]);
+    const sectionToScroll = useRef<HTMLDivElement>(null);
 
-    // useEffect(() => {
-    //     gsap.registerPlugin(ScrollTrigger);
+    useEffect(() => {
+        const sectionToScrollElement = sectionToScroll.current;
+        let isScrolling: any;
 
-    //     const container = containerRef.current;
-    //     const totalWidth = container?.scrollWidth! - container?.clientWidth!;
-    //     gsap.to(cardsRef.current, {
-    //         scrollTrigger: {
-    //             toggleActions: "none none none none",
-    //             trigger: cardsRef.current,
-    //             start: "20px 95%",
-    //             scrub: true,
-    //         },
-    //         x: -totalWidth,
-    //         ease: "none",
-    //         duration: 1,
-    //     });
-    //     return () => {
-    //         gsap.killTweensOf(cardsRef.current);
-    //     };
-    // }, []);
+        const smoothScroll = () => {
+            if (sectionToScrollElement) {
+                sectionToScrollElement.scrollLeft += 1;
 
-    // useEffect(() => {
-    //     // Limpa as referências
-    //     textRefs.current.forEach((ref: HTMLDivElement) => {
-    //         if (ref) {
-    //             const paragraphs = ref.querySelectorAll("p");
-    //             paragraphs.forEach(paragraph => {
-    //                 fitty(paragraph, {minSize: 12, maxSize: 48});
-    //             });
-    //         }
-    //     });
-    // }, [textRefs.current]);
+                if (sectionToScrollElement.scrollLeft >= sectionToScrollElement.scrollWidth / 2) {
+                    sectionToScrollElement.scrollLeft = 0;
+                }
+            }
 
-  const sectionToScroll = useRef<HTMLDivElement>(null);
-  const [scrollDirection, setScrollDirection] = useState(1);
+            isScrolling = requestAnimationFrame(smoothScroll);
+        };
 
-  useEffect(() => {
-    const sectionToScrollElement = sectionToScroll.current;
-    let isScrolling: any;
+        smoothScroll();
 
-    const smoothScroll = () => {
-      const maxScrollLeft = sectionToScrollElement ? Math.round(
-        sectionToScrollElement.scrollWidth - sectionToScrollElement.clientWidth
-      ) : 0;
+        return () => {
+            cancelAnimationFrame(isScrolling);
+        };
+    }, []);
 
-      if (
-        sectionToScrollElement &&
-        Math.round(sectionToScrollElement.scrollLeft) >= maxScrollLeft &&
-        scrollDirection === 1
-      ) {
-        setTimeout(() => {
-          setScrollDirection(-1);
-        }, 2000);
-      } else if (
-        sectionToScrollElement &&
-        Math.round(sectionToScrollElement.scrollLeft) <= 0 &&
-        scrollDirection === -1
-      ) {
-        setTimeout(() => {
-          setScrollDirection(1);
-        }, 2000);
-      }
+    const extendedJson = [...json, ...json]; // Duplica os itens do carrossel
 
-      if (sectionToScrollElement) sectionToScrollElement.scrollLeft = sectionToScrollElement ? sectionToScrollElement.scrollLeft + scrollDirection * 2 : 0;
-
-      isScrolling = requestAnimationFrame(smoothScroll);
-    };
-
-    smoothScroll();
-
-    return () => {
-      cancelAnimationFrame(isScrolling);
-    };
-  }, [scrollDirection]);
-
-
-    return(
-        <div id="explorar" className="flex flex-col justify-center font-chillax">
+    return (
+        <div className="flex flex-col justify-center font-chillax">
             <div className="flex justify-center items-center py-24">
                 <p className="text-5xl text-white text-center drop-shadow-purple-mid px-2 max-sm:text-4xl font-medium">
-                    <span className="font-semibold">Encontre</span> Eventos, <span
-                    className="font-semibold">Conheça</span> Pessoas e <span className="font-semibold">Crie</span> Histórias
+                    <span className="font-semibold">Encontre</span> Eventos,{" "}
+                    <span className="font-semibold">Conheça</span> Pessoas e{" "}
+                    <span className="font-semibold">Crie</span> Histórias
                 </p>
             </div>
 
-            <div ref={sectionToScroll} className="flex overflow-hidden font-nunito">
-                {json.map((item) => (
+            <div
+                ref={sectionToScroll}
+                id="section3"
+                className="section3 flex overflow-x-hidden whitespace-nowrap"
+            >
+                {extendedJson.map((item, index) => (
                     <div
-                        key={item.id}
-                        className="flex justify-center items-center max-sm:size-5/6 max-md:size-2/3 max-lg:size-1/2 size-1/3 relative mx-3 flex-shrink-0"
+                        key={index}
+                        className="inline-block mx-4 flex-shrink-0 w-1/3 max-sm:w-5/6 max-md:w-2/3 max-lg:w-1/2 relative"
                     >
-                        <img alt={item.name} src={item.image} className="w-full h-full object-cover rounded-3xl"/>
-                        <div
-                             className="absolute bottom-4 backdrop-blur rounded-3xl bg-[rgba(29,29,29,0.4)] w-11/12 flex items-center justify-center">
-                            <p className="max-md:text-lg max-lg:text-3xl text-2xl text-white inline text-center py-2 xl:py-6 px-6">{item.name}</p>
+                        <img
+                            alt={item.name}
+                            src={item.image}
+                            className="w-full h-full object-cover rounded-3xl"
+                        />
+                        <div className="absolute bottom-4 backdrop-blur rounded-3xl bg-[rgba(29,29,29,0.4)] w-11/12 flex items-center justify-center">
+                            <p className="text-2xl text-white inline text-center py-2 xl:py-6 px-6">
+                                {item.name}
+                            </p>
                         </div>
                     </div>
                 ))}
@@ -134,10 +91,13 @@ export const Section3 = () => {
 
             <div className="flex justify-center items-center py-24 font-chillax">
                 <p className="text-5xl text-white text-center drop-shadow-purple-mid px-2 max-sm:text-4xl font-semibold">
-                    O <span className="font-semibold text-violet drop-shadow-purple-strong">ROLE</span> vai revolucionar
-                    a sua vida noturna!
+                    O{" "}
+                    <span className="font-semibold text-violet drop-shadow-purple-strong">
+            ROLE
+          </span>{" "}
+                    vai revolucionar a sua vida noturna!
                 </p>
             </div>
-        </div>);
-}
-
+        </div>
+    );
+};
