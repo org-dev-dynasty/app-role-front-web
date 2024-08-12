@@ -32,30 +32,22 @@ export function Header({ isNavbarOpened, isPopUpOpened }: { isNavbarOpened: bool
   </div>
   <div className="w-1/2 flex h-2/3 justify-center relative max-lg:w-full max-lg:hidden">
     <img className="animate-floatMockup w-[56%] h-[56%] object-contain mt-5" src={`${envs.cloudfrontUrl}/mockup_header_role.png`} alt="mockup_approle"/>
-    {/* <div className="flex flex-col absolute top-0 bg-green-500 h-full w-1/4"> */}
-      <FaHeart size={40} className="animate-floatEmojisLeft absolute top-[70%] left-[25%]" />
-      <FaStar size={40} className="animate-floatEmojisLeft absolute top-[20%] left-[40%]" />
-    {/* </div> */}
-    {/* <div className="flex flex-col"> */}
-      <IoTicket size={40} className="animate-floatingEmojisRight absolute top-[80%] right-[40%]"/>
-      <FaLocationDot size={40} className="animate-floatingEmojisRight absolute top-[50%] right-[30%]" />
-      <FaGlassCheers size={40} className="animate-floatingEmojisRight absolute top-[20%] right-[20%]" />
-    {/* </div> */}
+    <FaHeart size={40} className="animate-floatEmojisLeft absolute top-[70%] left-[25%]" />
+    <FaStar size={40} className="animate-floatEmojisLeft absolute top-[20%] left-[40%]" />
+    <IoTicket size={40} className="animate-floatingEmojisRight absolute top-[80%] right-[40%]"/>
+    <FaLocationDot size={40} className="animate-floatingEmojisRight absolute top-[50%] right-[30%]" />
+    <FaGlassCheers size={40} className="animate-floatingEmojisRight absolute top-[20%] right-[20%]" />
   </div>
 
 
   {/* MOBILE */}
-  <div className="flex items-end p-8 lg:hidden">
+  <div className="flex relative items-end p-8 lg:hidden">
     <img className="animate-floatMockup w-[56%] h-[56%] object-contain mt-5 ml-[60px]" src={`${envs.cloudfrontUrl}/mockup_header_role.png`} alt="mockup_approle"/>
-    <div className="flex flex-col pl-10 absolute left-[30%] top-1/3">
-      <FaHeart size={32} className="animate-floatEmojisLeft"/>
-      <FaStar size={32}  className="animate-floatEmojisLeft"/>
-    </div>
-    <div className="flex flex-col">
-      <IoTicket size={32}  className="animate-floatingEmojisRight"/>
-      <FaLocationDot size={32}  className="animate-floatingEmojisRight"/>
-      <FaGlassCheers size={32}  className="animate-floatingEmojisRight"/>
-    </div>
+      <FaHeart size={32} className="animate-floatEmojisLeft absolute top-[20%] left-[35%]"/>
+      <FaStar size={32}  className="animate-floatEmojisLeft absolute top-[60%] left-[25%]"/>
+      <IoTicket size={32}  className="animate-floatingEmojisRight absolute top-[20%] right-[30%]"/>
+      <FaLocationDot size={32}  className="animate-floatingEmojisRight absolute top-[50%] right-[40%]"/>
+      <FaGlassCheers size={32}  className="animate-floatingEmojisRight absolute top-[80%] right-[50%]"/>
     <div className="flex flex-col gap-4 text-4xl ml-12 lg:hidden">
       <i onClick={() => {
         window.open('https://www.instagram.com/app.role/', '_blank');
