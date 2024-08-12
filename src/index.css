@@ -81,3 +81,7 @@
 html, body {
     background-color: #5A189A;
 }
+
+body {
+    overflow-x: hidden;
+}
