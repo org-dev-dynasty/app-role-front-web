@@ -3,6 +3,8 @@ export function BackgroundBubbles({ isNavbarOpened, isPopUpOpened }: { isNavbarO
   const style = {
     background: gradient,
     backdropFilter: 'blur(100px)', // Ajuste o valor do desfoque conforme necessário
+    overflow: 'hidden',
+    maxWidth: '100%',
   };
   return (
     <div style={style} className={`${isNavbarOpened || isPopUpOpened ? 'hidden' : ''} animate-slideandSpinInfiniteRightToLeft w-[32%] rounded-full h-[58%] absolute z-0 shadow-bubbleShadow opacity-50 blur-xl max-sm:w-[60%] max-sm:h-[30%] max-lg:w-[38%] max-lg:h-[30%]`}></div>

@@ -31,29 +31,30 @@ export function Header({ isNavbarOpened, isPopUpOpened }: { isNavbarOpened: bool
     <p className="max-lg:hidden text-xl drop-shadow-purple">Acesse nossas redes sociais!</p>
   </div>
   <div className="w-1/2 flex h-2/3 justify-center relative max-lg:w-full max-lg:hidden">
-    <div className="flex flex-col pl-10 absolute z-40 left-[28%] top-1/3">
-      <FaHeart size={32} className="animate-floatEmojisLeft z-40 absolute -top-[60px] -right-[60px]" />
-      <FaStar size={32} className="animate-floatEmojisLeft z-40 absolute right-[40px] top-[160px]" />
-    </div>
     <img className="animate-floatMockup w-[56%] h-[56%] object-contain mt-5" src={`${envs.cloudfrontUrl}/mockup_header_role.png`} alt="mockup_approle"/>
-    <div className="flex flex-col">
-      <IoTicket size={32} className="animate-floatingEmojisRight absolute right-[160px] top-[10px] w-[40px] h-[40px] object-contain"/>
-      <FaLocationDot size={32} className="animate-floatingEmojisRight absolute right-[190px] top-[200px] w-[40px] h-[40px] object-contain" />
-      <FaGlassCheers size={32} className="animate-floatingEmojisRight absolute right-[270px] top-[364px] w-[40px] h-[40px] object-contain" />
-    </div>
-
+    {/* <div className="flex flex-col absolute top-0 bg-green-500 h-full w-1/4"> */}
+      <FaHeart size={40} className="animate-floatEmojisLeft absolute top-[70%] left-[25%]" />
+      <FaStar size={40} className="animate-floatEmojisLeft absolute top-[20%] left-[40%]" />
+    {/* </div> */}
+    {/* <div className="flex flex-col"> */}
+      <IoTicket size={40} className="animate-floatingEmojisRight absolute top-[80%] right-[40%]"/>
+      <FaLocationDot size={40} className="animate-floatingEmojisRight absolute top-[50%] right-[30%]" />
+      <FaGlassCheers size={40} className="animate-floatingEmojisRight absolute top-[20%] right-[20%]" />
+    {/* </div> */}
   </div>
 
+
+  {/* MOBILE */}
   <div className="flex items-end p-8 lg:hidden">
-    <div className="flex flex-col pl-10 absolute z-40 left-[30%] top-1/3">
-      <img src={`${envs.cloudfrontUrl}/purple_heart_emoji.png`} className="animate-floatEmojisLeft z-40 absolute w-[28px] -bottom-[360px] left-[32px]"/>
-      <img src={`${envs.cloudfrontUrl}/speaking_head_emoji.png`}  className="animate-floatEmojisLeft z-40 absolute right-[40px] top-[480px]"/>
-    </div>
     <img className="animate-floatMockup w-[56%] h-[56%] object-contain mt-5 ml-[60px]" src={`${envs.cloudfrontUrl}/mockup_header_role.png`} alt="mockup_approle"/>
+    <div className="flex flex-col pl-10 absolute left-[30%] top-1/3">
+      <FaHeart size={32} className="animate-floatEmojisLeft"/>
+      <FaStar size={32}  className="animate-floatEmojisLeft"/>
+    </div>
     <div className="flex flex-col">
-      <img src={`${envs.cloudfrontUrl}/star_emoji.png`}  className="animate-floatingEmojisRight absolute right-[112px] top-[600px] w-[28px] h-[28px] object-contain"/>
-      <img src={`${envs.cloudfrontUrl}/admission_tickets_emoji.png`}  className="animate-floatingEmojisRight absolute right-[140px] top-[700px] w-[28px] h-[28px] object-contain"/>
-      <img src={`${envs.cloudfrontUrl}/beers_emoji.png}`}  className="animate-floatingEmojisRight absolute right-[180px] top-[780px] w-[40px] h-[40px] object-contain"/>
+      <IoTicket size={32}  className="animate-floatingEmojisRight"/>
+      <FaLocationDot size={32}  className="animate-floatingEmojisRight"/>
+      <FaGlassCheers size={32}  className="animate-floatingEmojisRight"/>
     </div>
     <div className="flex flex-col gap-4 text-4xl ml-12 lg:hidden">
       <i onClick={() => {
