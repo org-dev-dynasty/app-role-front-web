@@ -4,27 +4,28 @@
 import {useEffect, useRef, useState} from "react";
 import { envs } from "../utils/envs";
 
-const json = [{
+const json = [
+  {
     "id": 1,
-    "name": "Viva os ROLEs com Qualidade!",
-    "image": `${envs.cloudfrontUrl}/section3_girl_in_pandora.jpeg`
-}, {
-    "id": 2,
     "name": "Crie Memórias",
     "image": `${envs.cloudfrontUrl}/section3_girls.jpeg`
-}, {
-    "id": 3,
+  }, 
+  {
+    "id": 2,
     "name": "O seu ROLE Ideal!",
     "image": `${envs.cloudfrontUrl}/section3_holding_phone.jpg`
-}, {
-    "id": 4,
+  }, 
+  {
+    "id": 3,
     "name": "Experiências Únicas",
     "image": `${envs.cloudfrontUrl}/section3_party_fire.jpg`
-},{
-    "id": 5,
+  },
+  {
+    "id": 4,
     "name": "Viva os ROLEs com Qualidade!",
     "image": `${envs.cloudfrontUrl}/section3_girl_in_pandora.jpeg`
-},];
+  },
+];
 
 export const Section3 = () => {
     // const cardsRef = useRef<HTMLDivElement[]>([]);
