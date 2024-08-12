@@ -6,7 +6,9 @@ import { BackgroundBubbles } from "./BackgroundBubbles";
 
 export function Header({ isNavbarOpened, isPopUpOpened }: { isNavbarOpened: boolean, isPopUpOpened: boolean }) {
   return <>
-  <BackgroundBubbles isNavbarOpened={isNavbarOpened} isPopUpOpened={isPopUpOpened} />
+  <div className="absolute top-0 left-0 w-full h-full flex items-center overflow-hidden">
+    <BackgroundBubbles isNavbarOpened={isNavbarOpened} isPopUpOpened={isPopUpOpened} />
+  </div>
   <div className="w-5/12 flex justify-center flex-col gap-8 lg:ml-12 max-lg:w-[75%] pt-12">
     <h1 className="text-6xl max-lg:text-center max-lg:text-5xl font-chillax font-medium drop-shadow-purple-mid">O seu <span className="uppercase text-violet drop-shadow-purple-strong">role</span> ideal está aqui!</h1>
 

@@ -31,7 +31,7 @@
         };
 
         return (
-            <div className="w-full bg-white justify-center rounded-3xl py-16">
+            <div className="z-20 w-full bg-white justify-center rounded-3xl py-16">
                 <h1 className="text-4xl text-center pb-12 font-chillax font-medium px-2">APROVEITE OS <span className="font-semibold text-light-purple">ROLE</span>s COM QUALIDADE</h1>
 
                 <div className="flex flex-row max-lg:hidden px-12 drop-shadow-xl">
