@@ -6,6 +6,6 @@ export function BackgroundBubbles({ isNavbarOpened, isPopUpOpened }: { isNavbarO
     maxWidth: '100vw',
   };
   return (
-    <div style={style} className={`overflow-x-hidden ${isNavbarOpened || isPopUpOpened ? 'hidden' : ''} animate-slideandSpinInfiniteRightToLeft w-[24vw] h-[24vw] absolute z-0 shadow-bubbleShadow opacity-50 blur-xl transform translate-x-[50vw] rounded-full overflow-hidden max-sm:w-[60vw] max-sm:h-[60vw] max-sm:translate-x-[30vw] max-lg:w-[38vw] max-lg:h-[38vw] max-lg:translate-x-[20vw]`}></div>
+    <div style={style} className={`overflow-x-hidden ${isNavbarOpened || isPopUpOpened ? 'hidden' : ''} animate-slideandSpinInfiniteRightToLeft w-[24vw] h-[24vw] absolute z-0 shadow-bubbleShadow opacity-50 blur-xl transform translate-x-[50vw] rounded-full overflow-hidden`}></div>
   );
 }
