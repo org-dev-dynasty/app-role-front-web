@@ -4,11 +4,11 @@
 
 @font-face {
     font-family: "chillax";
-    src: url("assets/fonts/Chillax-Variable.ttf");
+    src: url("https://d1jwplf6mvpxl3.cloudfront.net/fonts/Chillax-Variable.ttf");
 }
 @font-face {
     font-family: "satoshi";
-    src: url("assets/fonts/Satoshi-Variable.ttf");
+    src: url("https://d1jwplf6mvpxl3.cloudfront.net/fonts/Satoshi-Variable.ttf");
 }
 
 .p-icon{
@@ -65,4 +65,36 @@
 
 .drop-shadow-purple-strong {
     filter: drop-shadow(0rem 0rem 0.1rem rgba(109, 53, 163, 0.5)) drop-shadow(0rem 0rem 0.1rem rgba(109, 53, 163, 0.5)) drop-shadow(0rem 0rem 0.1rem rgba(109, 53, 163, 0.5));
+}
+
+
+/* Seu CSS global ou específico do componente */
+.card, .header-content, .section {
+  position: relative;
+  z-index: 1; /* Isso fará com que eles fiquem acima das bolas */
+}
+
+.bubbles {
+  z-index: 0; /* Isso fará com que as bolas fiquem atrás */
+}
+
+html, body {
+    background-color: #5A189A;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+.section3 {
+    display: flex;
+    overflow: hidden; /* Controla o conteúdo visível */
+    white-space: nowrap; /* Impede quebra de linha */
+    position: relative;
+}
+
+.card {
+    flex-shrink: 0; /* Impede que os cards encolham */
+    width: 33.33%; /* Ajusta o tamanho dos cards */
+    height: 100%;
 }

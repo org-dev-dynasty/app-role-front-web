@@ -1,15 +1,12 @@
 import { CaretCircleLeft, CaretCircleRight } from '@phosphor-icons/react';
-import mock from '../assets/Home 3 ESCULRO-portrait.png';
-import mock2 from '../assets/Filtros ESCURO-portrait.png';
-import mock3 from '../assets/Perfil escuro-portrait.png';
-import mock4 from '../assets/Perfil Org ESCURO1-portrait.png';
 import {InteractableImage} from "./InteractableImage.tsx";
+import { envs } from '../utils/envs.ts';
 
 const images = [
-    mock,
-    mock2,
-    mock3,
-    mock4
+    `${envs.cloudfrontUrl}/Home-3-ESCURO-portrait.png`,
+    `${envs.cloudfrontUrl}/Filtros-ESCURO-portrait.png`,
+    `${envs.cloudfrontUrl}/Perfil-escuro-portrait.png`,
+    `${envs.cloudfrontUrl}/beneficios-portrait.png`
 ];
 
 export const Carousel = ({ currentIndex, prevSlide, nextSlide }: { currentIndex: number, prevSlide: () => void, nextSlide: () => void }) => {

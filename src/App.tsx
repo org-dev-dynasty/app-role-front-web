@@ -8,6 +8,7 @@ import { Overlay } from "./components/Overlay";
 import {Section4} from "./components/Section4.tsx";
 import {Section3} from "./components/Section3.tsx";
 import {Popup} from "./components/PopUp.tsx";
+import { Footer } from "./components/Footer.tsx";
 
 
 export function App() {
@@ -38,17 +39,18 @@ export function App() {
 
 
 
-      <main className="bg-gradient-to-r from-dark-purple via-purple via-70% to-light-purple font-satoshi">
+      <main id="scroller" className="bg-gradient-to-r from-dark-purple via-purple via-70% to-light-purple">
         {/* SECTION 1 - 3D */}
-        <SectionContainer id="quem_somos">
-          <Header />
+        <SectionContainer id="o_role">
+          <Header isNavbarOpened={showMenuItems} isPopUpOpened={isPopupOpen} />
         </SectionContainer>
         <Section2 />
         <Section3/>
         <Section4 />
-         <SectionContainer id="contato">
+        <SectionContainer id="contato">
           <Contact />
         </SectionContainer>
+        <Footer openPopUp={() => setIsPopupOpen(true)} isNavbarOpened={showMenuItems} isPopUpOpened={isPopupOpen}/>
         {showMenuItems && <Overlay onClick={handleMenuClick} animationClass={animationMenu} />}
       </main>
     </>
