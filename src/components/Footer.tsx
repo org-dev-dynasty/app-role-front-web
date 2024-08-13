@@ -14,7 +14,7 @@ export function Footer({ isNavbarOpened, openPopUp, isPopUpOpened }: { isNavbarO
                     </h1>
                 </div>
                 <div className="pt-8 md:pt-10 lg:pt-16 text-center z-10">
-                    <p className="text-2xl md:text-3xl lg:text-4xl font-nunito">Não fique de fora dessa!</p>
+                    <p className="text-2xl md:text-3xl lg:text-4xl font-satoshi">Não fique de fora dessa!</p>
                 </div>
                 <div className="pt-8 md:pt-10 lg:pt-11">
                     <button onClick={openPopUp} className="w-48 h-12 md:w-56 md:h-14 lg:w-64 lg:h-16 
