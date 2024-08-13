@@ -93,27 +93,27 @@ export function Contact() {
                 <div className="flex flex-col w-full  max-xl:hidden ">
                     <div className="flex">
                         <div id="container_esquerda" className="flex flex-col w-8/12 border-r-white border-r-2">
-                            <h1 className="text-5xl text-center font-nunito font-bold">Fale Conosco</h1>
+                            <h1 className="text-5xl text-center font-chillax font-medium">Fale Conosco</h1>
                             <div className="flex flex-col mt-[40px] justify-center items-center">
                                 <div className='flex'>
                                     <div className="flex flex-col">
                                         <div>
-                                            <p className="ml-[68px] mb-[7px] text-2xl">Nome:</p>
+                                            <p className="ml-[68px] mb-[7px] text-2xl font-satoshi">Nome:</p>
                                             <input
                                                 type="text"
-                                                className="bg-transparent border-opacity-60 border-2 border-white rounded-[15px] placeholder-[#838383] h-[48px] max-w-74 pl-[14px] ml-[62px]"
+                                                className="bg-transparent font-satoshi border-opacity-60 border-2 border-white rounded-[15px] placeholder-[#838383] h-[48px] max-w-74 pl-[14px] ml-[62px]"
                                                 placeholder="Digite seu nome..."
                                                 value={name}
                                                 onChange={(e) => setName(e.target.value)}
                                             />
                                         </div>
                                         <div className="mt-[23px]">
-                                            <p className="ml-[68px] mb-[7px] text-2xl">E-mail:</p>
+                                            <p className="ml-[68px] mb-[7px] text-2xl font-satoshi">E-mail:</p>
                                             <input
                                                 type="email"
                                                 value={email}
                                                 onChange={handleEmailChange}
-                                                className="bg-transparent border-opacity-60 border-2 border-white rounded-[15px] placeholder-[#838383] h-[48px] max-w-74 pl-[14px] ml-[62px]"
+                                                className="bg-transparent font-satoshi border-opacity-60 border-2 border-white rounded-[15px] placeholder-[#838383] h-[48px] max-w-74 pl-[14px] ml-[62px]"
                                                 placeholder="Digite seu e-mail..."
                                             />
                                             {emailError && <p className="text-red-500 ml-[68px]">{emailError}</p>}
@@ -121,10 +121,10 @@ export function Contact() {
                                     </div>
                                     <div className="flex items-start">
                                         <div className="flex flex-col">
-                                            <p className="ml-[68px] mb-[7px] text-2xl">Escreva sua mensagem:</p>
+                                            <p className="ml-[68px] mb-[7px] text-2xl font-satoshi">Escreva sua mensagem:</p>
                                             <textarea
                                                 id="mensagem"
-                                                className="bg-transparent w-96 border-opacity-60 border-2 border-white rounded-[15px] placeholder-[#838383] pl-[14px] pt-[10px] ml-[62px] h-[155px]"
+                                                className="bg-transparent font-satoshi w-96 border-opacity-60 border-2 border-white rounded-[15px] placeholder-[#838383] pl-[14px] pt-[10px] ml-[62px] h-[155px]"
                                                 placeholder="Digite sua mensagem..."
                                                 value={message}
                                                 onChange={(e) => setMessage(e.target.value)}
@@ -141,7 +141,7 @@ export function Contact() {
                                         >
                                             <i className={`${checked ? "pi pi-check text-white transform duration-300" : "text-transparent"}`}></i>
                                         </button>
-                                        <p className="text-2xl ml-4">Organizador</p>
+                                        <p className="text-2xl ml-4 font-satoshi">Organizador</p>
                                     </div>
                                     <div className='ml-40'>
                                         <Button
@@ -155,16 +155,16 @@ export function Contact() {
                             </div>
                         </div>
                         <div id="container_direita" className="w-4/12">
-                            <h1 className="text-5xl text-center font-bold">Contato</h1>
+                            <h1 className="text-5xl text-center font-chillax font-medium">Contato</h1>
                             <div className='pt-16 px-20 flex flex-col items-center'>
                                 <div>
                                     <div className='flex gap-3 items-center'>
                                         <Phone size={38} />
-                                        <p className='text-2xl'>(11) 99403-6227</p>
+                                        <p className='text-2xl font-satoshi'>(11) 99403-6227</p>
                                     </div>
                                     <div className='flex gap-3 items-center mt-8'>
                                         <Envelope size={38} />
-                                        <p className='text-2xl'>contato@roleapp.com.br</p>
+                                        <p className='text-2xl font-satoshi'>contato@roleapp.com.br</p>
                                     </div>
                                 </div>
                             </div>
@@ -173,27 +173,27 @@ export function Contact() {
                 </div>
                 <div className='xl:hidden flex flex-col max-md:hidden'>
                     <div id="container_esquerda" className="flex flex-col  border-b-white border-b-2 justify-center items-center">
-                        <h1 className="text-5xl text-center font-bold">Fale Conosco</h1>
+                        <h1 className="text-5xl text-center font-chillax">Fale Conosco</h1>
                         <div className="flex flex-col mt-[40px] justify-center items-center">
                             <div className='flex'>
                                 <div className="flex flex-col">
                                     <div>
-                                        <p className="mb-[7px] text-2xl">Nome:</p>
+                                        <p className="mb-[7px] text-2xl font-satoshi">Nome:</p>
                                         <input
                                             type="text"
-                                            className="bg-transparent border-opacity-60 border-2 border-white rounded-[15px] placeholder-[#838383] h-[48px] max-w-74 pl-[14px]"
+                                            className="bg-transparent font-satoshi border-opacity-60 border-2 border-white rounded-[15px] placeholder-[#838383] h-[48px] max-w-74 pl-[14px]"
                                             placeholder="Digite seu nome..."
                                             value={name}
                                             onChange={(e) => setName(e.target.value)}
                                         />
                                     </div>
                                     <div className="mt-[23px]">
-                                        <p className="mb-[7px] text-2xl">E-mail:</p>
+                                        <p className="mb-[7px] text-2xl font-satoshi">E-mail:</p>
                                         <input
                                             type="email"
                                             value={email}
                                             onChange={handleEmailChange}
-                                            className="bg-transparent border-opacity-60 border-2 border-white rounded-[15px] placeholder-[#838383] h-[48px] max-w-74 pl-[14px] "
+                                            className="bg-transparent font-satoshi border-opacity-60 border-2 border-white rounded-[15px] placeholder-[#838383] h-[48px] max-w-74 pl-[14px] "
                                             placeholder="Digite seu e-mail..."
                                         />
                                         {emailError && <p className="text-red-500 ml-[68px]">{emailError}</p>}
@@ -201,10 +201,10 @@ export function Contact() {
                                 </div>
                                 <div className="flex items-start">
                                     <div className="flex flex-col">
-                                        <p className="ml-[68px] mb-[7px] text-2xl">Escreva sua mensagem:</p>
+                                        <p className="ml-[68px] mb-[7px] text-2xl font-satoshi">Escreva sua mensagem:</p>
                                         <textarea
                                             id="mensagem"
-                                            className="bg-transparent w-96 border-opacity-60 border-2 border-white rounded-[15px] placeholder-[#838383] pl-[14px] pt-[10px] ml-[62px] h-[155px]"
+                                            className="bg-transparent font-satoshi w-96 border-opacity-60 border-2 border-white rounded-[15px] placeholder-[#838383] pl-[14px] pt-[10px] ml-[62px] h-[155px]"
                                             placeholder="Digite sua mensagem..."
                                             value={message}
                                             onChange={(e) => setMessage(e.target.value)}
@@ -215,13 +215,13 @@ export function Contact() {
                             <div className='flex pt-11 items-center pb-10'>
                                 <div className="flex items-center">
                                     <button
-                                        className={`w-[32px] h-[32px] rounded-[10px]  flex items-center justify-center ${checked ? "bg-[#5A189A]" : "bg-transparent border-2 border-white"
+                                        className={`w-[32px] h-[32px] rounded-[10px] flex items-center justify-center ${checked ? "bg-[#5A189A]" : "bg-transparent border-2 border-white"
                                             }`}
                                         onClick={handleButtonClick}
                                     >
                                         {checked && <i className="pi pi-check text-white"></i>}
                                     </button>
-                                    <p className="text-2xl ml-4">Organizador</p>
+                                    <p className="text-2xl ml-4 font-satoshi">Organizador</p>
                                 </div>
                                 <div className='ml-40'>
                                     <Button
@@ -235,16 +235,16 @@ export function Contact() {
                         </div>
                     </div>
                     <div id="container_direita" className="justify-center items-center pt-10">
-                        <h1 className="text-5xl text-center font-bold">Contato</h1>
+                        <h1 className="text-5xl text-center font-chillax">Contato</h1>
                         <div className='pt-16 px-20 flex flex-col items-center'>
                             <div>
                                 <div className='flex gap-3 items-center'>
                                     <Phone size={38} />
-                                    <p className='text-2xl'>(11) 99403-6227</p>
+                                    <p className='text-2xl font-satoshi'>(11) 99403-6227</p>
                                 </div>
                                 <div className='flex gap-3 items-center mt-8'>
                                     <Envelope size={38} />
-                                    <p className='text-2xl'>contato@roleapp.com.br</p>
+                                    <p className='text-2xl font-satoshi'>contato@roleapp.com.br</p>
                                 </div>
                             </div>
                         </div>
@@ -252,25 +252,25 @@ export function Contact() {
                 </div>
                 <div className='md:hidden flex flex-col w-full px-8'>
                     <div id="container_esquerda" className="flex flex-col border-b-white border-b-2 justify-center items-center w-full ">
-                        <h1 className="text-5xl text-center font-bold">Fale Conosco</h1>
+                        <h1 className="text-5xl text-center font-chillax">Fale Conosco</h1>
                         <div className="flex flex-col mt-[40px] justify-center items-center w-full">
                                 <div className="flex flex-col w-full">
-                                        <p className="mb-[7px] text-2xl">Nome:</p>
+                                        <p className="mb-[7px] text-2xl font-satoshi">Nome:</p>
                                         <input
                                             type="text"
-                                            className="bg-transparent border-opacity-60 border-2 border-white rounded-[15px] placeholder-[#838383] h-[48px] w-full pl-[14px]"
+                                            className="bg-transparent font-satoshi border-opacity-60 border-2 border-white rounded-[15px] placeholder-[#838383] h-[48px] w-full pl-[14px]"
                                             placeholder="Digite seu nome..."
                                             value={name}
                                             onChange={(e) => setName(e.target.value)}
                                         />
                 
                                     <div className="mt-6 w-full">
-                                        <p className="mb-[7px] text-2xl">E-mail:</p>
+                                        <p className="mb-[7px] text-2xl font-satoshi">E-mail:</p>
                                         <input
                                             type="email"
                                             value={email}
                                             onChange={handleEmailChange}
-                                            className="bg-transparent border-opacity-60 border-2 border-white rounded-[15px] placeholder-[#838383] h-[48px] w-full pl-[14px] "
+                                            className="bg-transparent font-satoshi border-opacity-60 border-2 border-white rounded-[15px] placeholder-[#838383] h-[48px] w-full pl-[14px] "
                                             placeholder="Digite seu e-mail..."
                                         />
                                         {emailError && <p className="text-red-500 ml-[68px]">{emailError}</p>}
@@ -278,10 +278,10 @@ export function Contact() {
                                 </div>
                                 <div className="flex w-full">
                                     <div className="flex flex-col w-full mt-6">
-                                        <p className=" mb-[7px] text-2xl">Escreva sua mensagem:</p>
+                                        <p className=" mb-[7px] text-2xl font-satoshi">Escreva sua mensagem:</p>
                                         <textarea
                                             id="mensagem"
-                                            className="bg-transparent border-opacity-60 border-2 border-white rounded-[15px] placeholder-[#838383] pt-[10px] p-3 h-[155px] w-full"
+                                            className="bg-transparent font-satoshi border-opacity-60 border-2 border-white rounded-[15px] placeholder-[#838383] pt-[10px] p-3 h-[155px] w-full"
                                             placeholder="Digite sua mensagem..."
                                             value={message}
                                             onChange={(e) => setMessage(e.target.value)}
@@ -297,7 +297,7 @@ export function Contact() {
                                     >
                                         {checked && <i className="pi pi-check text-white"></i>}
                                     </button>
-                                    <p className="text-xl pl-3">Organizador</p>
+                                    <p className="text-xl pl-3 font-satoshi">Organizador</p>
                                 </div>
                                     <Button
                                         className={`bg-gradient-to-r from-[#5A189A] to-[#1E0834] w-44 h-9 border-1 rounded-3xl justify-center text-2xl font-bold shadow-2xl shadow-black  transition-transform duration-200 ${isButtonClicked ? 'transform scale-110' : ''}`}
@@ -309,16 +309,16 @@ export function Contact() {
                         </div>
                     </div>
                     <div id="container_direita" className="justify-center items-center pt-10">
-                        <h1 className="text-5xl text-center font-bold">Contato</h1>
+                        <h1 className="text-5xl text-center font-chillax">Contato</h1>
                         <div className='pt-16 flex flex-col items-start'>
                             <div>
                                 <div className='flex gap-3 items-center'>
                                     <Phone size={38} />
-                                    <p className='text-xl'>(11) 99403-6227</p>
+                                    <p className='text-xl font-satoshi'>(11) 99403-6227</p>
                                 </div>
                                 <div className='flex gap-3 mt-8 items-center'>
                                     <Envelope size={38}/>
-                                    <p className='text-xl'>contato@roleapp.com.br</p>
+                                    <p className='text-xl font-satoshi'>contato@roleapp.com.br</p>
                                 </div>
                             </div>
                         </div>
