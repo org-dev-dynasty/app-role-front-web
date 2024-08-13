@@ -86,9 +86,11 @@ export const Section4 = () => {
                         <Megaphone size={36} className="text-light-purple mr-1"/>
                         <p className="text-3xl font-chillax text-light-purple font-medium">PUBLICIDADE</p>
                     </div>
-                    <p className="text-2xl font-satoshi">Crie, configure e promova seus ROLEs assertivamente para
-                        todos os usuários do aplicativo!
-                    </p>
+                    <p className="text-2xl font-satoshi">Crie, configure e promova seus 
+                        <span className="text-light-purple pl-2">
+                            ROLE
+                        </span>
+                        s ssertivamente para todos os usuários do aplicativo!</p>
                 </div>
 
                 <div className="relative w-full flex justify-center sm:gap-x-[25vw] max-sm:gap-x-[10vw]">
