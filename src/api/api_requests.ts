@@ -4,9 +4,7 @@ import { http } from "./http";
 export async function sendMail(email: string, name: string, message: string) {
   try {
     const resp = await http.post('/send-email', { to : "contato@roleapp.com.br", subject : name,
-      text : `Tem um novo usuário querendo participar do ROLE: ${name} - ${email}
-      Mensagem: ${message}
-      `
+      text : `Tem um novo usuário querendo participar do ROLE: ${name} - ${email}. Mensagem: ${message}`
     });
     if (resp.status === 200) {
       return true
