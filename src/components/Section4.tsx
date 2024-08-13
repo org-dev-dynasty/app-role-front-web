@@ -18,7 +18,7 @@ export const Section4 = () => {
                             <Folders size={36} className="text-light-purple mr-1"/>
                             <p className="text-3xl font-chillax text-light-purple font-medium">ORGANIZAÇÃO</p>
                         </div>
-                        <p className="text-2xl ">Tenha todos os seus estabelecimentos em um único
+                        <p className="text-2xl font-satoshi">Tenha todos os seus estabelecimentos em um único
                             lugar para que você possa controlar e organizar todos os <span
                                 className="text-light-purple">
                                 ROLE</span>s de forma fácil e prática!
@@ -30,7 +30,7 @@ export const Section4 = () => {
                             <ChartBar size={36} className="text-light-purple mr-1"/>
                             <p className="text-3xl font-chillax text-light-purple font-medium">ANÁLISE</p>
                         </div>
-                        <p className="text-2xl ">Utilize ferramentas para conhecer melhor o seu público
+                        <p className="text-2xl font-satoshi">Utilize ferramentas para conhecer melhor o seu público
                             e seus interesses, adaptando suas ofertas e aumentando a satisfação das pessoas!
                         </p>
                     </div>
@@ -40,7 +40,7 @@ export const Section4 = () => {
                             <Megaphone size={36} className="text-light-purple mr-1"/>
                             <p className="text-3xl font-chillax text-light-purple font-medium">PUBLICIDADE</p>
                         </div>
-                        <p className="text-2xl pr-4">Crie, configure e promova seus ROLEs assertivamente para
+                        <p className="text-2xl pr-4 font-satoshi">Crie, configure e promova seus ROLEs assertivamente para
                             todos os usuários do aplicativo!
                         </p>
                     </div>
@@ -62,7 +62,7 @@ export const Section4 = () => {
                         <Folders size={36} className="text-light-purple mr-1"/>
                         <p className="text-3xl font-chillax text-light-purple font-medium">ORGANIZAÇÃO</p>
                     </div>
-                    <p className="text-2xl">Tenha todos os seus estabelecimentos em um único
+                    <p className="text-2xl font-satoshi">Tenha todos os seus estabelecimentos em um único
                         lugar para que você possa controlar e organizar todos os <span
                             className="text-light-purple">
                             ROLE</span>s de forma fácil e prática!
@@ -74,7 +74,7 @@ export const Section4 = () => {
                         <ChartBar size={36} className="text-light-purple mr-1"/>
                         <p className="text-3xl font-chillax text-light-purple font-medium">ANÁLISE</p>
                     </div>
-                    <p className="text-2xl ">Utilize ferramentas para conhecer melhor o seu público
+                    <p className="text-2xl font-satoshi">Utilize ferramentas para conhecer melhor o seu público
                         e seus interesses, adaptando suas ofertas e aumentando a satisfação das pessoas!
                     </p>
                 </div>
@@ -84,7 +84,7 @@ export const Section4 = () => {
                         <Megaphone size={36} className="text-light-purple mr-1"/>
                         <p className="text-3xl font-chillax text-light-purple font-medium">PUBLICIDADE</p>
                     </div>
-                    <p className="text-2xlfont-">Crie, configure e promova seus ROLEs assertivamente para
+                    <p className="text-2xl font-satoshi">Crie, configure e promova seus ROLEs assertivamente para
                         todos os usuários do aplicativo!
                     </p>
                 </div>
