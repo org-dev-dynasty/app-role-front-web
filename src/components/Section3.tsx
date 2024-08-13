@@ -80,8 +80,8 @@ export const Section3 = () => {
                             src={item.image}
                             className="w-full h-full object-cover rounded-3xl"
                         />
-                        <div className="absolute bottom-4 backdrop-blur rounded-3xl bg-[rgba(29,29,29,0.4)] w-11/12 flex items-center justify-center">
-                            <p className="text-2xl text-white inline text-center py-2 xl:py-6 px-6">
+                       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 backdrop-blur rounded-3xl bg-[rgba(29,29,29,0.4)] w-11/12 flex items-center justify-center">
+                            <p className="text-lg sm:text-xl md:text-2xl text-white inline text-center py-2 xl:py-6 px-6 ">
                                 {item.name}
                             </p>
                         </div>
