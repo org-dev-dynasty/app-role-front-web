@@ -39,9 +39,9 @@ export function App() {
 
 
 
-      <main id="scroller" className="bg-gradient-to-r from-dark-purple via-purple via-70% to-light-purple">
+      <main className="bg-gradient-to-r from-dark-purple via-purple via-70% to-light-purple">
         {/* SECTION 1 - 3D */}
-        <SectionContainer id="o_role">
+        <SectionContainer id="o_app">
           <Header isNavbarOpened={showMenuItems} isPopUpOpened={isPopupOpen} />
         </SectionContainer>
         <Section2 />
