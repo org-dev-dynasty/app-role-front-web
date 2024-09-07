@@ -90,7 +90,7 @@ export const Section4 = () => {
                         <span className="text-light-purple pl-2">
                             ROLE
                         </span>
-                        s ssertivamente para todos os usuários do aplicativo!</p>
+                        s assertivamente para todos os usuários do aplicativo!</p>
                 </div>
 
                 <div className="relative w-full flex justify-center sm:gap-x-[25vw] max-sm:gap-x-[10vw]">
