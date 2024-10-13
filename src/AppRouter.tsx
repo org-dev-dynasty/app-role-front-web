@@ -1,13 +1,15 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { LandingPage } from "./pages/landingPage";
-import RestrictedArea from "./pages/restrictedArea";
+import Roles from "./pages/restrictedArea/Roles";
+import Institutes from "./pages/restrictedArea/Institutions";
 
 export function AppRouter() {
     return (
         <BrowserRouter>
             <Routes>
                 <Route Component={LandingPage} path="/home" element={<LandingPage />} />
-                <Route Component={RestrictedArea} path="/restrictedArea" element={<RestrictedArea />} />
+                <Route Component={Institutes} path="/Institutes" element={<Institutes />} />
+                <Route Component={Roles} path="/roles" element={<Roles />} />
             </Routes>
         </BrowserRouter>
     )

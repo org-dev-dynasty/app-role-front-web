@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { institutionProps } from "../pages/restrictedArea/Institutions";
 
 interface InstituteModalProps {
-  instSelected: string | null;
+  instSelected: institutionProps | null;
   onClick: () => void; // Função para fechar o modal principal
   setUpdate: () => void; // Função para abrir o modal de atualização
   onDelete: () => void;  // Função para realizar a exclusão
@@ -28,7 +29,7 @@ export function InstituteModal({
           {!confirmDelete && (
             <>
               <div className="w-full border-b-4 flex items-center justify-between z-30 px-4 backdrop-blur-lg border-black h-[14%]">
-                <h1 className="text-3xl">{instSelected}</h1>
+                <h1 className="text-3xl">{instSelected?.name}</h1>
                 <div className="flex flex-row gap-4">
                   <div
                     className="h-16 w-20 flex justify-center items-center bg-blue-500 rounded-lg hover:bg-blue-800 hover:cursor-pointer"
@@ -51,7 +52,45 @@ export function InstituteModal({
                 </div>
               </div>
               <div className="py-4 flex flex-col flex-1 overflow-y-auto w-full items-center gap-4">
-                <p>Informações da instituição</p>
+                <div className="w-full flex flex-col gap-6 items-center ">
+                  <div className="h-80 w-80 flex mb-6 justify-center items-center bg-white rounded-lg">
+                    <img
+                      src={instSelected?.photo}
+                      alt="Instituição"
+                      className="w-96 h-52 object-cover rounded-lg"
+                    />
+                  </div>
+                  <p>Descrição:</p>
+                  <div className="h-80 w-[80%] flex px-4 mb-6 bg-white items-center rounded-md">
+                    <p>{instSelected?.description}</p>
+                  </div>
+                  <div className="flex flex-row mb-6 w-full justify-evenly">
+                    <div className="flex flex-col gap-4 w-[50%] items-center">
+                      <p>Tipo de instituição:</p>
+                      <div className="h-10 w-[80%] flex px-4 mb-6 bg-white items-center rounded-md">
+                        <p>{instSelected?.institution_type}</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-4 w-[50%] items-center">
+                      <p>Tipo de parceiro:</p>
+                      <div className="h-10 w-[80%] flex px-4 mb-6 bg-white items-center rounded-md">
+                        <p>{instSelected?.partner_type}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <p>Endereço:</p>
+                  <div className="h-10 w-[80%] flex px-4 mb-6 bg-white items-center rounded-md">
+                    <p>{instSelected?.address}</p>
+                  </div>
+                  <p>Distrito:</p>
+                  <div className="h-10 w-[80%] flex px-4 mb-6 bg-white items-center rounded-md">
+                    <p>{instSelected?.district_id}</p>
+                  </div>
+                  <p>Preço:</p>
+                  <div className="h-10 w-[80%] flex px-4 mb-6 bg-white items-center rounded-md">
+                    <p>{instSelected?.price}</p>
+                  </div>
+                </div>
               </div>
             </>
           )}
@@ -73,6 +112,31 @@ export function InstituteModal({
 }
 
 export function InstituteModalUpdate({ instSelected, onClick, setUpdate }: InstituteModalProps) {
+  const [description, setDescription] = useState(instSelected?.description);
+  const [address, setAddress] = useState(instSelected?.address);
+  const [district_id, setDistrict_id] = useState(instSelected?.district_id);
+  const [price, setPrice] = useState(instSelected?.price);
+
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Atualiza o estado da descrição com o novo valor
+    setDescription(e.target.value);
+  };
+
+  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Atualiza o estado do endereço com o novo valor
+    setAddress(e.target.value);
+  };
+
+  const handleDistrictChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Atualiza o estado do distrito com o novo valor
+    setDistrict_id(e.target.value);
+  };
+
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Atualiza o estado do preço com o novo valor
+    setPrice(e.target.value);
+  };
+
   return (
     <div
       className="fixed top-0 left-0 w-full h-full bg-black backdrop-blur-sm bg-opacity-50 z-40 flex justify-center items-center"
@@ -83,7 +147,7 @@ export function InstituteModalUpdate({ instSelected, onClick, setUpdate }: Insti
         onClick={(e) => e.stopPropagation()} // Evita fechar o modal ao clicar no conteúdo interno
       >
         <div className="w-full border-b-4 flex items-center justify-between z-30 px-4 backdrop-blur-lg border-black h-[14%]">
-          <h1 className="text-3xl">Update {instSelected}</h1>
+          <h1 className="text-3xl">Update {instSelected?.name}</h1>
           <div className="flex flex-row gap-4">
             <div
               className="h-16 w-20 flex justify-center items-center bg-red-500 rounded-lg hover:bg-red-800 hover:cursor-pointer"
@@ -100,7 +164,72 @@ export function InstituteModalUpdate({ instSelected, onClick, setUpdate }: Insti
           </div>
         </div>
         <div className="py-4 flex flex-col flex-1 overflow-y-auto w-full items-center gap-4">
-          <p>Atualize as informações da instituição</p>
+          <div className="w-full px-5 gap-2 flex flex-col items-center">
+            <div className="h-80 bg-white mb-6 w-80">
+              <img
+                src={instSelected?.photo}
+                alt="Instituição"
+                className="w-96 h-52 object-cover rounded-lg"
+              />
+            </div>
+            <p>Descrição: </p>
+            <div className="w-[80%] h-52 mb-6 flex flex-row rounded-md p-4 bg-white ">
+              <input
+                className="w-full h-full"
+                type="text"
+                value={description}
+                onChange={handleDescriptionChange} // Corrigido para passar a referência da função
+              />
+            </div>
+            <div className="flex flex-row justify-evenly w-full">
+              <div className="flex flex-col gap-2">
+                <p>Selecione o tipo de Instituição:</p>
+                <div className="w-full h-10 mb-6 flex flex-row rounded-md items-center px-2 bg-white ">
+                  <select className="w-full" name="institutetype" id="instituteType">
+                    <option value="ESTABELECIMENTO_FIXO">Estabelecimento fixo</option>
+                    <option value="AGENCIA_DE_FESTAS">Agência de festas</option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <p>Selecione o tipo de Parceiro:</p>
+                <div className="w-full h-10 mb-6 flex flex-row rounded-md items-center px-4 bg-white ">
+                  <select className="w-full" name="partnerType" id="partnerType">
+                    <option value="GLOBAL_PARTNER">Parceiro Global</option>
+                    <option value="PROMOTER_PARTNER">Parceiro Promocional</option>
+                    <option value="NO_PARTNER">Sem Parceiro</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <p>Endereço:</p>
+            <div className="w-[80%] h-10 mb-6 flex flex-row rounded-md items-center px-4 bg-white ">
+              <input
+                className="w-full"
+                type="text"
+                value={address}
+                onChange={handleAddressChange} // Corrigido para passar a referência da função
+              />
+            </div>
+            <p>Id do distrito:</p>
+            <div className="w-[80%] h-10 mb-6 flex flex-row rounded-md items-center px-4 bg-white ">
+              <input
+                className="w-full"
+                type="text"
+                value={district_id}
+                onChange={handleDistrictChange} // Corrigido para passar a referência da função
+              />
+            </div>
+            <p>Preço:</p>
+            <div className="w-[80%] h-10 mb-6 flex flex-row rounded-md items-center px-4 bg-white ">
+              <input
+                className="w-full"
+                type="text"
+                value={price}
+                onChange={handlePriceChange} // Corrigido para passar a referência da função
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -108,7 +237,7 @@ export function InstituteModalUpdate({ instSelected, onClick, setUpdate }: Insti
 }
 
 interface ConfirmDeleteInstituteProps {
-  instSelected: string | null;
+  instSelected: institutionProps | null;
   onCancel: () => void; // Função para cancelar a exclusão
   onDelete: () => void; // Função para confirmar a exclusão
 }
@@ -128,10 +257,10 @@ export function ConfirmDeleteInstitute({
         onClick={(e) => e.stopPropagation()} // Evita fechar o modal ao clicar no conteúdo interno
       >
         <div className="w-full border-b-4 flex items-center justify-between z-30 px-4 backdrop-blur-lg border-black h-[14%]">
-          <h1 className="text-3xl">Confirm Delete {instSelected}</h1>
+          <h1 className="text-3xl">Confirm Delete {instSelected?.name}</h1>
         </div>
         <div className="py-4 flex flex-col overflow-y-auto w-full items-center gap-4">
-          <p>Tem certeza que deseja excluir a instituição {instSelected}?</p>
+          <p>Tem certeza que deseja excluir a instituição {instSelected?.name}?</p>
         </div>
         <div className="flex justify-center items-center gap-4 p-4">
           <button
@@ -144,7 +273,7 @@ export function ConfirmDeleteInstitute({
             className="px-4 py-2 bg-blue-500 rounded-lg text-white hover:bg-blue-800"
             onClick={onDelete}
           >
-            Delete
+            Confirmar
           </button>
         </div>
       </div>
