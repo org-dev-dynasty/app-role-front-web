@@ -36,7 +36,6 @@ export const Carousel = ({ currentIndex, prevSlide, nextSlide }: { currentIndex:
             </div>
 
             <button
-            
                 onClick={nextSlide}
                 className="absolute carousel-button-right-spacing sm:carousel-button-right-spacing lg:carousel-button-right-spacing xl:carousel-button-right-spacing transform translate-x-full translate-y-[-50%] text-light-purple p-2 rounded-full hover:bg-black hover:bg-opacity-20 transition-all duration-300"
             >
