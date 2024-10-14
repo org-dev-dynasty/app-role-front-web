@@ -1,7 +1,9 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import { X, CurrencyDollar } from '@phosphor-icons/react'
+import * as Select from '@radix-ui/react-select'
 import { Rating } from 'react-simple-star-rating'
 import React from 'react'
+
 
 const DialogDemo = () => (
   <Dialog.Root>
@@ -61,18 +63,38 @@ const DialogDemo = () => (
           />
         </fieldset>
 
-        <fieldset className="mb-[15px] flex flex-col gap-1 text-white">
-          <label className="text-[15px] text-white" htmlFor="adress">
-            Preço médio
-          </label>
-          <Rating
-            allowFraction={false}
-            emptyIcon={<CurrencyDollar size={32} className="inline" />}
-            fillIcon={
-              <CurrencyDollar size={32} className="inline fill-green-700" />
-            }
-            SVGstyle={{ display: 'inline' }}
-          />
+        <fieldset className="mb-[15px] flex w-full justify-between flex-row gap-1 text-white">
+          <div className="flex flex-col gap-1">
+            <label className="text-[15px] text-white">Preço médio</label>
+            <Rating
+              allowFraction={false}
+              emptyIcon={<CurrencyDollar size={32} className="inline" />}
+              fillIcon={
+                <CurrencyDollar size={32} className="inline fill-green-700" />
+              }
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label className="text-[15px] text-white" htmlFor="age">
+              Categoria
+            </label>
+            <select name="category" id="category" className='bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg'>
+              <option className="outline-none" value="concert">Show</option>
+              <option className="outline-none" value="club">Balada</option>
+              <option className="outline-none" value="festival">Festival</option>
+            </select>
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label className="text-[15px] text-white" htmlFor="age">
+              Idade
+            </label>
+            <select name="age" id="age" className='bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg'>
+              <option className="outline-none" value="all">Todas as idades</option>
+              <option className="outline-none" value="legalAge">18+</option>
+            </select>
+          </div>
         </fieldset>
 
         <div className="mt-[25px] flex justify-end">
@@ -94,5 +116,7 @@ const DialogDemo = () => (
     </Dialog.Portal>
   </Dialog.Root>
 )
+
+
 
 export default DialogDemo
