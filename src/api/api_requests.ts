@@ -14,7 +14,6 @@ export async function sendMail(email: string, name: string, message: string) {
     console.error(error.message)
     throw new Error('Erro ao enviar email: ' + error.message)
   }
-  
 }
 
 export async function sendMailParticpant(email: string) {
