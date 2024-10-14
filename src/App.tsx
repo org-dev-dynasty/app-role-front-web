@@ -45,7 +45,7 @@ export function App() {
 
       <main className="bg-gradient-to-r from-dark-purple via-purple via-70% to-light-purple">
         {/* SECTION 1 - 3D */}
-        {/* <SectionContainer id="o_app">
+        <SectionContainer id="o_app">
           <Header isNavbarOpened={showMenuItems} isPopUpOpened={isPopupOpen} />
         </SectionContainer>
         <Section2 />
@@ -55,10 +55,8 @@ export function App() {
           <Contact />
         </SectionContainer>
         <Footer openPopUp={() => setIsPopupOpen(true)} isNavbarOpened={showMenuItems} isPopUpOpened={isPopupOpen}/>
-        {showMenuItems && <Overlay onClick={handleMenuClick} animationClass={animationMenu} />} */}
-
-        <DialogDemo />
-      </main>
+        {showMenuItems && <Overlay onClick={handleMenuClick} animationClass={animationMenu} />}
+      </main> 
     </>
   )
 }
