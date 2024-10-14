@@ -7,7 +7,7 @@ export function AppRouter() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route Component={LandingPage} path="/home" element={<LandingPage />} />
+                <Route Component={LandingPage} path="/" element={<LandingPage />} />
                 <Route Component={Institutes} path="/Institutes" element={<Institutes />} />
                 <Route Component={Roles} path="/roles" element={<Roles />} />
             </Routes>

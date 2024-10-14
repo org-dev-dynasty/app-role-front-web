@@ -33,13 +33,13 @@ export default function CreateEventModal({ onClick }: CreateEventModalProps) {
 
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-black backdrop-blur-sm bg-opacity-50 z-40 flex justify-center items-center" onClick={onClick}>
-      <div className="flex flex-col w-[50%] h-[70%] bg-slate-300 rounded-xl border-4 border-black shadow-sm" onClick={(e) => e.stopPropagation()}>
-        <div className="w-full border-b-4 flex items-center justify-between z-30 px-4 backdrop-blur-lg border-black h-[14%]">
+      <div className="flex flex-col w-[50%] h-[70%] bg-slate-300 rounded-lg border-2 border-slate-400 shadow-sm" onClick={(e) => e.stopPropagation()}>
+        <div className="w-full border-b-2 shadow-md flex items-center justify-between z-30 px-4 backdrop-blur-lg border-slate-400 h-[14%]">
           <h1 className="text-3xl">Criação de Evento</h1>
           <div className="flex flex-row gap-4">
-            <div className="h-16 w-20 flex justify-center items-center bg-blue-500 rounded-lg hover:bg-blue-800 hover:cursor-pointer" onClick={onClick}>Finalizar</div>
+            <div className="h-16 w-20 flex justify-center items-center bg-blue-500 rounded-lg hover:bg-blue-800 shadow-md hover:cursor-pointer" onClick={onClick}>Finalizar</div>
             <div
-              className="h-16 w-20 flex justify-center items-center bg-red-500 rounded-lg hover:bg-red-800 hover:cursor-pointer"
+              className="h-16 w-20 flex justify-center items-center bg-red-500 rounded-lg hover:bg-red-800 shadow-md hover:cursor-pointer"
               onClick={onClick}
             >
               Cancel

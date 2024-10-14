@@ -1,8 +1,9 @@
 import { useState } from "react";
 import InstitutionCard from "../../../components/institutionCard";
-import { InstituteModal, InstituteModalUpdate } from "../../../components/instituteModal";
 import CreateInstituteModal from "../../../components/CreateInstituteModal";
 import { useNavigate } from "react-router-dom";
+import { InstituteModal } from "../../../components/instituteModal";
+import InstituteModalUpdate from "../../../components/updateInstituteModal";
 
 export interface institutionProps {
     photo: string;
@@ -112,16 +113,18 @@ export default function Institutes() {
                 <CreateInstituteModal onClick={() => setIsCreateActive(false)} />
             )}
 
-            <div className="flex flex-col w-[90%] items-center h-[90%] rounded-xl border-4 border-black bg-slate-300 shadow-sm">
-                <div className="w-full border-b-4 flex items-center justify-between z-30 px-10 backdrop-blur-lg border-black h-[14%]">
+            <div className="flex flex-col w-[90%] items-center h-[90%] rounded-lg border-2 border-slate-400 bg-slate-300 shadow-lg">
+                <div className="w-full border-b-2 flex items-center shadow-md justify-between z-30 px-10 backdrop-blur-lg border-slate-400 h-[14%]">
                     <div className="flex flex-row gap-4">
-                        <h1 className="text-3xl">Instituições</h1>
+                        <div className="h-20 w-60 bg-white flex justify-center items-center rounded-lg shadow-md">
+                            <h1 className="text-3xl">Instituições</h1>
+                        </div>
                         <div className="h-10 w-20 bg-white flex justify-center items-center rounded-lg shadow-md hover:cursor-pointer hover:bg-white-purple" onClick={handleToggleCRUD}>
                             <h5 className="" >Rolês</h5>
                         </div>
                     </div>
                     <div
-                        className="h-16 w-16 bg-violet flex justify-center items-center rounded-lg hover:bg-light-purple hover:cursor-pointer duration-100"
+                        className="h-16 w-16 bg-violet shadow-md flex justify-center items-center rounded-lg hover:bg-light-purple hover:cursor-pointer duration-100"
                         onClick={() => setIsCreateActive(true)}
                     >
                         <p className="text-3xl text-white">+</p>
@@ -133,6 +136,7 @@ export default function Institutes() {
                         <InstitutionCard
                             key={index}
                             name={institution.name}
+                            img={institution.photo}
                             onClick={() => setInstSelected(institution)}
                         />
                     ))}
