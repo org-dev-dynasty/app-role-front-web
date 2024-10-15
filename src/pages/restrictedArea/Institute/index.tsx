@@ -1,7 +1,5 @@
 import { Pen } from "@phosphor-icons/react"
-import { useContext } from "react"
 import EventCard from "../../../components/EventCard"
-import { InstituteContext } from "../../../context/institute_context"
 
 const institute =
 {
@@ -16,12 +14,6 @@ const institute =
   "price": 100,
   "district_id": "district_1",
   "photos_url": [
-    "url_para_foto_1.jpg",
-    "url_para_foto_2.jpg",
-    "url_para_foto_1.jpg",
-    "url_para_foto_2.jpg",
-    "url_para_foto_1.jpg",
-    "url_para_foto_2.jpg",
     "url_para_foto_1.jpg",
     "url_para_foto_2.jpg",
   ],
@@ -60,11 +52,6 @@ export default function Institute() {
     }
   }
 
-  const { getAllInstitutes } = useContext(InstituteContext)
-
-    async function getAll() {
-        getAllInstitutes()
-    }
   return (
     <div className="h-full w-full flex flex-row bg-[#151515]" >
       <div className="relative w-[70%] flex flex-col py-6 bg-[#2A2A2A] items-center gap-10 px-4" >

@@ -1,313 +1,38 @@
-import { SetStateAction, useState } from "react"
+import { SetStateAction, useContext, useEffect, useState } from "react"
 import { envs } from "../../../utils/envs"
 import InstituteCard from "../../../components/InstituteCard"
 import { MagnifyingGlass } from "@phosphor-icons/react"
+import { InstituteContext } from "../../../context/institute_context"
 
-const institutes = [
-    {
-        "institute_id": "1",
-        "name": "Instituto de Exemplo",
-        "description": "Um instituto dedicado à educação de qualidade.",
-        "institute_type": "ESTABELECIMENTO_FIXO",
-        "partner_type": "PROMOTER_PARTNER",
-        "phone": "123456789",
-        "logo_photo": "url_para_logo.jpg",
-        "address": "Rua Exemplo, 123",
-        "price": 100,
-        "district_id": "district_1",
-        "photos_url": [
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-        ],
-        "events_id": [
-            "event_1",
-            "event_2",
-            "event_3",
-            "event_4",
-            "event_5",
-            "event_6"
-        ]
-    },
-    {
-        "institute_id": "2",
-        "name": "Instituto de Exemplo 2",
-        "description": "Um instituto dedicado à educação de qualidade.",
-        "institute_type": "ESTABELECIMENTO_FIXO",
-        "partner_type": "PROMOTER_PARTNER",
-        "phone": "123456789",
-        "logo_photo": "url_para_logo.jpg",
-        "address": "Rua Exemplo, 123",
-        "price": 100,
-        "district_id": "district_1",
-        "photos_url": [
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-        ],
-        "events_id": [
-            "event_1",
-            "event_2",
-            "event_3",
-            "event_4",
-            "event_5",
-            "event_6"
-        ]
-    },
-    {
-        "institute_id": "1",
-        "name": "Instituto de Exemplo",
-        "description": "Um instituto dedicado à educação de qualidade.",
-        "institute_type": "ESTABELECIMENTO_FIXO",
-        "partner_type": "PROMOTER_PARTNER",
-        "phone": "123456789",
-        "logo_photo": "url_para_logo.jpg",
-        "address": "Rua Exemplo, 123",
-        "price": 100,
-        "district_id": "district_1",
-        "photos_url": [
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-        ],
-        "events_id": [
-            "event_1",
-            "event_2",
-            "event_3",
-            "event_4",
-            "event_5",
-            "event_6"
-        ]
-    },
-    {
-        "institute_id": "2",
-        "name": "Instituto de Exemplo 2",
-        "description": "Um instituto dedicado à educação de qualidade.",
-        "institute_type": "ESTABELECIMENTO_FIXO",
-        "partner_type": "PROMOTER_PARTNER",
-        "phone": "123456789",
-        "logo_photo": "url_para_logo.jpg",
-        "address": "Rua Exemplo, 123",
-        "price": 100,
-        "district_id": "district_1",
-        "photos_url": [
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-        ],
-        "events_id": [
-            "event_1",
-            "event_2",
-            "event_3",
-            "event_4",
-            "event_5",
-            "event_6"
-        ]
-    },
-    {
-        "institute_id": "1",
-        "name": "Instituto de Exemplo",
-        "description": "Um instituto dedicado à educação de qualidade.",
-        "institute_type": "ESTABELECIMENTO_FIXO",
-        "partner_type": "PROMOTER_PARTNER",
-        "phone": "123456789",
-        "logo_photo": "url_para_logo.jpg",
-        "address": "Rua Exemplo, 123",
-        "price": 100,
-        "district_id": "district_1",
-        "photos_url": [
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-        ],
-        "events_id": [
-            "event_1",
-            "event_2",
-            "event_3",
-            "event_4",
-            "event_5",
-            "event_6"
-        ]
-    },
-    {
-        "institute_id": "2",
-        "name": "Instituto de Exemplo 2",
-        "description": "Um instituto dedicado à educação de qualidade.",
-        "institute_type": "ESTABELECIMENTO_FIXO",
-        "partner_type": "PROMOTER_PARTNER",
-        "phone": "123456789",
-        "logo_photo": "url_para_logo.jpg",
-        "address": "Rua Exemplo, 123",
-        "price": 100,
-        "district_id": "district_1",
-        "photos_url": [
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-        ],
-        "events_id": [
-            "event_1",
-            "event_2",
-            "event_3",
-            "event_4",
-            "event_5",
-            "event_6"
-        ]
-    },
-    {
-        "institute_id": "1",
-        "name": "Instituto de Exemplo",
-        "description": "Um instituto dedicado à educação de qualidade.",
-        "institute_type": "ESTABELECIMENTO_FIXO",
-        "partner_type": "PROMOTER_PARTNER",
-        "phone": "123456789",
-        "logo_photo": "url_para_logo.jpg",
-        "address": "Rua Exemplo, 123",
-        "price": 100,
-        "district_id": "district_1",
-        "photos_url": [
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-        ],
-        "events_id": [
-            "event_1",
-            "event_2",
-            "event_3",
-            "event_4",
-            "event_5",
-            "event_6"
-        ]
-    },
-    {
-        "institute_id": "2",
-        "name": "Instituto de Exemplo 2",
-        "description": "Um instituto dedicado à educação de qualidade.",
-        "institute_type": "ESTABELECIMENTO_FIXO",
-        "partner_type": "PROMOTER_PARTNER",
-        "phone": "123456789",
-        "logo_photo": "url_para_logo.jpg",
-        "address": "Rua Exemplo, 123",
-        "price": 100,
-        "district_id": "district_1",
-        "photos_url": [
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-        ],
-        "events_id": [
-            "event_1",
-            "event_2",
-            "event_3",
-            "event_4",
-            "event_5",
-            "event_6"
-        ]
-    },
-    {
-        "institute_id": "1",
-        "name": "Instituto de Exemplo",
-        "description": "Um instituto dedicado à educação de qualidade.",
-        "institute_type": "ESTABELECIMENTO_FIXO",
-        "partner_type": "PROMOTER_PARTNER",
-        "phone": "123456789",
-        "logo_photo": "url_para_logo.jpg",
-        "address": "Rua Exemplo, 123",
-        "price": 100,
-        "district_id": "district_1",
-        "photos_url": [
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-        ],
-        "events_id": [
-            "event_1",
-            "event_2",
-            "event_3",
-            "event_4",
-            "event_5",
-            "event_6"
-        ]
-    },
-    {
-        "institute_id": "2",
-        "name": "Instituto de Exemplo 2",
-        "description": "Um instituto dedicado à educação de qualidade.",
-        "institute_type": "ESTABELECIMENTO_FIXO",
-        "partner_type": "PROMOTER_PARTNER",
-        "phone": "123456789",
-        "logo_photo": "url_para_logo.jpg",
-        "address": "Rua Exemplo, 123",
-        "price": 100,
-        "district_id": "district_1",
-        "photos_url": [
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-            "url_para_foto_1.jpg",
-            "url_para_foto_2.jpg",
-        ],
-        "events_id": [
-            "event_1",
-            "event_2",
-            "event_3",
-            "event_4",
-            "event_5",
-            "event_6"
-        ]
-    },
-]
-
+interface Institute {
+    institute_id: string;
+    name: string;
+    description: string;
+    institute_type: string;
+    partner_type: string;
+    phone: string;
+    logo_photo: string;
+    address: string;
+    price: number;
+    district_id: string;
+    photos_url: string[];
+    events_id: string[];
+}
 
 export default function Institutions() {
+    const { getAllInstitutes } = useContext(InstituteContext)
+    const [institutes, setInstitutes] = useState<Institute[]>([])
+    
+    async function getAll() {
+        const response = await getAllInstitutes(); // Use await aqui se a função for assíncrona
+        setInstitutes(response); // Verifique se o response é um array
+        console.log(response);
+    }
+
+    useEffect(() => {
+        getAll()
+    }, [])
+
     const [search, setSearch] = useState("")
     const handleChange = (e: { target: { value: SetStateAction<string> } }) => {
         setSearch(e.target.value)
