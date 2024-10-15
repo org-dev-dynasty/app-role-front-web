@@ -1,6 +1,7 @@
 import { SetStateAction, useState } from "react"
 import { envs } from "../../../utils/envs"
 import InstituteCard from "../../../components/InstituteCard"
+import { MagnifyingGlass } from "@phosphor-icons/react"
 
 const institutes = [
     {
@@ -316,7 +317,10 @@ export default function Institutions() {
             <div className="h-[16vh] w-full flex flex-col py-6 bg-[#2A2A2A] items-center gap-10 px-14 border-b-2 border-[#6A6A6A]" >
                 <div className="flex h-full items-center w-full justify-between">
                     <div className="flex h-full items-center gap-4">
-                        <input type="text" value={search} onChange={handleChange} placeholder="Pesquisar" className="h-16 px-4 rounded-lg w-[34vw] text-white text-3xl bg-[#6A6A6A] placeholder:text-white" />
+                        <div className="h-16 px-4 rounded-lg flex justify-center items-center w-[34vw] text-white text-3xl bg-[#6A6A6A] placeholder:text-white">
+                            <MagnifyingGlass size={32} />
+                            <input type="text" value={search} onChange={handleChange} placeholder="Pesquisar" className="h-16 px-4 rounded-lg w-full text-white text-3xl bg-[#6A6A6A] placeholder:text-white" />
+                        </div>
                         <button className="h-16 w-16 rounded-lg bg-light-purple text-white text-2xl hover:bg-purple">+</button>
                         <h1 className="text-white text-3xl">Nova Instituição</h1>
                     </div>
