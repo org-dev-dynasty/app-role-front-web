@@ -6,3 +6,7 @@ export const http = axios.create({
     'Content-Type': 'application/json',
   }
 })
+
+export const httpEvent = axios.create({
+  baseURL: 'https://6vy38xggch.execute-api.sa-east-1.amazonaws.com/prod/mss-role-event'
+})
