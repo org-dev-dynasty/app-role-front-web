@@ -319,7 +319,7 @@ export default function Institutions() {
                     <div className="flex h-full items-center gap-4">
                         <div className="h-16 px-4 rounded-lg flex justify-center items-center w-[34vw] text-white text-3xl bg-[#6A6A6A] placeholder:text-white">
                             <MagnifyingGlass size={32} />
-                            <input type="text" value={search} onChange={handleChange} placeholder="Pesquisar" className="h-16 px-4 rounded-lg w-full text-white text-3xl bg-[#6A6A6A] placeholder:text-white" />
+                            <input type="text" value={search} onChange={handleChange} placeholder="Pesquisar" className="h-16 px-4 rounded-lg w-full text-white text-3xl bg-[#6A6A6A] placeholder:text-white outline-none" />
                         </div>
                         <button className="h-16 w-16 rounded-lg bg-light-purple text-white text-2xl hover:bg-purple">+</button>
                         <h1 className="text-white text-3xl">Nova Instituição</h1>
