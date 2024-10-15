@@ -4,25 +4,22 @@ import { Rating } from 'react-simple-star-rating'
 import React, { useState } from 'react'
 
 export function CreateEventModal() {
-  const [name, setName] = useState<string>()
-  const [description, setDescription] = useState<string>()
-  const [address, setAddress] = useState<string>()
-  const [date, setDate] = useState<Date>()
-  const [priceAvg, setPriceAvg] = useState<number>()
-  const [category, setCategory] = useState<string>()
-  const [age, setAge] = useState<string>()
-  const [musicType, setMusicType] = useState<string>()
-  const [eventStatus, setEventStatus] = useState<string>()
+  // const [name, setName] = useState<string>()
+  // const [description, setDescription] = useState<string>()
+  // const [address, setAddress] = useState<string>()
+  // const [date, setDate] = useState<Date>()
+  // const [priceAvg, setPriceAvg] = useState<number>()
+  // const [category, setCategory] = useState<string>()
+  // const [age, setAge] = useState<string>()
+  // const [musicType, setMusicType] = useState<string>()
+  // const [eventStatus, setEventStatus] = useState<string>()
 
   const [currentDistrict, setCurrentDistrict] = useState<number>(0)
-  const [districtIndex, setDistrictIndex] = useState<number>()
 
   function mudou(e: React.ChangeEvent<HTMLSelectElement>) {
     setCurrentDistrict(parseInt(e.target.value))
 
     console.log(Distritos[currentDistrict].neighborhoods)
-    
-
   }
 
   const Distritos = [
@@ -213,7 +210,7 @@ export function CreateEventModal() {
             <input
               className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet "
               id="date"
-              type="date"
+              type="datetime-local"
             />
           </fieldset>
 
@@ -336,7 +333,11 @@ export function CreateEventModal() {
               >
                 {Distritos.map((types, index) => {
                   return (
-                    <option value={index} key={index}>
+                    <option
+                      value={index}
+                      defaultValue={currentDistrict}
+                      key={index}
+                    >
                       {Distritos[index].name}
                     </option>
                   )
@@ -353,16 +354,15 @@ export function CreateEventModal() {
                 id="category"
                 className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
               >
-                {
-                  Distritos[currentDistrict].neighborhoods.map((neighborhood, index) => {
+                {Distritos[currentDistrict].neighborhoods.map(
+                  (neighborhood, index) => {
                     return (
                       <option value={index} key={index}>
                         {Distritos[currentDistrict].neighborhoods[index]}
                       </option>
                     )
-                  })
-                }
-
+                  }
+                )}
               </select>
             </div>
           </fieldset>
