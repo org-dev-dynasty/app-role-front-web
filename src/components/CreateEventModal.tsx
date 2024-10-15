@@ -1,7 +1,7 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import { X, CurrencyDollar, Image } from '@phosphor-icons/react'
 import { Rating } from 'react-simple-star-rating'
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 export function CreateEventModal() {
   const [name, setName] = useState<string>()
@@ -13,6 +13,136 @@ export function CreateEventModal() {
   const [age, setAge] = useState<string>()
   const [musicType, setMusicType] = useState<string>()
   const [eventStatus, setEventStatus] = useState<string>()
+
+  const [currentDistrict, setCurrentDistrict] = useState<number>(0)
+  const [districtIndex, setDistrictIndex] = useState<number>()
+
+  function mudou(e: React.ChangeEvent<HTMLSelectElement>) {
+    setCurrentDistrict(parseInt(e.target.value))
+
+    console.log(Distritos[currentDistrict].neighborhoods)
+    
+
+  }
+
+  const Distritos = [
+    {
+      name: 'Zona Sul',
+      neighborhoods: [
+        'Jabaquara',
+        'Vila Mariana',
+        'Moema',
+        'Itaim Bibi',
+        'Campo Belo',
+        'Brooklin',
+        'Vila Olímpia',
+        'Santo Amaro',
+        'Socorro',
+        'Campo Grande',
+        'Cidade Dutra',
+        'Interlagos',
+        'Capela do Socorro',
+        'Jardim Ângela',
+        'Parelheiros',
+        'Grajaú',
+        'Capão Redondo',
+        'Campo Limpo',
+        'Vila Andrade',
+        'Morumbi',
+        'Jardins',
+        'Paraisópolis'
+      ]
+    },
+
+    {
+      name: 'Zona Norte',
+      neighborhoods: [
+        'Casa Verde',
+        'Limão',
+        'Santana',
+        'Tucuruvi',
+        'Mandaqui',
+        'Vila Guilherme',
+        'Vila Maria',
+        'Vila Medeiros',
+        'Jaçanã',
+        'Tremembé',
+        'Horto Florestal',
+        'Freguesia do Ó',
+        'Pirituba',
+        'Brasilândia',
+        'Perus',
+        'Anhanguera',
+        'Jaraguá',
+        'Cachoeirinha'
+      ]
+    },
+
+    {
+      name: 'Zona Leste',
+      neighborhoods: [
+        'Tatuapé',
+        'Vila Carrão',
+        'Vila Formosa',
+        'Penha',
+        'Vila Matilde',
+        'Itaquera',
+        'São Mateus',
+        'Vila Prudente',
+        'São Lucas',
+        'Sapopemba',
+        'Cidade Tiradentes',
+        'Parque do Carmo',
+        'São Miguel Paulista',
+        'Ermelino Matarazzo',
+        'Vila Jacuí',
+        'Iguatemi',
+        'Jardim Helena',
+        'Cangaíba',
+        'Artur Alvim',
+        'Guaianases',
+        'Lajeado'
+      ]
+    },
+
+    {
+      name: 'Zona Oeste',
+      neighborhoods: [
+        'Pinheiros',
+        'Vila Madalena',
+        'Butantã',
+        'Perdizes',
+        'Barra Funda',
+        'Lapa',
+        'Vila Leopoldina',
+        'Jaguaré',
+        'Rio Pequeno',
+        'Raposo Tavares',
+        'Jardim Bonfiglioli',
+        'Cidade Universitária',
+        'Sumaré',
+        'Pacaembu',
+        'Alto de Pinheiros'
+      ]
+    },
+
+    {
+      name: 'Centro',
+      neighborhoods: [
+        'Sé',
+        'República',
+        'Bela Vista',
+        'Liberdade',
+        'Consolação',
+        'Santa Cecília',
+        'Brás',
+        'Bom Retiro',
+        'Cambuci',
+        'Glicério',
+        'Higienópolis'
+      ]
+    }
+  ]
 
   const musicTypes = {
     Types: [
@@ -32,7 +162,7 @@ export function CreateEventModal() {
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <button className="absolute bottom-24 h-[35px] items-center justify-center rounded bg-grayModal px-[15px] font-medium leading-none text-violet11 shadow-[0_2px_10px] shadow-blackA4 hover:bg-mauve3 focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none">
+        <button className="h-[35px] items-center justify-center rounded bg-grayModal px-[15px] font-medium leading-none text-violet11 shadow-[0_2px_10px] shadow-blackA4 hover:bg-mauve3 focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none">
           Edit profile
         </button>
       </Dialog.Trigger>
@@ -191,6 +321,50 @@ export function CreateEventModal() {
               id="ticketLink"
               placeholder="https://www.example.com.br/ingressos/"
             />
+          </fieldset>
+
+          <fieldset className="mb-4 flex w-full justify-between flex-row gap-8 text-white">
+            <div className="flex flex-col gap-1  w-1/2">
+              <label className="text-base text-white" htmlFor="district">
+                Distrito
+              </label>
+              <select
+                name="district"
+                id="district"
+                className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
+                onChange={mudou}
+              >
+                {Distritos.map((types, index) => {
+                  return (
+                    <option value={index} key={index}>
+                      {Distritos[index].name}
+                    </option>
+                  )
+                })}
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-1 w-1/2">
+              <label className="text-base text-white" htmlFor="age">
+                Bairro
+              </label>
+              <select
+                name="category"
+                id="category"
+                className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
+              >
+                {
+                  Distritos[currentDistrict].neighborhoods.map((neighborhood, index) => {
+                    return (
+                      <option value={index} key={index}>
+                        {Distritos[currentDistrict].neighborhoods[index]}
+                      </option>
+                    )
+                  })
+                }
+
+              </select>
+            </div>
           </fieldset>
 
           <div className="mb-4 flex text-white justify-around gap-2">
