@@ -1,9 +1,9 @@
 import * as Dialog from '@radix-ui/react-dialog'
-import { X, CurrencyDollar, Image } from '@phosphor-icons/react'
+import { X, CurrencyDollar, Image, Pencil } from '@phosphor-icons/react'
 import { Rating } from 'react-simple-star-rating'
 import React, { useState } from 'react'
 
-export function CreateEventModal() {
+export function EditEventModal() {
   // const [name, setName] = useState<string>()
   // const [description, setDescription] = useState<string>()
   // const [address, setAddress] = useState<string>()
@@ -159,15 +159,15 @@ export function CreateEventModal() {
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <button className="h-[35px] items-center justify-center rounded bg-grayModal px-[15px] font-medium leading-none text-violet11 shadow-[0_2px_10px] shadow-blackA4 hover:bg-mauve3 focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none">
-          Edit profile
+        <button className="w-fit px-8 py-4 text-2xl rounded-lg bg-purple flex text-center gap-2">
+          <Pencil className="self-center" /> Editar ROLE
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/50 data-[state=open]:animate-overlayShow" />
         <Dialog.Content className="fixed overflow-y-auto left-1/2 top-1/2 max-h-[85vh] w-[90vw] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-grayModal p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow">
           <Dialog.Title className="m-0 text-3xl font-medium text-white">
-            Criar <span className="text-violet">ROLE</span>
+            Editar <span className="text-violet">ROLE</span>
           </Dialog.Title>
           <Dialog.Description className="mb-5 mt-2.5 text-[15px] leading-normal text-stone-300">
             Utilize os campos abaixos para criar o seu melhor ROLE!
