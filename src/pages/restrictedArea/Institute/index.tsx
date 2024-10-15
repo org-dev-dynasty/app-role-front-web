@@ -14,7 +14,13 @@ const institute =
   "district_id": "district_1",
   "photos_url": [
     "url_para_foto_1.jpg",
-    "url_para_foto_2.jpg"
+    "url_para_foto_2.jpg",
+    "url_para_foto_1.jpg",
+    "url_para_foto_2.jpg",
+    "url_para_foto_1.jpg",
+    "url_para_foto_2.jpg",
+    "url_para_foto_1.jpg",
+    "url_para_foto_2.jpg",
   ],
   "events_id": [
     "event_1",
@@ -52,7 +58,7 @@ export default function Institute() {
             </div>
             <div>
               <h1>Preço:</h1>
-              <h1>{institute.price}</h1>
+              <h1>{institute.price > 5 ? '$'.repeat(5) : '$'.repeat(institute.price)}</h1>
             </div>
           </div>
 
@@ -73,10 +79,10 @@ export default function Institute() {
         </div>
         <div className="w-full min-h-96 bg-[#151515] rounded-xl flex flex-row text-white">
           <div className="flex flex-col gap-4 h-full p-6 w-full">
-            <div className="flex gap-4">
+            <div className="flex gap-4 flex-wrap">
               {institute.photos_url.map((photo_url) => {
                 return (
-                  <img className="min-w-56 border-2 min-h-72 border-dashed" src={photo_url} alt="Foto do instituto" />
+                  <img className="min-w-52 border-2 min-h-72 border-dashed" src={photo_url} alt="Foto do instituto" />
                 )
               })}
             </div>
