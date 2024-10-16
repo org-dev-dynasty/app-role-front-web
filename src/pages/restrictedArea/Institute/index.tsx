@@ -1,5 +1,7 @@
 import { Pen } from "@phosphor-icons/react"
 import EventCard from "../../../components/EventCard"
+import UpdateInstituteModal from "../../../components/updateInstituteModal";
+import { useState } from "react";
 
 const institute =
 {
@@ -29,6 +31,7 @@ const institute =
 
 
 export default function Institute() {
+  const [isUpdateInstituteModalOpen, setIsUpdateInstituteModalOpen] = useState(false);
   function formatPartnerType(partnerType: string) {
     switch (partnerType) {
       case 'GLOBAL_PARTNER':
@@ -54,8 +57,13 @@ export default function Institute() {
 
   return (
     <div className="h-full w-full flex flex-row bg-[#151515]" >
+      {/* Verifica se o modal está aberto */}
+      {isUpdateInstituteModalOpen && (
+        <UpdateInstituteModal
+          setIsUpdateInstituteModalOpen={setIsUpdateInstituteModalOpen} institute={institute}        />
+      )}
       <div className="relative w-[70%] flex flex-col py-6 bg-[#2A2A2A] items-center gap-10 px-4" >
-        <Pen size={32} className="absolute top-8 left-[90%] bg-white w-16 h-16 rounded-lg hover:bg-white-purple hover:cursor-pointer" />
+        <Pen size={32} className="absolute top-8 left-[90%] bg-white w-16 h-16 rounded-lg hover:bg-white-purple hover:cursor-pointer" onClick={() => setIsUpdateInstituteModalOpen(true)} />
         <div className="flex items-center w-full gap-4">
           <div className="rounded-full h-72 w-72 bg-light-purple flex justify-center items-center">
             <img src={institute.logo_photo} alt="Logo do instituto" />
