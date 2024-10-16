@@ -28,8 +28,11 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
   const [partnerType, setPartnerType] = useState(institute.partner_type || "GLOBAL_PARTNER");
   const [phone, setPhone] = useState(institute.phone || "");
   const [address, setAddress] = useState(institute.address || "");
-  const [logoPhoto, setLogoPhoto] = useState<File | null>(null);
-  const [galleryPhotos, setGalleryPhotos] = useState<File[]>([]);
+  const [logoPhoto, setLogoPhoto] = useState<string | null>(null);
+  const [galleryPhotos, setGalleryPhotos] = useState<string[]>([]);
+
+  const [logoPhotoIncoming, setLogoPhotoIncoming] = useState<File | null>(null);
+  const [galleryPhotosIncoming, setGalleryPhotosIncoming] = useState<File[]>([]);
 
   useEffect(() => {
     setInstituteNameDisplay(institute.name);
@@ -39,12 +42,10 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
     setPartnerType(institute.partner_type);
     setPhone(institute.phone);
     setAddress(institute.address);
-    // Se logo e fotos forem URLs já existentes, você pode usar a estrutura que preferir para exibir as imagens.
-    // setLogoPhoto(logo_photo);
-    // setGalleryPhotos(photos_url);
+    setLogoPhoto(institute.logo_photo);
+    setGalleryPhotos(institute.photos_url);
   }, [institute]);
 
-  // Handlers de mudança para atualizar os estados
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => setInstituteName(e.target.value);
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value);
   const handleInstituteTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => setInstituteType(e.target.value);
@@ -52,10 +53,10 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => setPhone(e.target.value.replace(/[^0-9]/g, ''));
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => setAddress(e.target.value);
   const handleLogoPhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) setLogoPhoto(e.target.files[0]);
+    if (e.target.files) setLogoPhotoIncoming(e.target.files[0]);
   };
   const handleGalleryPhotosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) setGalleryPhotos(Array.from(e.target.files));
+    if (e.target.files) setGalleryPhotosIncoming(Array.from(e.target.files));
   };
 
   return (
@@ -162,13 +163,19 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
         </fieldset>
 
         <div className="flex flex-wrap gap-2">
-          {logoPhoto && (
+          {logoPhotoIncoming ? (
             <img
-              src={URL.createObjectURL(logoPhoto)}
+              src={URL.createObjectURL(logoPhotoIncoming)}
               alt="Imagem logo"
-              className="w-24 h-24 mb-4 object-cover rounded-md"
+              className="w-24 h-24 mb-4 object-cover rounded-md bg-grayInputModal text-white"
             />
-          )}
+          ) : logoPhoto ? (
+            <img
+              src={logoPhoto}
+              alt="Imagem logo"
+              className="w-24 h-24 mb-4 object-cover rounded-md bg-grayInputModal text-white"
+            />
+          ) : null}
         </div>
 
         {/* Upload da Galeria de Imagens */}
@@ -178,22 +185,41 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
             className="p-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
             id="galleryPhotos"
             type="file"
-            accept="image/*"
             multiple
             onChange={handleGalleryPhotosChange}
           />
         </fieldset>
 
         <div className="flex flex-wrap gap-2">
-          {galleryPhotos.length > 0 &&
-            galleryPhotos.map((photo, index) => (
+          {galleryPhotosIncoming.length > 0
+            ? galleryPhotosIncoming.map((photo, idx) => (
               <img
-                key={index}
+                key={idx}
                 src={URL.createObjectURL(photo)}
-                alt={`Imagem ${index + 1}`}
-                className="w-24 h-24 mb-4 object-cover rounded-md"
+                alt={`Imagem carregada ${idx}`}
+                className="w-24 h-24 object-cover rounded-md bg-grayInputModal text-white"
+              />
+            ))
+            : galleryPhotos.map((photo, idx) => (
+              <img
+                key={idx}
+                src={photo}
+                alt={`Imagem galeria ${idx}`}
+                className="w-24 h-24 object-cover rounded-md bg-grayInputModal text-white"
               />
             ))}
+        </div>
+
+        <div className="flex justify-end gap-3 mt-5">
+          <button
+            className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-500 text-white"
+            onClick={() => setIsUpdateInstituteModalOpen(false)}
+          >
+            Cancelar
+          </button>
+          <button className="px-4 py-2 rounded-lg bg-violet text-white hover:bg-violet-dark">
+            Atualizar
+          </button>
         </div>
       </div>
     </div>
