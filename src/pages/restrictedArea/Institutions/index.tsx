@@ -4,6 +4,7 @@ import InstituteCard from "../../../components/InstituteCard";
 import { MagnifyingGlass } from "@phosphor-icons/react";
 import { InstituteContext } from "../../../context/institute_context";// Certifique-se de que o modal está corretamente importado
 import CreateInstituteModal from "../../../components/createInstituteModal";
+import Institute from "../Institute";
 
 interface Institute {
     institute_id: string;
@@ -35,15 +36,12 @@ export default function Institutions() {
     useEffect(() => {
         const fetchInstitutes = async () => {
             const response = await getAllInstitutes();
-            if (Array.isArray(response)) {
-                setInstitutes(response);
-            } else {
-                console.error("Erro ao buscar institutos: response não é um array.");
-            }
+            console.log(response);
+            setInstitutes(response.institutes); // Access the 'institutes' array
         };
 
         fetchInstitutes();
-    }, []);
+    }, [getAllInstitutes]);
 
     return (
         <div className="h-full w-full flex flex-col bg-[#151515]">

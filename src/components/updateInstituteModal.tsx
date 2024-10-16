@@ -34,6 +34,8 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
   const [logoPhotoIncoming, setLogoPhotoIncoming] = useState<File | null>(null);
   const [galleryPhotosIncoming, setGalleryPhotosIncoming] = useState<File[]>([]);
 
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
   useEffect(() => {
     setInstituteNameDisplay(institute.name);
     setInstituteName(institute.name);
@@ -59,8 +61,13 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
     if (e.target.files) setGalleryPhotosIncoming(Array.from(e.target.files));
   };
 
+  const handleUpdateClick = () => {
+    setIsConfirmOpen(true);
+  };
+
   return (
-    <div className='inset-0 z-50'>
+    <div className="inset-0 z-40">
+      {isConfirmOpen && <ConfirmUpdate setIsConfirmOpen={setIsConfirmOpen} setIsUpdateInstituteModalOpen={setIsUpdateInstituteModalOpen} />}
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsUpdateInstituteModalOpen(false)} />
       <div className="fixed overflow-y-auto left-1/2 top-1/2 max-h-[85vh] w-[50vw] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-grayModal p-[25px] shadow-md focus:outline-none">
         <div className="m-0 text-3xl font-medium text-white">
@@ -217,7 +224,10 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
           >
             Cancelar
           </button>
-          <button className="px-4 py-2 rounded-lg bg-violet text-white hover:bg-violet-dark">
+          <button
+            className="px-4 py-2 rounded-lg bg-violet text-white hover:bg-violet-dark"
+            onClick={handleUpdateClick}
+          >
             Atualizar
           </button>
         </div>
@@ -225,3 +235,30 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
     </div>
   );
 }
+
+interface ConfirmUpdateProp {
+  setIsConfirmOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsUpdateInstituteModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+function ConfirmUpdate({ setIsConfirmOpen, setIsUpdateInstituteModalOpen }: ConfirmUpdateProp) {
+  const handleCancelClick = () => {
+    setIsConfirmOpen(false); // Fecha somente o modal de confirmação
+  }
+
+  return (
+    <div className="fixed h-full w-full backdrop-blur-md bg-black/50 flex z-50 justify-center items-center">
+      <div
+        className="rounded-lg bg-grayModal p-6 w-1/3 text-center"
+        onClick={(e) => e.stopPropagation()} // Impede a propagação do clique para o fundo
+      >
+        <p className="text-white mb-4">Você tem certeza que deseja atualizar este instituto?</p>
+        <div className="flex justify-center gap-4">
+          <button className="px-4 py-2 rounded-lg bg-gray-600 text-white" onClick={handleCancelClick}>Cancelar</button>
+          <button className="px-4 py-2 rounded-lg bg-violet text-white" onClick={() => setIsUpdateInstituteModalOpen(false)}>Confirmar</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+

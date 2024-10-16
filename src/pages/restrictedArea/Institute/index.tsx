@@ -32,6 +32,7 @@ const institute =
 
 export default function Institute() {
   const [isUpdateInstituteModalOpen, setIsUpdateInstituteModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   function formatPartnerType(partnerType: string) {
     switch (partnerType) {
       case 'GLOBAL_PARTNER':
@@ -62,7 +63,11 @@ export default function Institute() {
         <UpdateInstituteModal
           setIsUpdateInstituteModalOpen={setIsUpdateInstituteModalOpen} institute={institute}        />
       )}
+      {isDeleteModalOpen && (
+        <ConfirDelete setIsDeleteModalOpen={setIsDeleteModalOpen} />
+      )}
       <div className="relative w-[70%] flex flex-col py-6 bg-[#2A2A2A] items-center gap-10 px-4" >
+        <button className="absolute top-8 left-[76%] text-xl bg-red-500 w-32 h-16 rounded-lg hover:bg-red-400 duration-100 hover:cursor-pointer" onClick={()=>setIsDeleteModalOpen(true)}>Deletar</button>
         <Pen size={32} className="absolute top-8 left-[90%] bg-white w-16 h-16 rounded-lg hover:bg-white-purple hover:cursor-pointer" onClick={() => setIsUpdateInstituteModalOpen(true)} />
         <div className="flex items-center w-full gap-4">
           <div className="rounded-full h-72 w-72 bg-light-purple flex justify-center items-center">
@@ -129,6 +134,30 @@ export default function Institute() {
             </div>
           )
         })}
+      </div>
+    </div>
+  )
+}
+
+interface ConfirDeleteProps {
+  setIsDeleteModalOpen: (isOpen: boolean) => void;
+}
+
+function ConfirDelete({ setIsDeleteModalOpen }: ConfirDeleteProps) {
+  function handleCancelClick() {
+    setIsDeleteModalOpen(false);
+  }
+  return (
+    <div className="fixed h-full w-full backdrop-blur-md bg-black/50 flex z-50 justify-center items-center">
+      <div
+        className="rounded-lg bg-grayModal p-6 w-1/3 text-center"
+        onClick={(e) => e.stopPropagation()} // Impede a propagação do clique para o fundo
+      >
+        <p className="text-white mb-4">Você tem certeza que deseja <p className="text-red-400 inline">deletar</p> este instituto?</p>
+        <div className="flex justify-center gap-4">
+          <button className="px-4 py-2 rounded-lg bg-gray-600 text-white" onClick={handleCancelClick}>Cancelar</button>
+          <button className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-400 duration-100" onClick={handleCancelClick}>Deletar</button>
+        </div>
       </div>
     </div>
   )
