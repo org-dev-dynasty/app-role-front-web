@@ -2,6 +2,7 @@ import * as Dialog from '@radix-ui/react-dialog'
 import { X, CurrencyDollar, Image, Pencil } from '@phosphor-icons/react'
 import { Rating } from 'react-simple-star-rating'
 import React, { useState } from 'react'
+import Select from 'react-select/base'
 
 export function EditEventModal() {
   // const [name, setName] = useState<string>()
@@ -21,6 +22,8 @@ export function EditEventModal() {
 
     console.log(Distritos[currentDistrict].neighborhoods)
   }
+
+  
 
   const Distritos = [
     {
@@ -141,20 +144,20 @@ export function EditEventModal() {
     }
   ]
 
-  const musicTypes = {
-    Types: [
-      'Funk',
-      'Sertanejo',
-      'Trap',
-      'Eletrônica',
-      'Pagode',
-      'Rock',
-      'Rap',
-      'Reggae',
-      'Forro',
-      'MPB'
-    ]
-  }
+  const options = [
+    { value: 'FUNK', label: 'Funk' },
+    { value: 'SERTANEJO', label: 'Sertanejo' },
+    { value: 'TRAP', label: 'Trap' },
+    { value: 'ELETRONICA', label: 'Eletrônica' },
+    { value: 'PAGODE', label: 'Pagode' },
+    { value: 'ROCK', label: 'Rock' },
+    { value: 'RAP', label: 'Rap' },
+    { value: 'REGGAE', label: 'Reggae' },
+    { value: 'FORRO', label: 'Forró' },
+    { value: 'MPB', label: 'MPB' }
+  ]
+
+  const [selectedOption, setSelectedOption] = useState(null);
 
   return (
     <Dialog.Root>
@@ -272,19 +275,21 @@ export function EditEventModal() {
               <label className="text-base text-white" htmlFor="musicType">
                 Tipo de música
               </label>
+              
               <select
                 name="musicType"
                 id="musicType"
                 className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
               >
-                {musicTypes.Types.map((types, index) => {
+                {options.map((types, index) => {
                   return (
                     <option value={index} key={index}>
-                      {musicTypes.Types[index]}
+                      {options[index].label}
                     </option>
                   )
                 })}
               </select>
+                
             </div>
 
             <div className="flex flex-col gap-1 w-1/3">
@@ -368,7 +373,7 @@ export function EditEventModal() {
           </fieldset>
 
           <div className="mb-4 flex text-white justify-around gap-2">
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col w-1/3">
               <label
                 className="border flex rounded-md aspect-video cursor-pointer border-dashed text-sm flex-col gap-2 items-center justify-center "
                 htmlFor="bannerImage"
@@ -383,7 +388,7 @@ export function EditEventModal() {
               />
             </div>
 
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col w-1/3">
               <label
                 className="border flex rounded-md aspect-video cursor-pointer border-dashed text-sm flex-col gap-2 items-center justify-center"
                 htmlFor="eventImage"
