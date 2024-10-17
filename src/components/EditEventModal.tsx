@@ -2,7 +2,6 @@ import * as Dialog from '@radix-ui/react-dialog'
 import { X, CurrencyDollar, Image, Pencil } from '@phosphor-icons/react'
 import { Rating } from 'react-simple-star-rating'
 import React, { useState } from 'react'
-import Select from 'react-select/base'
 
 export function EditEventModal() {
   // const [name, setName] = useState<string>()
