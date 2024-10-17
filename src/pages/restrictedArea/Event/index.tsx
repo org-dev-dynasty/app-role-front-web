@@ -18,7 +18,10 @@ export default function Role() {
       )) as EventType
       console.log('Resposta do getEventByIdRequest: ', res)
 
-      setResponse(res)
+      if (res) {
+        setResponse(res)
+      }
+
       
     } catch (error) {
       alert('Erro ao buscar evento: ')
@@ -77,7 +80,7 @@ export default function Role() {
             </h2>
 
             <div className="flex text-nowrap flex-col gap-2 text-[#ffffff]">
-              <span className="text-2xl">{response?.eventDate.toString()}</span>
+              <span className="text-2xl">{response?.eventDate.toString() ?? "Not provided"}</span>
               <span className="text-xl">Inicio as 22:00 {'GMT -03:00'}</span>
             </div>
 
@@ -88,11 +91,11 @@ export default function Role() {
         <div className="justify-center items-center mt-12 text-2xl flex bg-purple/10 rounded-2xl p-10">
           <div className="flex flex-col gap-4">
             <EventInfoUnit value="address" label="Endereço">
-              {response?.address}
+              {response?.address ?? "Not provided"}
             </EventInfoUnit>
 
             <EventInfoUnit value="district" label="Distrito">
-              {response?.districtId}
+              {response?.districtId ?? "Not provided"}
             </EventInfoUnit>
 
             <EventInfoUnit value="neighbourhood" label="Bairro">
@@ -102,31 +105,31 @@ export default function Role() {
 
           <div className="flex flex-col gap-4">
             <EventInfoUnit value="musicType" label="Tipo de música">
-              {response?.musicType}
+              {response?.musicType ?? "Not provided"}
             </EventInfoUnit>
 
             <EventInfoUnit value="ageRange" label="Idade permitida">
-              {response?.ageRange}
+              {response?.ageRange ?? "Not provided"} 
             </EventInfoUnit>
 
             <EventInfoUnit value="musicType" label="Tipo de música">
-              {response?.musicType.join(', ')}
+              {response?.musicType.join(', ') ?? "Not provided"}
             </EventInfoUnit>
           </div>
 
           <div className="flex flex-col gap-4">
             <EventInfoUnit value="features" label="Características">
-              {
-                response?.features == undefined || [] ? 'Não informado' : response?.features.join(', ')
-              }  
+              {response?.features == undefined || []
+                ? 'Não informado'
+                : response?.features.join(', ')}
             </EventInfoUnit>
 
             <EventInfoUnit value="ticketUrl" label="Link para ingressos">
-              {response?.ticketUrl}
+              {response?.ticketUrl ?? "Not provided"}
             </EventInfoUnit>
 
             <EventInfoUnit value="instituteId" label="ID do instituto">
-              {response?.instituteId ?? "ID não informado"}
+              {response?.instituteId ?? 'ID não informado'}
             </EventInfoUnit>
           </div>
 
