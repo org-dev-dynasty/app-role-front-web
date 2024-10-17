@@ -1,13 +1,22 @@
 import { createContext, PropsWithChildren, useState } from 'react'
-import { EventRepositoryHttp } from '../api/repositories/event_repository'
+import {
+  EventRepositoryHttp,
+  EventType
+} from '../api/repositories/event_repository'
 
 type EventContextType = {
   getEventById: (id: string) => Promise<object>
+  editEventById: (event: EventType) => Promise<object>
 }
 
 const defaultInstitute = {
   getEventById: async () => {
     return {}
+  },
+  editEventById: async (eventData: EventType) => {
+    return {
+      message: 'Evento não encontrado'
+    }
   }
 }
 
@@ -25,8 +34,17 @@ export function EventContextProvider({ children }: PropsWithChildren) {
     }
   }
 
+  async function editEventById(event: EventType) {
+    try {
+      const response = await repo.editEventById(event)
+      return response
+    } catch (error: any) {
+      return error
+    }
+  }
+
   return (
-    <EventContext.Provider value={{ getEventById }}>
+    <EventContext.Provider value={{ getEventById, editEventById }}>
       {children}
     </EventContext.Provider>
   )
