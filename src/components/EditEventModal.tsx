@@ -1,18 +1,109 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import { X, CurrencyDollar, Image, Pencil } from '@phosphor-icons/react'
 import { Rating } from 'react-simple-star-rating'
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { EventType } from '../api/repositories/event_repository'
+import { EventContext } from '../context/event_context'
 
 export function EditEventModal() {
-  // const [name, setName] = useState<string>()
-  // const [description, setDescription] = useState<string>()
-  // const [address, setAddress] = useState<string>()
-  // const [date, setDate] = useState<Date>()
-  // const [priceAvg, setPriceAvg] = useState<number>()
-  // const [category, setCategory] = useState<string>()
-  // const [age, setAge] = useState<string>()
-  // const [musicType, setMusicType] = useState<string>()
-  // const [eventStatus, setEventStatus] = useState<string>()
+  const [name, setName] = useState<string>()
+  const [description, setDescription] = useState<string>()
+  const [address, setAddress] = useState<string>()
+  const [date, setDate] = useState<Date>()
+  const [priceAvg, setPriceAvg] = useState<number>()
+  const [category, setCategory] = useState<string>()
+  const [age, setAge] = useState<string>()
+  const [musicType, setMusicType] = useState<string[]>()
+  const [eventStatus, setEventStatus] = useState<string>()
+
+  const { getEventById, editEventById } = useContext(EventContext)
+
+  const [response, setResponse] = useState<EventType>()
+
+  async function getEventByIdRequest() {
+    try {
+      const res: EventType = (await getEventById(
+        '7c95b0a2-e207-4a07-90f5-c95f9d1ffd16'
+      )) as EventType
+      console.log('Resposta do getEventByIdRequest: ', res)
+
+      if (res) {
+        setResponse(res)
+      }
+
+      setName(response?.name)
+      setDescription(response?.description)
+      setAddress(response?.address)
+      setDate(response?.eventDate)
+      setPriceAvg(response?.price)
+      setCategory(response?.category)
+      setAge(response?.ageRange)
+      setMusicType(response?.musicType)
+    } catch (error) {
+      alert('Erro ao buscar evento: ')
+    }
+  }
+
+  async function updateEventByIdRequest() {
+    await console.log('A')
+
+    try {
+      if (
+        !name ||
+        !description ||
+        !address ||
+        !date ||
+        !priceAvg ||
+        !category ||
+        !age ||
+        !musicType
+      ) {
+        console.log('faltou')
+        console.log(name, description, address, date, priceAvg, category, age, musicType)
+        return
+      }
+
+      const updatedEvent: EventType = {
+        name: name,
+        description: description,
+        address: address,
+        eventDate: new Date(),
+        price: 3,
+        category: category,
+        ageRange: age,
+        musicType: musicType,
+        bannerUrl: 'https://via.placeholder.com/300',
+        districtId: '1',
+        instituteId: '1',
+        features: ['feature1', 'feature2'],
+        menuLink: 'https://www.example.com.br/menu',
+        eventPhotoLink: 'https://via.placeholder.com/300',
+        galeryLink: 'https://www.example.com.br/galeria',
+        packageType: 'PACKAGE',
+        ticketUrl: 'https://www.example.com.br/ingressos',
+        rating: 4.5,
+        reviews: 100,
+        eventId: '7c95b0a2-e207-4a07-90f5-c95f9d1ffd16'
+      }
+
+      await editEventById(updatedEvent)
+
+      console.log('evento atualizado:', updatedEvent)
+    } catch (error) {
+      alert('Erro ao editar evento: ')
+    }
+  }
+
+  function updateEvent() {
+    updateEventByIdRequest()
+  }
+
+  useEffect(() => {
+    console.log('Chamando useEffect getEvent:')
+    getEventByIdRequest()
+
+    // setEventStatus(response?.eventStatus)
+  }, [])
 
   const [currentDistrict, setCurrentDistrict] = useState<number>(0)
 
@@ -21,8 +112,6 @@ export function EditEventModal() {
 
     console.log(Distritos[currentDistrict].neighborhoods)
   }
-
-  
 
   const Distritos = [
     {
@@ -156,7 +245,22 @@ export function EditEventModal() {
     { value: 'MPB', label: 'MPB' }
   ]
 
-  const [selectedOption, setSelectedOption] = useState(null);
+  const categories = [
+    { key: 'BALADA', value: 'Balada' },
+    { key: 'UNIVERSITARIO', value: 'Universitário' },
+    { key: 'BAR', value: 'Bar' },
+    { key: 'BAR_BALADA', value: 'Bar Balada' },
+    { key: 'SHOW', value: 'Show' },
+    { key: 'FESTIVAL', value: 'Festival' },
+    { key: 'FESTA', value: 'Festa' }
+  ]
+
+  const status = [
+    { value: 'ACTIVE', label: '🟢 Ativo' },
+    { value: 'INACTIVE', label: '🔴 Inativo' }
+  ]
+
+  const [selectedOption, setSelectedOption] = useState(null)
 
   return (
     <Dialog.Root>
@@ -182,6 +286,7 @@ export function EditEventModal() {
             <input
               className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
               id="roleName"
+              defaultValue={response?.name}
             />
           </fieldset>
 
@@ -192,6 +297,7 @@ export function EditEventModal() {
             <textarea
               className="h-24 px-2 py-2 resize-none bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
               id="description"
+              defaultValue={response?.description}
             />
           </fieldset>
 
@@ -202,6 +308,7 @@ export function EditEventModal() {
             <input
               className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
               id="adress"
+              defaultValue={response?.address}
             />
           </fieldset>
 
@@ -237,16 +344,19 @@ export function EditEventModal() {
                 name="category"
                 id="category"
                 className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
+                defaultValue={response?.category}
               >
-                <option className="outline-none" value="concert">
-                  Show
-                </option>
-                <option className="outline-none" value="club">
-                  Balada
-                </option>
-                <option className="outline-none" value="festival">
-                  Festival
-                </option>
+                {categories.map((category, index) => {
+                  return (
+                    <option
+                      value={category.key}
+                      key={index}
+                      onChange={() => setCategory(category.key)}
+                    >
+                      {category.value}
+                    </option>
+                  )
+                })}
               </select>
             </div>
 
@@ -274,7 +384,7 @@ export function EditEventModal() {
               <label className="text-base text-white" htmlFor="musicType">
                 Tipo de música
               </label>
-              
+
               <select
                 name="musicType"
                 id="musicType"
@@ -288,7 +398,6 @@ export function EditEventModal() {
                   )
                 })}
               </select>
-                
             </div>
 
             <div className="flex flex-col gap-1 w-1/3">
@@ -300,15 +409,17 @@ export function EditEventModal() {
                 id="category"
                 className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
               >
-                <option className="outline-none" value="active">
-                  {'🟢 Ativo'}
-                </option>
-                <option className="outline-none" value="inactive">
-                  {'🔴 Inativo'}
-                </option>
-                <option className="outline-none" value="maintenance">
-                  {'🟡 Manutenção'}
-                </option>
+                {status.map((status, index) => {
+                  return (
+                    <option
+                      value={status.value}
+                      key={index}
+                      onChange={() => setEventStatus(status.value)}
+                    >
+                      {status.label}
+                    </option>
+                  )
+                })}
               </select>
             </div>
           </fieldset>
@@ -405,7 +516,10 @@ export function EditEventModal() {
 
           <div className="mt-2 flex justify-end">
             <Dialog.Close asChild>
-              <button className="inline-flex h-[35px] items-center justify-center rounded bg-violet px-4 font-medium leading-none text-white  hover:bg-violet focus:shadow-[0_0_0_2px] focus:shadow-purple focus:outline-none">
+              <button
+                onClick={updateEventByIdRequest}
+                className="inline-flex h-[35px] items-center justify-center rounded bg-violet px-4 font-medium leading-none text-white  hover:bg-violet focus:shadow-[0_0_0_2px] focus:shadow-purple focus:outline-none"
+              >
                 Salvar Role
               </button>
             </Dialog.Close>
