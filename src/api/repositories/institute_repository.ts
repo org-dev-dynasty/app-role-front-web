@@ -17,6 +17,7 @@ export class InstituteRepositoryHttp {
       const resp = await httpEvent.get(
         `/get-institute-by-id?instituteId=${id}`
       );
+      // console.log(resp);
       if (resp) {
         return resp.data;
       }
@@ -33,6 +34,19 @@ export class InstituteRepositoryHttp {
       }
     } catch (error: any) {
       throw new Error("Erro ao criar instituição: " + error.message);
+    }
+  }
+
+  async deleteInstituteById(id: string) {
+    try {
+      const resp = await httpEvent.delete(
+        `/delete-institute-by-id?instituteId=${id}`
+      );
+      if (resp) {
+        return resp.data;
+      }
+    } catch (error: any) {
+      throw new Error("Erro ao deletar instituição: " + error.message);
     }
   }
 }

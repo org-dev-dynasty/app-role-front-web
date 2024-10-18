@@ -94,7 +94,7 @@ export default function Institute() {
           institute={institute}
         />
       )}
-      {isDeleteModalOpen && <ConfirDelete setIsDeleteModalOpen={setIsDeleteModalOpen} />}
+      {isDeleteModalOpen && <ConfirDelete setIsDeleteModalOpen={setIsDeleteModalOpen} instituteId={instId} />}
 
       <div className="relative w-[70%] flex flex-col py-6 bg-[#2A2A2A] items-center gap-10 px-4">
         <button className="absolute top-8 left-[32%] text-xl bg-light-purple w-32 h-16 rounded-lg hover:bg-violet duration-100 hover:cursor-pointer" onClick={() => navigate("/institutes")}>
@@ -201,11 +201,24 @@ export default function Institute() {
 
 interface ConfirDeleteProps {
   setIsDeleteModalOpen: (isOpen: boolean) => void;
+  instituteId?: string;
 }
 
-function ConfirDelete({ setIsDeleteModalOpen }: ConfirDeleteProps) {
+function ConfirDelete({ setIsDeleteModalOpen, instituteId }: ConfirDeleteProps) {
+  const { deleteInstituteById } = useContext(InstituteContext);
+  const navigate = useNavigate();
   function handleCancelClick() {
     setIsDeleteModalOpen(false);
+  }
+
+  const handleDeleteClick = async () => {
+    try {
+      await deleteInstituteById(instituteId);
+      setIsDeleteModalOpen(false);
+      navigate("/institutes");
+    } catch (error: any) {
+      console.log("Erro ao deletar instituto: " + error.message);
+    }
   }
   return (
     <div className="fixed h-full w-full backdrop-blur-md bg-black/50 flex z-50 justify-center items-center">
@@ -224,7 +237,7 @@ function ConfirDelete({ setIsDeleteModalOpen }: ConfirDeleteProps) {
           >
             Cancelar
           </button>
-          <button className="bg-red-500 p-4 rounded-lg w-[50%] text-white hover:bg-red-300 duration-150">
+          <button className="bg-red-500 p-4 rounded-lg w-[50%] text-white hover:bg-red-300 duration-150" onClick={handleDeleteClick}>
             Deletar
           </button>
         </div>
