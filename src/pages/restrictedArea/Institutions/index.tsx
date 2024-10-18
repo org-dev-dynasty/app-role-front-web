@@ -8,7 +8,7 @@ import Institute from "../Institute";
 import { useNavigate } from "react-router-dom";
 
 interface Institute {
-    institute_id: string;
+    instituteId: string;
     name: string;
     description: string;
     institute_type: string;
@@ -45,8 +45,9 @@ export default function Institutions() {
         fetchInstitutes();
     }, [getAllInstitutes]);
 
-    const handleInstituteClick = (instituteId: string | undefined) => {
-        console.log(instituteId);
+    const handleInstituteClick = (instituteId: string | undefined, instituteName: string | undefined) => {
+        console.log("Id do instituto:", instituteId);
+        console.log("nome do instituto:",instituteName)
     }
 
     return (
@@ -88,10 +89,9 @@ export default function Institutions() {
                     </div>
                 </div>
             </div>
-
             <div className="flex flex-wrap h-[84vh] overflow-y-auto justify-center gap-4 pt-6">
                 {institutes.map((institute) => (
-                    <div key={institute.institute_id} onClick={() => handleInstituteClick(institute.institute_id) }>
+                    <div key={institute.instituteId} onClick={() => navigate(`/institute/${institute.instituteId}`)}>
                         <InstituteCard
                             name={institute.name}
                             imageUrl={institute.logo_photo}
