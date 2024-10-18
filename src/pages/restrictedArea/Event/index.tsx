@@ -4,66 +4,97 @@ import { EventInfoUnit } from '../../../components/EventInfoUnit'
 import { EditEventModal } from '../../../components/EditEventModal'
 import { EventContext } from '../../../context/event_context'
 import { useContext, useEffect, useState } from 'react'
-import { EventType } from '../../../api/repositories/event_repository'
+import { Navigate, useParams } from 'react-router-dom'
 
 export default function Role() {
+  let { eventId } = useParams()
+
   const { getEventById } = useContext(EventContext)
 
-  const [response, setResponse] = useState<EventType>()
+  const [eventName, setEventName] = useState<string>()
+  const [eventAge, setEventAge] = useState<string>()
+  const [eventDescription, setEventDescription] = useState<string>()
+  const [eventDate, setEventDate] = useState<Date>(new Date())
+  const [eventAddress, setEventAddress] = useState<string>()
+  const [eventPrice, setEventPrice] = useState<number>()
+  const [eventDistrict, setEventDistrict] = useState<string>()
+  const [eventInstituteId, setEventInstituteId] = useState<string>()
+  const [eventFeatures, setEventFeatures] = useState<string[]>([])
+  const [eventMusicType, setEventMusicType] = useState<string[]>([])
+  const [eventMenuLink, setEventMenuLink] = useState<string>()
+  const [eventPhotoLink, setEventPhotoLink] = useState<string>()
+  const [eventGaleryLink, setEventGaleryLink] = useState<string>()
+  const [eventPackageType, setEventPackageType] = useState<string>()
+  const [eventCategory, setEventCategory] = useState<string>()
+  const [eventTicketUrl, setEventTicketUrl] = useState<string>()
+  const [eventRating, setEventRating] = useState<number>()
 
   async function getEventByIdRequest() {
-    try {
-      const res: EventType = (await getEventById(
-        '7c95b0a2-e207-4a07-90f5-c95f9d1ffd16'
-      )) as EventType
-      console.log('Resposta do getEventByIdRequest: ', res)
+    // try {
+    //   const res = await getEventById(`${eventId}`)
+    //   console.log('Resposta do getEventByIdRequest: ', res)
 
-      if (res) {
-        setResponse(res)
-      }
+    //   if(res) {
+    //     Navigate({to: "/404"})
+    //   }
 
-      
-    } catch (error) {
-      alert('Erro ao buscar evento: ')
+    //   console.log(res)
+
+    //   if (res) {
+    //     setResponse(res as EventType)
+    //   }
+    // } catch (error) {}
+
+    const response = await getEventById(`${eventId}`)
+
+    if (response) {
+      setEventName(response.name)
+      setEventDescription(response.description)
+      setEventDate(response.eventDate)
+      setEventAddress(response.address)
+      setEventPrice(response.price)
+      setEventDistrict(response.districtId)
+      setEventInstituteId(response.instituteId)
+      setEventFeatures(response.features)
+      setEventMusicType(response.musicType)
+      setEventMenuLink(response.menuLink)
+      setEventPhotoLink(response.eventPhotoLink)
+      setEventGaleryLink(response.galeryLink)
+      setEventPackageType(response.packageType)
+      setEventAge(response.ageRange)
+      setEventTicketUrl(response.ticketUrl)
     }
   }
 
-  function populateEventInfo() {}
+  
 
   useEffect(() => {
     console.log('Chamando useEffect getEvent:')
+    console.log(eventId)
     getEventByIdRequest()
   }, [])
-
-  function formatDate(date: Date) {
-    if (!date) return 'Data não informada'
-    // Extraindo os componentes da data
-    const day = String(date.getDate()).padStart(2, '0') // dia com dois dígitos
-    const month = String(date.getMonth() + 1).padStart(2, '0') // mês com dois dígitos (0-11)
-    const year = date.getFullYear() // ano completo
-
-    // Retornando a data no formato dd:mm:yyyy
-    return `${day}:${month}:${year}`
-  }
 
   return (
     <div className="bg-[#151515] w-screen h-screen text-white">
       <div className="flex flex-col max-w-[1600px] mx-auto bg-[#151515] h-screen">
         <div className="flex p-4 mt-6 w-full">
-          <img
-            className="max-w-xs rounded-3xl"
-            src={response?.eventPhotoLink || 'https://via.placeholder.com/300'}
-            alt="event img"
-          />
+          <div className="w-80 h-80">
+            <img
+              className="object-cover rounded-3xl"
+              src={eventPhotoLink || 'https://via.placeholder.com/300'}
+              alt="event img"
+            />
+          </div>
+
           <div className="flex flex-col ml-8 gap-4 w-full">
             <div className="flex justify-between max-w-4xl w-full items-center">
               <div className="flex items-center gap-4 w-full">
-                <h1 className="text-6xl font-light">{response?.name}</h1>
+                <h1 className="text-6xl font-light">{eventName}</h1>
 
                 <Rating
                   allowFraction={false}
                   emptyIcon={<CurrencyDollar size={32} className="inline" />}
-                  initialValue={response?.rating ?? 0}
+                  initialValue={eventPrice}
                   fillIcon={
                     <CurrencyDollar
                       size={32}
@@ -76,11 +107,13 @@ export default function Role() {
               </div>
             </div>
             <h2 className="text-2xl text-[#b3b3b3] max-w-2xl">
-              {response?.description}
+              {eventDescription}
             </h2>
 
             <div className="flex text-nowrap flex-col gap-2 text-[#ffffff]">
-              <span className="text-2xl">{response?.eventDate.toString() ?? "Not provided"}</span>
+              <span className="text-2xl">
+                {eventDate?.toString() ?? 'Não informado'}
+              </span>
               <span className="text-xl">Inicio as 22:00 {'GMT -03:00'}</span>
             </div>
 
@@ -88,14 +121,14 @@ export default function Role() {
           </div>
         </div>
 
-        <div className="justify-center items-center mt-12 text-2xl flex bg-purple/10 rounded-2xl p-10">
+        <div className="justify-center items-center my-12 text-2xl flex bg-purple/10 rounded-2xl p-10">
           <div className="flex flex-col gap-4">
             <EventInfoUnit value="address" label="Endereço">
-              {response?.address ?? "Not provided"}
+              {eventAddress}
             </EventInfoUnit>
 
             <EventInfoUnit value="district" label="Distrito">
-              {response?.districtId ?? "Not provided"}
+              {eventDistrict}
             </EventInfoUnit>
 
             <EventInfoUnit value="neighbourhood" label="Bairro">
@@ -105,31 +138,29 @@ export default function Role() {
 
           <div className="flex flex-col gap-4">
             <EventInfoUnit value="musicType" label="Tipo de música">
-              {response?.musicType ?? "Not provided"}
+              {eventMusicType}
             </EventInfoUnit>
 
             <EventInfoUnit value="ageRange" label="Idade permitida">
-              {response?.ageRange ?? "Not provided"} 
+              {eventAge}
             </EventInfoUnit>
 
             <EventInfoUnit value="musicType" label="Tipo de música">
-              {response?.musicType.join(', ') ?? "Not provided"}
+              {eventMusicType?.join(', ') ?? 'Não informado'}
             </EventInfoUnit>
           </div>
 
           <div className="flex flex-col gap-4">
             <EventInfoUnit value="features" label="Características">
-              {response?.features == undefined || []
-                ? 'Não informado'
-                : response?.features.join(', ')}
+              {eventFeatures}
             </EventInfoUnit>
 
             <EventInfoUnit value="ticketUrl" label="Link para ingressos">
-              {response?.ticketUrl ?? "Not provided"}
+              {eventTicketUrl}
             </EventInfoUnit>
 
             <EventInfoUnit value="instituteId" label="ID do instituto">
-              {response?.instituteId ?? 'ID não informado'}
+              {eventInstituteId}
             </EventInfoUnit>
           </div>
 
