@@ -23,7 +23,10 @@ export function AppRouter() {
               path="/Institute"
               element={<Institute />}
             />
-            <Route Component={Role} path="/roles" element={<Role />} />
+
+            <Route path="role">
+              <Route path=":eventId" element={<Role />} />
+            </Route>
           </Routes>
         </BrowserRouter>
       </InstituteContextProvider>
