@@ -1,36 +1,54 @@
 import { Pen } from "@phosphor-icons/react"
 import EventCard from "../../../components/EventCard"
 import UpdateInstituteModal from "../../../components/updateInstituteModal";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { InstituteContext } from "../../../context/institute_context";
 
-const institute =
-{
-  "institute_id": "1",
-  "name": "Instituto de Exemplo",
-  "description": "Um instituto dedicado à educação de qualidade.",
-  "institute_type": "ESTABELECIMENTO_FIXO",
-  "partner_type": "PROMOTER_PARTNER",
-  "phone": "123456789",
-  "logo_photo": "url_para_logo.jpg",
-  "address": "Rua Exemplo, 123",
-  "price": 100,
-  "district_id": "district_1",
-  "photos_url": [
-    "url_para_foto_1.jpg",
-    "url_para_foto_2.jpg",
-  ],
-  "events_id": [
-    "event_1",
-    "event_2",
-    "event_3",
-    "event_4",
-    "event_5",
-    "event_6"
-  ]
-}
+// const institute =
+// {
+//   "institute_id": "1",
+//   "name": "Instituto de Exemplo",
+//   "description": "Um instituto dedicado à educação de qualidade.",
+//   "institute_type": "ESTABELECIMENTO_FIXO",
+//   "partner_type": "PROMOTER_PARTNER",
+//   "phone": "123456789",
+//   "logo_photo": "url_para_logo.jpg",
+//   "address": "Rua Exemplo, 123",
+//   "price": 100,
+//   "district_id": "district_1",
+//   "photos_url": [
+//     "url_para_foto_1.jpg",
+//     "url_para_foto_2.jpg",
+//   ],
+//   "events_id": [
+//     "event_1",
+//     "event_2",
+//     "event_3",
+//     "event_4",
+//     "event_5",
+//     "event_6"
+//   ]
+// }
 
 
 export default function Institute() {
+  const { getInstituteById } = useContext(InstituteContext);
+  const { instId } = useParams();
+  const [institute, setInstitute] = useState({
+    "institute_id": "",
+    "name": "",
+    "description": "",
+    "institute_type": "",
+    "partner_type": "",
+    "phone": "",
+    "logo_photo": "",
+    "address": "",
+    "price": 0,
+    "district_id": "",
+    "photos_url": [],
+    "events_id": []
+  });
   const [isUpdateInstituteModalOpen, setIsUpdateInstituteModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   function formatPartnerType(partnerType: string) {
@@ -55,6 +73,18 @@ export default function Institute() {
         return 'Tipo de Instituição Desconhecido';
     }
   }
+
+  useEffect(() => {
+    const fetchInstitute = async () => {
+      if (instId) {
+        const response = await getInstituteById(instId); // Faz a requisição
+        console.log(response)
+        setInstitute(response.institute); // Atualiza o estado com os dados do instituto
+      }
+    };
+
+    fetchInstitute();
+  }, [instId, getInstituteById]);
 
   return (
     <div className="h-full w-full flex flex-row bg-[#151515]" >

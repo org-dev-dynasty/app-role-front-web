@@ -12,7 +12,7 @@ export function AppRouter() {
                 <Routes>
                     <Route Component={LandingPage} path="/" element={<LandingPage />} />
                     <Route Component={Institutions} path="/Institutes" element={<Institutions />} />
-                    <Route Component={Institute} path="/Institute" element={<Institute />} />
+                    <Route Component={Institute} path="/Institute/:instId" element={<Institute />} />
                     <Route Component={Role} path="/roles" element={<Role />} />
                 </Routes>
             </BrowserRouter>

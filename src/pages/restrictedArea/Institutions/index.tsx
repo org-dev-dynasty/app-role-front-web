@@ -5,6 +5,7 @@ import { MagnifyingGlass } from "@phosphor-icons/react";
 import { InstituteContext } from "../../../context/institute_context";// Certifique-se de que o modal está corretamente importado
 import CreateInstituteModal from "../../../components/createInstituteModal";
 import Institute from "../Institute";
+import { useNavigate } from "react-router-dom";
 
 interface Institute {
     institute_id: string;
@@ -27,6 +28,7 @@ export default function Institutions() {
     const [isCreateInstituteModalOpen, setIsCreateInstituteModalOpen] = useState(false);
 
     const [search, setSearch] = useState("");
+    const navigate = useNavigate();
 
     const handleChange = (e: { target: { value: SetStateAction<string> } }) => {
         setSearch(e.target.value);
@@ -42,6 +44,10 @@ export default function Institutions() {
 
         fetchInstitutes();
     }, [getAllInstitutes]);
+
+    const handleInstituteClick = (instituteId: string | undefined) => {
+        console.log(instituteId);
+    }
 
     return (
         <div className="h-full w-full flex flex-col bg-[#151515]">
@@ -85,7 +91,7 @@ export default function Institutions() {
 
             <div className="flex flex-wrap h-[84vh] overflow-y-auto justify-center gap-4 pt-6">
                 {institutes.map((institute) => (
-                    <div key={institute.institute_id}>
+                    <div key={institute.institute_id} onClick={() => handleInstituteClick(institute.institute_id) }>
                         <InstituteCard
                             name={institute.name}
                             imageUrl={institute.logo_photo}
