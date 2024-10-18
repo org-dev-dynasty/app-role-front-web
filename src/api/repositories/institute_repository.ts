@@ -24,4 +24,15 @@ export class InstituteRepositoryHttp {
       throw new Error("Erro ao buscar instituição: " + error.message);
     }
   }
+
+  async createInstitute(data: any) {
+    try {
+      const resp = await httpEvent.post("/create-institute", data);
+      if (resp) {
+        return resp.data;
+      }
+    } catch (error: any) {
+      throw new Error("Erro ao criar instituição: " + error.message);
+    }
+  }
 }

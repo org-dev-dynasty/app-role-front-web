@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { InstituteContext } from '../context/institute_context';
 
 interface InstituteModalProps {
   setIsCreateInstituteModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onInstituteCreated?: () => void;
 }
 
-export default function Institute({ setIsCreateInstituteModalOpen }: InstituteModalProps) {
+export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCreated }: InstituteModalProps) {
+  const { createInstitute } = useContext(InstituteContext);
   const [instituteName, setInstituteName] = useState("");
   const [description, setDescription] = useState("");
   const [instituteType, setInstituteType] = useState("ESTABELECIMENTO_FIXO");
@@ -50,6 +53,35 @@ export default function Institute({ setIsCreateInstituteModalOpen }: InstituteMo
       setGalleryPhotos(Array.from(e.target.files));
     }
   };
+
+
+
+  const createNewInstitute = async () => {
+    const data = {
+      name: instituteName,
+      description: description,
+      institute_type: instituteType,
+      partner_type: partnerType,
+      phone: phone,
+      address: address,
+      logo_photo: logoPhoto,
+      photos_url: galleryPhotos
+    }
+    try {
+      const response = await createInstitute(data);
+      console.log(response);
+    } catch (error: any) {
+      console.error(error);
+    }
+  }
+
+  const saveInstituteClick = async () => {
+    await createNewInstitute();
+    setIsCreateInstituteModalOpen(false);
+    if (onInstituteCreated) {
+      onInstituteCreated();
+    }
+  }
 
 
   return (
@@ -211,7 +243,7 @@ export default function Institute({ setIsCreateInstituteModalOpen }: InstituteMo
 
 
           <div className="mt-2 flex justify-end">
-            <button className="inline-flex h-[35px] items-center justify-center rounded bg-violet px-4 font-medium leading-none text-white hover:bg-violet focus:shadow-[0_0_0_2px] focus:shadow-purple focus:outline-none">
+            <button className="inline-flex h-[35px] items-center justify-center rounded bg-violet px-4 font-medium leading-none text-white hover:bg-violet focus:shadow-[0_0_0_2px] focus:shadow-purple focus:outline-none" onClick={() => saveInstituteClick()}>
               Salvar Instituto
             </button>
           </div>

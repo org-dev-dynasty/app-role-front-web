@@ -2,8 +2,9 @@ import { Pen } from "@phosphor-icons/react";
 import EventCard from "../../../components/EventCard";
 import UpdateInstituteModal from "../../../components/updateInstituteModal";
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { InstituteContext } from "../../../context/institute_context";
+import { ClipLoader } from "react-spinners";
 
 interface Institute {
   address: string;
@@ -26,6 +27,7 @@ export default function Institute() {
   const [loading, setLoading] = useState(true); // Estado de carregamento
   const [isUpdateInstituteModalOpen, setIsUpdateInstituteModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   function formatPartnerType(partnerType: string) {
     switch (partnerType) {
@@ -71,14 +73,18 @@ export default function Institute() {
     fetchInstitute();
   }, [instId, getInstituteById]);
 
+
+  if (loading) {
+    return (
+      <div className="h-[100vh] w-full flex justify-center items-center bg-[#151515]">
+        <ClipLoader color="#fff" loading={loading} size={150} />
+      </div>
+    );
+  }
+
   if (!institute) {
     return <p className="text-white">Carregando ou nenhum instituto encontrado</p>; // Mensagem enquanto carrega
   }
-
-  if (loading) {
-    return <p className="text-white">Carregando...</p>;
-  }
-
 
   return (
     <div className="h-full w-full flex flex-row bg-[#151515]">
@@ -91,11 +97,14 @@ export default function Institute() {
       {isDeleteModalOpen && <ConfirDelete setIsDeleteModalOpen={setIsDeleteModalOpen} />}
 
       <div className="relative w-[70%] flex flex-col py-6 bg-[#2A2A2A] items-center gap-10 px-4">
+        <button className="absolute top-8 left-[32%] text-xl bg-light-purple w-32 h-16 rounded-lg hover:bg-violet duration-100 hover:cursor-pointer" onClick={() => navigate("/institutes")}>
+          <h1 className="text-white text-3xl">Voltar</h1>
+        </button>
         <button
           className="absolute top-8 left-[76%] text-xl bg-red-500 w-32 h-16 rounded-lg hover:bg-red-400 duration-100 hover:cursor-pointer"
           onClick={() => setIsDeleteModalOpen(true)}
         >
-          Deletar
+          <h1 className="text-white text-3xl">Deletar</h1>
         </button>
         <Pen
           size={32}
