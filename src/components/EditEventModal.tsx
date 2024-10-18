@@ -4,6 +4,7 @@ import { Rating } from 'react-simple-star-rating'
 import React, { useContext, useEffect, useState } from 'react'
 import { EventType } from '../api/repositories/event_repository'
 import { EventContext } from '../context/event_context'
+import { redirect } from 'react-router-dom'
 
 export function EditEventModal() {
   const [name, setName] = useState<string>()
@@ -23,7 +24,7 @@ export function EditEventModal() {
   async function getEventByIdRequest() {
     try {
       const res: EventType = (await getEventById(
-        '7c95b0a2-e207-4a07-90f5-c95f9d1ffd16'
+        '76595bea-336c-4ee1-af87-75adf05e7b9a'
       )) as EventType
       console.log('Resposta do getEventByIdRequest: ', res)
 
@@ -59,7 +60,16 @@ export function EditEventModal() {
         !musicType
       ) {
         console.log('faltou')
-        console.log(name, description, address, date, priceAvg, category, age, musicType)
+        console.log(
+          name,
+          description,
+          address,
+          date,
+          priceAvg,
+          category,
+          age,
+          musicType
+        )
         return
       }
 
