@@ -96,7 +96,7 @@ export default function Institutions() {
                     </div>
                 ) : (
                     institutes.map((institute) => (
-                        <div key={institute.instituteId} onClick={() => navigate(`/institute/${institute.instituteId}`)}>
+                        <div className="h-fit" key={institute.instituteId} onClick={() => navigate(`/institute/${institute.instituteId}`)}>
                             <InstituteCard
                                 name={institute.name}
                                 imageUrl={institute.logo_photo}
