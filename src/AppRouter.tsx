@@ -23,3 +23,4 @@ export function AppRouter() {
       </InstituteContextProvider>
     </EventContextProvider>
   )
+}
