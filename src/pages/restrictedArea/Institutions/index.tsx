@@ -5,9 +5,11 @@ import { MagnifyingGlass } from "@phosphor-icons/react";
 import { InstituteContext } from "../../../context/institute_context";// Certifique-se de que o modal está corretamente importado
 import CreateInstituteModal from "../../../components/createInstituteModal";
 import Institute from "../Institute";
+import { useNavigate } from "react-router-dom";
+import ClipLoader from "react-spinners/ClipLoader";
 
 interface Institute {
-    institute_id: string;
+    instituteId: string;
     name: string;
     description: string;
     institute_type: string;
@@ -24,22 +26,26 @@ interface Institute {
 export default function Institutions() {
     const { getAllInstitutes } = useContext(InstituteContext);
     const [institutes, setInstitutes] = useState<Institute[]>([]);
+    const [loading, setLoading] = useState(true);
     const [isCreateInstituteModalOpen, setIsCreateInstituteModalOpen] = useState(false);
 
     const [search, setSearch] = useState("");
+    const navigate = useNavigate();
 
     const handleChange = (e: { target: { value: SetStateAction<string> } }) => {
         setSearch(e.target.value);
     };
 
+    const fetchInstitutes = async () => {
+        setLoading(true); // Inicia o carregamento
+        const response = await getAllInstitutes();
+        console.log(response);
+        setInstitutes(response.institutes); // Access the 'institutes' array
+        setLoading(false); // Finaliza o carregamento
+    };
+
     // Chamar getAllInstitutes e atualizar estado com os institutos
     useEffect(() => {
-        const fetchInstitutes = async () => {
-            const response = await getAllInstitutes();
-            console.log(response);
-            setInstitutes(response.institutes); // Access the 'institutes' array
-        };
-
         fetchInstitutes();
     }, [getAllInstitutes]);
 
@@ -49,6 +55,7 @@ export default function Institutions() {
             {isCreateInstituteModalOpen && (
                 <CreateInstituteModal
                     setIsCreateInstituteModalOpen={setIsCreateInstituteModalOpen}
+                    onInstituteCreated={fetchInstitutes}
                 />
             )}
 
@@ -82,16 +89,21 @@ export default function Institutions() {
                     </div>
                 </div>
             </div>
-
-            <div className="flex flex-wrap h-[84vh] overflow-y-auto justify-center gap-4 pt-6">
-                {institutes.map((institute) => (
-                    <div key={institute.institute_id}>
-                        <InstituteCard
-                            name={institute.name}
-                            imageUrl={institute.logo_photo}
-                        />
+            <div className="flex flex-wrap h-[84vh] overflow-y-auto justify-center pt-6 pb-6">
+                {loading ? (
+                    <div className="flex justify-center items-center h-full">
+                        <ClipLoader color="#ffffff" size={150} />
                     </div>
-                ))}
+                ) : (
+                    institutes.map((institute) => (
+                        <div className="h-fit" key={institute.instituteId} onClick={() => navigate(`/institute/${institute.instituteId}`)}>
+                            <InstituteCard
+                                name={institute.name}
+                                imageUrl={institute.logo_photo}
+                            />
+                        </div>
+                    ))
+                )}
             </div>
         </div>
     );
