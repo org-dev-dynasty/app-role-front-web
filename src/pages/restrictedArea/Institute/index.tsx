@@ -227,42 +227,53 @@ interface ConfirDeleteProps {
 
 function ConfirDelete({ setIsDeleteModalOpen, instituteId }: ConfirDeleteProps) {
   const { deleteInstituteById } = useContext(InstituteContext);
+  const [clicked, setClicked] = useState(false);
   const navigate = useNavigate();
+
   function handleCancelClick() {
     setIsDeleteModalOpen(false);
   }
 
   const handleDeleteClick = async () => {
+    setClicked(true);
     try {
       await deleteInstituteById(instituteId);
       setIsDeleteModalOpen(false);
       navigate("/institutes");
     } catch (error: any) {
       console.log("Erro ao deletar instituto: " + error.message);
+      setIsDeleteModalOpen(false);
     }
-  }
+  };
+
   return (
     <div className="fixed h-full w-full backdrop-blur-md bg-black/50 flex z-50 justify-center items-center">
       <div
-        className="rounded-lg bg-grayModal p-6 w-1/3 text-center"
+        className="rounded-lg bg-grayModal p-6 w-1/3 text-center transition-opacity duration-300"
         onClick={(e) => e.stopPropagation()} // Impede a propagação do clique para o fundo
       >
         <p className="text-white mb-4">
           Você tem certeza que deseja{" "}
           <span className="text-red-400">deletar</span> este instituto?
         </p>
-        <div className="flex justify-center gap-4">
-          <button
-            className="bg-green-500 p-4 rounded-lg w-[50%] text-white hover:bg-green-300 duration-150"
-            onClick={handleCancelClick}
-          >
-            Cancelar
-          </button>
-          <button className="bg-red-500 p-4 rounded-lg w-[50%] text-white hover:bg-red-300 duration-150" onClick={handleDeleteClick}>
-            Deletar
-          </button>
-        </div>
+        {clicked ? <ClipLoader color="#fff" loading={clicked} size={50} /> :
+          <div className="flex justify-center gap-4">
+            <button
+              className="bg-green-500 p-4 rounded-lg w-[50%] text-white hover:bg-green-300 duration-150"
+              onClick={handleCancelClick}
+            >
+              Cancelar
+            </button>
+            <button
+              className="bg-red-500 p-4 rounded-lg w-[50%] text-white hover:bg-red-300 duration-150"
+              onClick={handleDeleteClick}
+            >
+              Deletar
+            </button>
+          </div>
+        }
       </div>
     </div>
   );
 }
+

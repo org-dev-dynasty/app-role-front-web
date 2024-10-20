@@ -32,6 +32,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
   const [logoPhotoIncoming, setLogoPhotoIncoming] = useState<File | null>(null);
   const [galleryPhotosIncoming, setGalleryPhotosIncoming] = useState<File[]>([]);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     setInstituteNameDisplay(institute.name);
@@ -41,6 +42,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
     setPartnerType(institute.partner_type);
     setPhone(institute.phone);
     setAddress(institute.address);
+    setIsVisible(true); // Ativa a visibilidade do modal
   }, [institute]);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => setInstituteName(e.target.value);
@@ -54,29 +56,24 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
   const handleGalleryPhotosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) setGalleryPhotosIncoming(Array.from(e.target.files));
   };
-  
-  // Função para aplicar a máscara de telefone
+
   const formatPhone = (value: string) => {
-    // Remove todos os caracteres não numéricos
     const cleaned = value.replace(/\D/g, '');
 
-    // Limite de 10 dígitos (código de área + número)
     if (cleaned.length > 14) {
-      return phone; // Retorna o valor anterior se exceder o limite
+      return phone;
     }
 
-    // Aplica a máscara de +XX XXXX-XXXX
     const match = cleaned.match(/^(\d{2})(\d{4})(\d{4})$/);
 
     if (match) {
       return `+${match[1]} ${match[2]}-${match[3]}`;
     } else if (cleaned.length <= 10) {
-      return `+${cleaned}`; // Exibe apenas os dígitos disponíveis
+      return `+${cleaned}`;
     }
     return value;
   };
 
-  // Função para manipular a mudança de telefone e aplicar a máscara
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
     const formatted = formatPhone(input);
@@ -84,7 +81,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
   };
 
   const handleUpdateClick = () => {
-    setIsConfirmOpen(true); // Opens confirmation modal with new data
+    setIsConfirmOpen(true);
   };
 
   return (
@@ -110,8 +107,8 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
           }}
         />
       )}
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsUpdateInstituteModalOpen(false)} />
-      <div className="fixed overflow-y-auto left-1/2 top-1/2 max-h-[85vh] w-[50vw] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-grayModal p-[25px] shadow-md focus:outline-none">
+      <div className={`fixed inset-0 bg-black/50 backdrop-blur-sm ${isVisible ? "transition-opacity duration-300" : "opacity-0"}`} onClick={() => setIsUpdateInstituteModalOpen(false)} />
+      <div className={`fixed overflow-y-auto left-1/2 top-1/2 max-h-[85vh] w-[50vw] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-grayModal p-[25px] shadow-md focus:outline-none transition-transform duration-300 transform ${isVisible ? "scale-100" : "scale-95"}`}>
         <div className="m-0 text-3xl font-medium text-white">
           Atualizar Instituto: <span className="text-violet">{instituteNameDisplay}</span>
         </div>
@@ -202,74 +199,35 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
 
         {/* Upload da Logo */}
         <fieldset className="mb-4 flex flex-col gap-1 text-white">
-          <label className="text-base" htmlFor="logoPhoto">Foto do Logotipo</label>
+          <label className="text-base" htmlFor="logoPhoto">Logo do Instituto (opcional)</label>
           <input
-            className="bg-grayInputModal p-2 outline-none rounded-md focus:ring-2 ring-violet"
+            className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
             id="logoPhoto"
             type="file"
+            accept="image/*"
             onChange={handleLogoPhotoChange}
           />
         </fieldset>
 
-        <div className="flex flex-wrap gap-2">
-          {logoPhotoIncoming ? (
-            <img
-              src={URL.createObjectURL(logoPhotoIncoming)}
-              alt="Imagem logo"
-              className="w-24 h-24 mb-4 object-cover rounded-md bg-grayInputModal text-white"
-            />
-          ) : institute.logo_photo ? (
-            <img
-              src={institute.logo_photo}
-              alt="Imagem logo"
-              className="w-24 h-24 mb-4 object-cover rounded-md bg-grayInputModal text-white"
-            />
-          ) : null}
-        </div>
-
-        {/* Upload da Galeria de Imagens */}
+        {/* Upload de Fotos da Galeria */}
         <fieldset className="mb-4 flex flex-col gap-1 text-white">
-          <label className="text-base" htmlFor="galleryPhotos">Galeria de Imagens</label>
+          <label className="text-base" htmlFor="galleryPhotos">Fotos da Galeria (opcional)</label>
           <input
-            className="p-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
+            className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
             id="galleryPhotos"
             type="file"
+            accept="image/*"
             multiple
             onChange={handleGalleryPhotosChange}
           />
         </fieldset>
 
-        <div className="flex flex-wrap gap-2">
-          {galleryPhotosIncoming.length > 0
-            ? galleryPhotosIncoming.map((photo, idx) => (
-              <img
-                key={idx}
-                src={URL.createObjectURL(photo)}
-                alt={`Imagem carregada ${idx}`}
-                className="w-24 h-24 object-cover rounded-md bg-grayInputModal text-white"
-              />
-            ))
-            : institute.photos_url.map((photo, idx) => (
-              <img
-                key={idx}
-                src={photo}
-                alt={`Imagem galeria ${idx}`}
-                className="w-24 h-24 object-cover rounded-md bg-grayInputModal text-white"
-              />
-            ))}
-        </div>
-
-        <div className="flex justify-end gap-3 mt-5">
-          <button
-            className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-500 text-white"
-            onClick={() => setIsUpdateInstituteModalOpen(false)}
-          >
+        {/* Botões */}
+        <div className="flex justify-evenly mt-5">
+          <button className="h-10 w-1/4 rounded-lg border border-red-600 bg-red-600 text-white" onClick={() => setIsUpdateInstituteModalOpen(false)}>
             Cancelar
           </button>
-          <button
-            className="px-4 py-2 rounded-lg bg-violet text-white hover:bg-violet-dark"
-            onClick={handleUpdateClick}
-          >
+          <button className="h-10 w-1/4 rounded-lg border border-violet bg-violet text-white" onClick={handleUpdateClick}>
             Atualizar
           </button>
         </div>
@@ -277,6 +235,8 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
     </div>
   );
 }
+
+
 
 interface ConfirmUpdateProps {
   setIsConfirmOpen: React.Dispatch<React.SetStateAction<boolean>>;

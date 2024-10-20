@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { InstituteContext } from '../context/institute_context';
 import { ClipLoader } from 'react-spinners';
 
@@ -8,6 +8,7 @@ interface InstituteModalProps {
 }
 
 export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCreated }: InstituteModalProps) {
+  const [isVisible, setIsVisible] = useState(false); // Estado para controlar a visibilidade do modal
   const { createInstitute } = useContext(InstituteContext);
   const [instituteName, setInstituteName] = useState("");
   const [description, setDescription] = useState("");
@@ -19,40 +20,34 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
   const [galleryPhotos, setGalleryPhotos] = useState<File[]>([]);
   const [isCreating, setIsCreating] = useState(false);
 
+  useEffect(() => {
+    setIsVisible(true); // Torna o modal visível quando é montado
+  }, []);
+
   // Função para aplicar a máscara de telefone
   const formatPhone = (value: string) => {
-    // Remove todos os caracteres não numéricos
     const cleaned = value.replace(/\D/g, '');
-
-    // Limite de 10 dígitos (código de área + número)
     if (cleaned.length > 14) {
-      return phone; // Retorna o valor anterior se exceder o limite
+      return phone;
     }
-
-    // Aplica a máscara de +XX XXXX-XXXX
     const match = cleaned.match(/^(\d{2})(\d{4})(\d{4})$/);
-
     if (match) {
       return `+${match[1]} ${match[2]}-${match[3]}`;
     } else if (cleaned.length <= 10) {
-      return `+${cleaned}`; // Exibe apenas os dígitos disponíveis
+      return `+${cleaned}`;
     }
     return value;
   };
 
-  // Função para manipular a mudança de telefone e aplicar a máscara
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
     const formatted = formatPhone(input);
     setPhone(formatted);
   };
 
-  // Função para salvar o instituto
   const saveInstituteClick = async () => {
-    if (isCreating) return; // Previne múltiplos cliques
-
-    setIsCreating(true); // Desativa o botão
-
+    if (isCreating) return;
+    setIsCreating(true);
     const data = {
       name: instituteName,
       description: description,
@@ -65,22 +60,21 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
     };
 
     try {
-      await createInstitute(data); // Envia os dados para criação
+      await createInstitute(data);
       if (onInstituteCreated) {
-        onInstituteCreated(); // Notifica que o instituto foi criado
+        onInstituteCreated();
       }
-      setIsCreateInstituteModalOpen(false); // Fecha o modal após a criação
+      setIsCreateInstituteModalOpen(false);
     } catch (error: any) {
       console.error("Erro ao criar instituto:", error.message);
     } finally {
-      setIsCreating(false); // Reabilita o botão
+      setIsCreating(false);
     }
   };
 
   return (
-    <div>
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsCreateInstituteModalOpen(false)} />
-      <div className="fixed overflow-y-auto left-1/2 top-1/2 max-h-[85vh] w-[50vw] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-grayModal p-[25px] shadow-lg">
+    <div className={`fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+      <div className={`fixed overflow-y-auto left-1/2 top-1/2 max-h-[85vh] w-[50vw] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-grayModal p-[25px] shadow-lg transition-transform duration-300 transform ${isVisible ? 'scale-100' : 'scale-95'}`}>
         <div className="m-0 text-3xl font-medium text-white">
           Criar <span className="text-violet">INSTITUTO</span>
         </div>
@@ -187,7 +181,7 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
             Foto do Logotipo
           </label>
           <input
-            className=" bg-grayInputModal p-2 outline-none rounded-md focus:ring-2 ring-violet"
+            className="bg-grayInputModal p-2 outline-none rounded-md focus:ring-2 ring-violet"
             id="logoPhoto"
             type="file"
             onChange={(e) => e.target.files && setLogoPhoto(e.target.files[0])}
