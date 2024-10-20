@@ -7,6 +7,7 @@ import { InstituteContext } from "../../../context/institute_context";
 import { ClipLoader } from "react-spinners";
 import { EventContext } from "../../../context/event_context";
 import { EventType } from "../../../api/repositories/event_repository";
+import { CreateEventModal } from "../../../components/CreateEventModal";
 
 interface Institute {
   address: string;
@@ -30,7 +31,7 @@ export default function Institute() {
   const [loading, setLoading] = useState(true); // Estado de carregamento
   const [isUpdateInstituteModalOpen, setIsUpdateInstituteModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [ events, setEvents ] = useState<EventType[]>([]);
+  const [events, setEvents] = useState<EventType[]>([]);
   const navigate = useNavigate();
 
   function formatPartnerType(partnerType: string) {
@@ -202,7 +203,7 @@ export default function Institute() {
         <div className="flex w-full justify-between items-center px-6">
           <h1 className="text-white text-[48px]">Roles</h1>
           <div className="bg-white w-16 h-16 flex justify-center items-center rounded-xl text-3xl hover:cursor-pointer hover:bg-white-purple">
-            +
+            <CreateEventModal />
           </div>
         </div>
         {institute.events_id.length > 0 ? (

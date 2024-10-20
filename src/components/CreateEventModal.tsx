@@ -159,8 +159,8 @@ export function CreateEventModal() {
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <button className="h-[35px] items-center justify-center rounded bg-grayModal px-[15px] font-medium leading-none text-violet11 shadow-[0_2px_10px] shadow-blackA4 hover:bg-mauve3 focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none">
-          Edit profile
+        <button className="bg-white w-16 h-16 flex justify-center items-center rounded-xl text-3xl hover:cursor-pointer hover:bg-white-purple">
+          +
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
