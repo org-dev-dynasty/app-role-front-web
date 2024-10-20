@@ -5,6 +5,8 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { InstituteContext } from "../../../context/institute_context";
 import { ClipLoader } from "react-spinners";
+import { EventContext } from "../../../context/event_context";
+import { EventType } from "../../../api/repositories/event_repository";
 
 interface Institute {
   address: string;
@@ -22,11 +24,13 @@ interface Institute {
 }
 
 export default function Institute() {
+  const { getEventById } = useContext(EventContext);
   const { getInstituteById } = useContext(InstituteContext);
   const { instId } = useParams<{ instId: string }>();
   const [loading, setLoading] = useState(true); // Estado de carregamento
   const [isUpdateInstituteModalOpen, setIsUpdateInstituteModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [ events, setEvents ] = useState<EventType[]>([]);
   const navigate = useNavigate();
 
   function formatPartnerType(partnerType: string) {
@@ -56,6 +60,15 @@ export default function Institute() {
   const [institute, setInstitute] = useState<Institute | null>(null); // Use null ao invés de um objeto vazio
 
   useEffect(() => {
+    const fetchEvents = async () => {
+      if (institute) {
+        const response = await Promise.all(institute.events_id.map((eventId) => getEventById(eventId)));
+        console.log(response);
+        setEvents(response);
+      }
+    }
+
+
     const fetchInstitute = async () => {
       if (instId) {
         const response = await getInstituteById(instId); // Faz a requisição
@@ -70,6 +83,7 @@ export default function Institute() {
       }
     };
 
+    fetchEvents();
     fetchInstitute();
   }, [instId, getInstituteById]);
 
@@ -97,20 +111,6 @@ export default function Institute() {
       {isDeleteModalOpen && <ConfirDelete setIsDeleteModalOpen={setIsDeleteModalOpen} instituteId={instId} />}
 
       <div className="relative w-[70%] flex flex-col py-6 bg-[#2A2A2A] items-center gap-10 px-4">
-        <button className="absolute top-8 left-[32%] text-xl bg-light-purple w-32 h-16 rounded-lg hover:bg-violet duration-100 hover:cursor-pointer" onClick={() => navigate("/institutes")}>
-          <h1 className="text-white text-3xl">Voltar</h1>
-        </button>
-        <button
-          className="absolute top-8 left-[76%] text-xl bg-red-500 w-32 h-16 rounded-lg hover:bg-red-400 duration-100 hover:cursor-pointer"
-          onClick={() => setIsDeleteModalOpen(true)}
-        >
-          <h1 className="text-white text-3xl">Deletar</h1>
-        </button>
-        <Pen
-          size={32}
-          className="absolute top-8 left-[90%] bg-white w-16 h-16 rounded-lg hover:bg-white-purple hover:cursor-pointer"
-          onClick={() => setIsUpdateInstituteModalOpen(true)}
-        />
 
         <div className="flex items-center w-full gap-4">
           <div className="rounded-full h-72 w-72 bg-light-purple flex justify-center items-center">
@@ -120,9 +120,29 @@ export default function Institute() {
               <p className="text-white">Sem logo disponível</p>
             )}
           </div>
-          <div>
-            <h1 className="text-white text-[60px]">{institute.name || "Nome indisponível"}</h1>
-            <p className="text-white text-xl">{institute.description || "Sem descrição"}</p>
+          <div className="flex flex-col h-full pb-14 justify-between flex-grow">
+            <div className="flex flex-row w-full justify-between">
+              <button className="text-xl bg-light-purple w-32 h-16 rounded-lg hover:bg-violet duration-100 hover:cursor-pointer" onClick={() => navigate("/institutes")}>
+                <h1 className="text-white text-3xl">Voltar</h1>
+              </button>
+              <div className="flex gap-6">
+                <button
+                  className="text-xl bg-red-500 w-32 h-16 rounded-lg hover:bg-red-400 duration-100 hover:cursor-pointer"
+                  onClick={() => setIsDeleteModalOpen(true)}
+                >
+                  <h1 className="text-white text-3xl">Deletar</h1>
+                </button>
+                <Pen
+                  size={32}
+                  className="bg-white w-16 h-16 rounded-lg hover:bg-white-purple duration-100 hover:cursor-pointer"
+                  onClick={() => setIsUpdateInstituteModalOpen(true)}
+                />
+              </div>
+            </div>
+            <div>
+              <h1 className="text-white text-[60px]">{institute.name || "Nome indisponível"}</h1>
+              <p className="text-white text-xl">{institute.description || "Sem descrição"}</p>
+            </div>
           </div>
         </div>
 
@@ -186,9 +206,9 @@ export default function Institute() {
           </div>
         </div>
         {institute.events_id.length > 0 ? (
-          institute.events_id.map((eventId) => (
+          events.map((event, eventId) => (
             <div key={eventId} id={eventId}>
-              <EventCard name="Role" imageUrl="url_para_logo.jpg" />
+              <EventCard name={event.name} imageUrl={event.bannerUrl} />
             </div>
           ))
         ) : (

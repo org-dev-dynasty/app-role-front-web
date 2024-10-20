@@ -49,4 +49,18 @@ export class InstituteRepositoryHttp {
       throw new Error("Erro ao deletar instituição: " + error.message);
     }
   }
+
+  async updateInstituteById(id: string, data: any) {
+    try {
+      const resp = await httpEvent.put(
+        `/update-institute-by-id?instituteId=${id}`,
+        data
+      );
+      if (resp) {
+        return resp.data;
+      }
+    } catch (error: any) {
+      throw new Error("Erro ao atualizar instituição: " + error.message);
+    }
+  }
 }

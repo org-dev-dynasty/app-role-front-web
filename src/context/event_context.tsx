@@ -7,6 +7,7 @@ import {
 type EventContextType = {
   getEventById: (id: string) => Promise<EventType>
   editEventById: (event: EventType) => Promise<object>
+  getEventsByInstituteId?: (id: string) => Promise<object>
 }
 
 const defaultInstitute = {
@@ -36,6 +37,9 @@ const defaultInstitute = {
   },
   editEventById: async () => {
     return {}
+  },
+  getEventByInstituteId: async () => {
+    return {}
   }
 }
 
@@ -62,8 +66,17 @@ export function EventContextProvider({ children }: PropsWithChildren) {
     }
   }
 
+  async function getEventsByInstituteId(id: string) {
+    try {
+      const response = await repo.getEventsByInstituteId(id)
+      return response
+    } catch (error: any) {
+      return error
+    }
+  }
+
   return (
-    <EventContext.Provider value={{ getEventById, editEventById }}>
+    <EventContext.Provider value={{ getEventById, editEventById, getEventsByInstituteId }}>
       {children}
     </EventContext.Provider>
   )

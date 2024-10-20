@@ -17,43 +17,34 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
   const [address, setAddress] = useState("");
   const [logoPhoto, setLogoPhoto] = useState<File | null>(null);
   const [galleryPhotos, setGalleryPhotos] = useState<File[]>([]);
-  const [isCreating, setIsCreating] = useState(false); // Estado de controle de criação
+  const [isCreating, setIsCreating] = useState(false);
 
-  // Funções para manipulação dos inputs
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInstituteName(e.target.value);
-  }
+  // Função para aplicar a máscara de telefone
+  const formatPhone = (value: string) => {
+    // Remove todos os caracteres não numéricos
+    const cleaned = value.replace(/\D/g, '');
 
-  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setDescription(e.target.value);
-  }
+    // Limite de 10 dígitos (código de área + número)
+    if (cleaned.length > 14) {
+      return phone; // Retorna o valor anterior se exceder o limite
+    }
 
-  const handleInstituteTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setInstituteType(e.target.value);
-  }
+    // Aplica a máscara de +XX XXXX-XXXX
+    const match = cleaned.match(/^(\d{2})(\d{4})(\d{4})$/);
 
-  const handlePartnerTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setPartnerType(e.target.value);
-  }
+    if (match) {
+      return `+${match[1]} ${match[2]}-${match[3]}`;
+    } else if (cleaned.length <= 10) {
+      return `+${cleaned}`; // Exibe apenas os dígitos disponíveis
+    }
+    return value;
+  };
 
+  // Função para manipular a mudança de telefone e aplicar a máscara
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPhone(e.target.value.replace(/[^0-9]/g, ''));
-  }
-
-  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAddress(e.target.value);
-  }
-
-  const handleLogoPhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setLogoPhoto(e.target.files[0]);
-    }
-  }
-
-  const handleGalleryPhotosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setGalleryPhotos(Array.from(e.target.files));
-    }
+    const input = e.target.value;
+    const formatted = formatPhone(input);
+    setPhone(formatted);
   };
 
   // Função para salvar o instituto
@@ -97,10 +88,6 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
           Utilize os campos abaixo para criar um instituto
         </div>
 
-        {/* Campos para Nome, Descrição, Tipo de Instituto, etc. */}
-
-        
-
         {/* Nome */}
         <fieldset className="mb-4 flex flex-col gap-1 text-white">
           <label className="text-base text-white" htmlFor="instituteName">
@@ -110,7 +97,7 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
             className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
             id="instituteName"
             value={instituteName}
-            onChange={handleNameChange}
+            onChange={(e) => setInstituteName(e.target.value)}
           />
         </fieldset>
 
@@ -123,7 +110,7 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
             className="h-44 px-2 py-2 resize-none bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
             id="description"
             value={description}
-            onChange={handleDescriptionChange}
+            onChange={(e) => setDescription(e.target.value)}
           />
         </fieldset>
 
@@ -138,7 +125,7 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
               id="instituteType"
               className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
               value={instituteType}
-              onChange={handleInstituteTypeChange}
+              onChange={(e) => setInstituteType(e.target.value)}
             >
               <option value="ESTABELECIMENTO_FIXO">Estabelecimento Fixo</option>
               <option value="AGENCIA_DE_FESTAS">Agência de Festas</option>
@@ -155,7 +142,7 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
               id="partnerType"
               className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
               value={partnerType}
-              onChange={handlePartnerTypeChange}
+              onChange={(e) => setPartnerType(e.target.value)}
             >
               <option value="GLOBAL_PARTNER">Parceiro Global</option>
               <option value="PROMOTER_PARTNER">Promotor</option>
@@ -174,12 +161,10 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
             id="phone"
             value={phone}
             onChange={handlePhoneChange}
-            placeholder="(XX) XXXX-XXXX"
-            pattern="\(\d{2}\)\s\d{4,5}-\d{4}"
+            placeholder="+XX XXXX-XXXX"
             inputMode="numeric"
             type="tel"
           />
-
         </fieldset>
 
         {/* Endereço */}
@@ -191,7 +176,7 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
             className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
             id="address"
             value={address}
-            onChange={handleAddressChange}
+            onChange={(e) => setAddress(e.target.value)}
             placeholder="Digite o endereço"
           />
         </fieldset>
@@ -205,7 +190,7 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
             className=" bg-grayInputModal p-2 outline-none rounded-md focus:ring-2 ring-violet"
             id="logoPhoto"
             type="file"
-            onChange={handleLogoPhotoChange}
+            onChange={(e) => e.target.files && setLogoPhoto(e.target.files[0])}
           />
         </fieldset>
 
@@ -225,12 +210,11 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
             Galeria de Imagens
           </label>
           <input
-            className="p-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
+            className="bg-grayInputModal p-2 outline-none rounded-md focus:ring-2 ring-violet"
             id="galleryPhotos"
             type="file"
-            accept="image/*"
             multiple
-            onChange={handleGalleryPhotosChange}
+            onChange={(e) => e.target.files && setGalleryPhotos(Array.from(e.target.files))}
           />
         </fieldset>
 
@@ -240,20 +224,25 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
               <img
                 key={index}
                 src={URL.createObjectURL(photo)}
-                alt={`Imagem ${index + 1}`}
-          className="w-24 h-24 object-cover rounded-md"
-                />
-              ))}
+                alt="Imagem da galeria"
+                className="w-24 h-24 mb-4 object-cover rounded-md"
+              />
+            ))}
         </div>
 
-        {/* Botão para salvar */}
-        <div className="mt-2 flex justify-end">
+        <div className="flex flex-row justify-end gap-4">
           <button
-            className={`inline-flex h-[35px] items-center justify-center rounded px-4 font-medium leading-none text-white ${isCreating ? 'bg-gray-500 cursor-not-allowed' : 'bg-violet hover:bg-violet'}`}
-            onClick={saveInstituteClick}
-            disabled={isCreating} // Desativa o botão durante a criação
+            className="mt-5 inline-flex h-12 items-center justify-center rounded-md bg-red-600 px-6 font-medium text-white"
+            onClick={() => setIsCreateInstituteModalOpen(false)}
           >
-            {isCreating ? <ClipLoader size={20} color="#fff" /> : 'Salvar Instituto'}
+            Cancelar
+          </button>
+          <button
+            className="mt-5 inline-flex h-12 items-center justify-center rounded-md bg-violet px-6 font-medium text-white"
+            onClick={saveInstituteClick}
+            disabled={isCreating}
+          >
+            {isCreating ? <ClipLoader color="white" size={20} /> : "Salvar Instituto"}
           </button>
         </div>
       </div>

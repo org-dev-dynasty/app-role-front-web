@@ -20,6 +20,7 @@ type InstituteContextType = {
     getInstituteById: (id: string) => Promise<object>
     createInstitute?: (data: Institute) => Promise<object>
     deleteInstituteById?: (id: string) => Promise<object>
+    updateInstituteById?: (id: string, data: Institute) => Promise<object>
 }
 
 
@@ -35,6 +36,9 @@ const defaultInstitute = {
         return {}
     },
     deleteInstituteById: async (id: string) => {
+        return {}
+    },
+    updateInstituteById: async (id: string, data: Institute) => {
         return {}
     }
 
@@ -81,8 +85,17 @@ export function InstituteContextProvider({ children }: PropsWithChildren) {
         }
     }
 
+    async function updateInstituteById(id: string, data: Institute) {
+        try {
+            const response = await repo.updateInstituteById(id, data)
+            return response
+        } catch (error: any) {
+            return error
+        }
+    }
+
     return (
-        <InstituteContext.Provider value={{ getAllInstitutes, getInstituteById, createInstitute, deleteInstituteById }}>
+        <InstituteContext.Provider value={{ getAllInstitutes, getInstituteById, createInstitute, deleteInstituteById, updateInstituteById }}>
             {children}
         </InstituteContext.Provider>
     )

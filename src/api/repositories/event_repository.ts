@@ -59,4 +59,18 @@ export class EventRepositoryHttp {
       throw new Error('Erro ao editar evento: ' + error.message)
     }
   }
+
+  async getEventsByInstituteId(id: string) {
+    try {
+      const resp = await httpEvent.get<{ events: EventType[] }>(
+        `/get-all-events-by-filter?institute_id=${id}`
+      );
+
+      if (resp) {
+        return resp.data
+      }
+    } catch (error: any) {
+      throw new Error('Erro ao buscar eventos: ' + error.message)
+    }
+  }
 }
