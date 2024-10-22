@@ -5,6 +5,8 @@ import { EditEventModal } from '../../../components/EditEventModal'
 import { EventContext } from '../../../context/event_context'
 import { useContext, useEffect, useState } from 'react'
 import { Navigate, useParams } from 'react-router-dom'
+import dayjs from 'dayjs'
+import { CreateEventModal } from '../../../components/CreateEventModal'
 
 export default function Role() {
   let { eventId } = useParams()
@@ -23,8 +25,8 @@ export default function Role() {
   const [eventMusicType, setEventMusicType] = useState<string[]>([])
   const [eventMenuLink, setEventMenuLink] = useState<string>()
   const [eventPhotoLink, setEventPhotoLink] = useState<string>()
-  const [eventGaleryLink, setEventGaleryLink] = useState<string>()
-  const [eventPackageType, setEventPackageType] = useState<string>()
+  const [eventGaleryLink, setEventGaleryLink] = useState<string[]>()
+  const [eventPackageType, setEventPackageType] = useState<string[]>()
   const [eventCategory, setEventCategory] = useState<string>()
   const [eventTicketUrl, setEventTicketUrl] = useState<string>()
   const [eventRating, setEventRating] = useState<number>()
@@ -54,6 +56,7 @@ export default function Role() {
       setEventAddress(response.address)
       setEventPrice(response.price)
       setEventDistrict(response.districtId)
+      setEventCategory(response.category)
       setEventInstituteId(response.instituteId)
       setEventFeatures(response.features)
       setEventMusicType(response.musicType)
@@ -65,8 +68,6 @@ export default function Role() {
       setEventTicketUrl(response.ticketUrl)
     }
   }
-
-  
 
   useEffect(() => {
     console.log('Chamando useEffect getEvent:')
@@ -112,12 +113,15 @@ export default function Role() {
 
             <div className="flex text-nowrap flex-col gap-2 text-[#ffffff]">
               <span className="text-2xl">
-                {eventDate?.toString() ?? 'Não informado'}
+                {new Date(eventDate).toLocaleDateString() ?? 'Não informado'}
               </span>
-              <span className="text-xl">Inicio as 22:00 {'GMT -03:00'}</span>
+              <span className="text-xl">
+                Inicio as {dayjs(new Date(eventDate)).format('HH:mm:ss')}
+              </span>
             </div>
 
             <EditEventModal />
+            <CreateEventModal />
           </div>
         </div>
 
@@ -165,8 +169,8 @@ export default function Role() {
           </div>
 
           <div className="flex flex-col gap-4">
-            <EventInfoUnit value="features" label="Características">
-              Música ao vivo, Rodizío
+            <EventInfoUnit value="features" label="Categoria">
+              {eventCategory}
             </EventInfoUnit>
 
             <EventInfoUnit value="ageRange" label="Idade permitida">
