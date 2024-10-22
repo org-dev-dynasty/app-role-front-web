@@ -1,7 +1,7 @@
 import { httpEvent } from '../http'
 
 export interface EventType {
-  eventId: string // ou number, dependendo de como você deseja armazenar
+  eventId?: string // ou number, dependendo de como você deseja armazenar
   name: string
   bannerUrl: string
   address: string
@@ -15,22 +15,28 @@ export interface EventType {
   musicType: string[] // ou um tipo enum, dependendo do uso
   menuLink: string // ou snull, se puder ser opcional
   eventPhotoLink: string // ou null, se puder ser opcional
-  galeryLink: string // ou null, se puder ser opcional
-  packageType: string // ou enum, dependendo do uso
+  galeryLink: string[] // ou null, se puder ser opcional
+  packageType: string[] // ou enum, dependendo do uso
   category: string // ou enum, dependendo do uso
   ticketUrl: string // ou null, se puder ser opcional
-  rating: number
   reviews?: number // opcional, se não houver sempre
 }
 
 export class EventRepositoryHttp {
-  async createEvent() {
+  async createEvent(eventData: EventType) {
     try {
-      const resp = await httpEvent.post('/create-event', {})
+      console.log("eventData", eventData.name)
+
+
+      const resp = await httpEvent.post('/create-event', eventData)
+
+      console.log("resp", resp)
+
 
       if (resp) {
         return resp.data
       }
+
     } catch (error: any) {
       throw new Error('Erro ao criar evento: ' + error.message)
     }
@@ -52,7 +58,7 @@ export class EventRepositoryHttp {
 
   async editEventById(event: EventType) {
     try {
-      const resp = await httpEvent.put(`/edit-event-by-id?eventId=${event.eventId}`, event)
+      const resp = await httpEvent.put(`/update-event?eventId=${event.eventId}`, event)
       
       return resp.data as EventType
     } catch (error: any) {
