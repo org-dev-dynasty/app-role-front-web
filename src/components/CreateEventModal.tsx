@@ -1,173 +1,218 @@
 import * as Dialog from '@radix-ui/react-dialog'
-import { X, CurrencyDollar, Image } from '@phosphor-icons/react'
+import { X, CurrencyDollar, Image, Pencil } from '@phosphor-icons/react'
 import { Rating } from 'react-simple-star-rating'
-import React, { useState } from 'react'
+import { useContext, useState } from 'react'
+import { EventType } from '../api/repositories/event_repository'
+import { EventContext } from '../context/event_context'
+import { MultiValue } from 'react-select'
+import { MultiSelectComponent, OptionsType } from './MultiSelect'
+import { z } from 'zod'
 
 export function CreateEventModal() {
-  // const [name, setName] = useState<string>()
-  // const [description, setDescription] = useState<string>()
-  // const [address, setAddress] = useState<string>()
-  // const [date, setDate] = useState<Date>()
-  // const [priceAvg, setPriceAvg] = useState<number>()
-  // const [category, setCategory] = useState<string>()
-  // const [age, setAge] = useState<string>()
-  // const [musicType, setMusicType] = useState<string>()
-  // const [eventStatus, setEventStatus] = useState<string>()
+  const [name, setName] = useState<string>()
+  const [description, setDescription] = useState<string>()
+  const [address, setAddress] = useState<string>()
+  const [date, setDate] = useState<Date>()
+  const [priceAvg, setPriceAvg] = useState<number>()
+  const [category, setCategory] = useState<string>('BALADA')
+  const [age, setAge] = useState<string>('ADULT')
+  const [musicType, setMusicType] = useState<string[]>()
+  const [ticketUrl, setTicketUrl] = useState<string>()
+  const [eventStatus, setEventStatus] = useState<string>("ACTIVE")
+  const [currentDistrict, setCurrentDistrict] = useState<string>()
+  
+  const [selectedFeaturesOnSel, setSelectedFeaturesOnSel] = useState<MultiValue<OptionsType> | null>(null)
+  const [selectedMusic, setSelectedMusic] = useState<MultiValue<OptionsType> | null>(null)
+  const [selectedPackagesOnSel, setSelectedPackagesOnSel] = useState<MultiValue<OptionsType> | null>(null)
 
-  const [currentDistrict, setCurrentDistrict] = useState<number>(0)
+  const [selectedMusics, setSelectedMusics] = useState<string[]>([''])
+  const [selectedFeatures, setSelectedFeatures] = useState<string[]>([''])
+  const [selectedPackages, setSelectedPackages] = useState<string[]>([''])
 
-  function mudou(e: React.ChangeEvent<HTMLSelectElement>) {
-    setCurrentDistrict(parseInt(e.target.value))
 
-    console.log(Distritos[currentDistrict].neighborhoods)
+  const { createEvent } = useContext(EventContext)
+
+  async function createEventRequest() {
+    try {
+      const eventBodySchema = z.object({
+        name: z.string().min(5).max(30),
+        description: z.string().min(5),
+        address: z.string().max(70),
+        eventDate: z.string().datetime(),
+        price: z.number().min(1).max(5),
+        category: z.string(),
+        ageRange: z.string(),
+        musicType: z.array(z.string()),
+        bannerUrl: z.string().url(),
+        districtId: z.string(),
+        instituteId: z.string(),
+        features: z.array(z.string()),
+        menuLink: z.string(),
+        eventPhotoLink: z.string(),
+        galeryLink: z.array(z.string()),
+        packageType: z.array(z.string()),
+        ticketUrl: z.string(),
+        eventStatus: z.string()
+      })
+
+      const eventBody = {
+        name: name,
+        description: description,
+        address: address,
+        eventDate: date,
+        price: priceAvg,
+        category: category,
+        ageRange: age,
+        musicType: selectedMusics,
+        bannerUrl: 'https://via.placeholder.com/300',
+        districtId: currentDistrict,
+        instituteId: '2f3073ac-3633-4fc7-9cfe-c2084399bbc3',
+        features: selectedFeatures,
+        menuLink: 'https://www.example.com.br/menu',
+        eventPhotoLink: 'https://via.placeholder.com/300',
+        galeryLink: ['https://www.example.com.br/galeria'],
+        packageType: selectedPackages,
+        ticketUrl: ticketUrl,
+        eventStatus: eventStatus
+      }
+
+      await createEvent(eventBodySchema.parse(eventBody))
+
+      //reload page
+      // window.location.reload()
+
+      console.log('evento criado:', eventBody)
+    } catch (error) {
+      alert('Erro ao criar evento')
+
+      console.log(error)
+    }
   }
 
-  const Distritos = [
-    {
-      name: 'Zona Sul',
-      neighborhoods: [
-        'Jabaquara',
-        'Vila Mariana',
-        'Moema',
-        'Itaim Bibi',
-        'Campo Belo',
-        'Brooklin',
-        'Vila Olímpia',
-        'Santo Amaro',
-        'Socorro',
-        'Campo Grande',
-        'Cidade Dutra',
-        'Interlagos',
-        'Capela do Socorro',
-        'Jardim Ângela',
-        'Parelheiros',
-        'Grajaú',
-        'Capão Redondo',
-        'Campo Limpo',
-        'Vila Andrade',
-        'Morumbi',
-        'Jardins',
-        'Paraisópolis'
-      ]
-    },
+  // useEffect(() => {
+  //   console.log('Chamando useEffect getEvent:')
 
-    {
-      name: 'Zona Norte',
-      neighborhoods: [
-        'Casa Verde',
-        'Limão',
-        'Santana',
-        'Tucuruvi',
-        'Mandaqui',
-        'Vila Guilherme',
-        'Vila Maria',
-        'Vila Medeiros',
-        'Jaçanã',
-        'Tremembé',
-        'Horto Florestal',
-        'Freguesia do Ó',
-        'Pirituba',
-        'Brasilândia',
-        'Perus',
-        'Anhanguera',
-        'Jaraguá',
-        'Cachoeirinha'
-      ]
-    },
+  //   // setEventStatus(response?.eventStatus)
+  // }, [])
 
-    {
-      name: 'Zona Leste',
-      neighborhoods: [
-        'Tatuapé',
-        'Vila Carrão',
-        'Vila Formosa',
-        'Penha',
-        'Vila Matilde',
-        'Itaquera',
-        'São Mateus',
-        'Vila Prudente',
-        'São Lucas',
-        'Sapopemba',
-        'Cidade Tiradentes',
-        'Parque do Carmo',
-        'São Miguel Paulista',
-        'Ermelino Matarazzo',
-        'Vila Jacuí',
-        'Iguatemi',
-        'Jardim Helena',
-        'Cangaíba',
-        'Artur Alvim',
-        'Guaianases',
-        'Lajeado'
-      ]
-    },
 
-    {
-      name: 'Zona Oeste',
-      neighborhoods: [
-        'Pinheiros',
-        'Vila Madalena',
-        'Butantã',
-        'Perdizes',
-        'Barra Funda',
-        'Lapa',
-        'Vila Leopoldina',
-        'Jaguaré',
-        'Rio Pequeno',
-        'Raposo Tavares',
-        'Jardim Bonfiglioli',
-        'Cidade Universitária',
-        'Sumaré',
-        'Pacaembu',
-        'Alto de Pinheiros'
-      ]
-    },
 
-    {
-      name: 'Centro',
-      neighborhoods: [
-        'Sé',
-        'República',
-        'Bela Vista',
-        'Liberdade',
-        'Consolação',
-        'Santa Cecília',
-        'Brás',
-        'Bom Retiro',
-        'Cambuci',
-        'Glicério',
-        'Higienópolis'
-      ]
-    }
+
+  const handleChange = (selected: MultiValue<OptionsType>) => {
+    setSelectedMusic(selected)
+
+    setSelectedMusics(selected.map(option => option.value))
+
+    console.log(selectedMusic)
+  }
+
+  const handleFeaturesSelectChange = (selected: MultiValue<OptionsType>) => {
+    setSelectedFeaturesOnSel(selected)
+
+    setSelectedFeatures(selected.map(option => option.value))
+
+    console.log(selectedFeatures)
+  }
+
+  const handlePackageTypeSelectChange = (selected: MultiValue<OptionsType>) => {
+    setSelectedPackagesOnSel(selected)
+
+    setSelectedPackages(selected.map(option => option.value))
+
+    console.log(selectedPackagesOnSel)
+  }
+
+  const categories = [
+    { key: 'BALADA', value: 'Balada' },
+    { key: 'UNIVERSITARIO', value: 'Universitário' },
+    { key: 'BAR', value: 'Bar' },
+    { key: 'BAR_BALADA', value: 'Bar Balada' },
+    { key: 'SHOW', value: 'Show' },
+    { key: 'FESTIVAL', value: 'Festival' },
+    { key: 'FESTA', value: 'Festa' }
   ]
 
-  const musicTypes = {
-    Types: [
-      'Funk',
-      'Sertanejo',
-      'Trap',
-      'Eletrônica',
-      'Pagode',
-      'Rock',
-      'Rap',
-      'Reggae',
-      'Forro',
-      'MPB'
-    ]
-  }
+  const status = [
+    { value: 'ACTIVE', label: '🟢 Ativo' },
+    { value: 'INACTIVE', label: '🔴 Inativo' }
+  ]
+
+  const features = [
+    { value: 'ESTACIONAMENTO', label: 'Estacionamento' },
+    { value: 'FUMODROMO', label: 'Fumodromo' },
+    { value: 'VALET', label: 'Valet' },
+    { value: 'AREA_ABERTA', label: 'Area aberta' },
+    { value: 'WELCOME_SHOT', label: 'Welcome shot' },
+    { value: 'MESAS', label: 'Mesas' },
+    { value: 'OPEN_BAR', label: 'Open bar' },
+    { value: 'AO_VIVO', label: 'Ao vivo' },
+    { value: 'ESQUENTA', label: 'Esquenta' },
+    { value: 'AFTER', label: 'After' }
+  ]
+
+  const packageTypeArray = [
+    { value: 'COMBO', label: 'Combo' },
+    { value: 'ANIVERSARIO', label: 'Aniversario' },
+    { value: 'CAMAROTE', label: 'Camarote' }
+  ]
+
+  const ageCategories = [
+    { label: '18-20', value: 'Adolescent' },
+    { label: '21-25', value: 'Young Adult' },
+    { label: '26-30', value: 'Adult' },
+    { label: '31-40', value: 'Mature Adult' },
+    { label: '40+', value: 'Senior' },
+    { label: 'TODAS', value: 'All Ages' }
+  ]
+
+  const districts = [
+    {
+      districtName: "Zona Sul",
+      districtId: "ee6ba030-cebc-405b-b3e3-08f213cca415"
+    },
+    {
+      districtName: "Zona Norte",
+      districtId: "5e3e0505-2b29-462d-91fc-d9f538ee8186"
+    },
+    {
+      districtName: "Zona Leste",
+      districtId: "7d6b8023-2d03-4623-bc33-ebf58767c9b1"
+    },
+    {
+      districtName: "Zona Oeste",
+      districtId: "1477c1ff-bdb4-4e38-8415-b2da7163b3f7"
+    },
+    {
+      districtName: "Centro",
+      districtId: "90fec991-6d11-4813-9482-343ebdca5514"
+    }
+  ];
+
+  const options = [
+    { value: 'FUNK', label: 'Funk' },
+    { value: 'SERTANEJO', label: 'Sertanejo' },
+    { value: 'TRAP', label: 'Trap' },
+    { value: 'ELETRONICA', label: 'Eletrônica' },
+    { value: 'PAGODE', label: 'Pagode' },
+    { value: 'ROCK', label: 'Rock' },
+    { value: 'RAP', label: 'Rap' },
+    { value: 'REGGAE', label: 'Reggae' },
+    { value: 'FORRO', label: 'Forró' },
+    { value: 'MPB', label: 'MPB' }
+  ]
 
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <button className="h-[35px] items-center justify-center rounded bg-grayModal px-[15px] font-medium leading-none text-violet11 shadow-[0_2px_10px] shadow-blackA4 hover:bg-mauve3 focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none">
-          Edit profile
+        <button className="w-fit px-8 py-4 text-2xl rounded-lg bg-purple flex text-center gap-2">
+          <Pencil className="self-center" /> Criar ROLE
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/50 data-[state=open]:animate-overlayShow" />
         <Dialog.Content className="fixed overflow-y-auto left-1/2 top-1/2 max-h-[85vh] w-[90vw] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-grayModal p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow">
           <Dialog.Title className="m-0 text-3xl font-medium text-white">
-            Criar <span className="text-violet">ROLE</span>
+            Editar <span className="text-violet">ROLE</span>
           </Dialog.Title>
           <Dialog.Description className="mb-5 mt-2.5 text-[15px] leading-normal text-stone-300">
             Utilize os campos abaixos para criar o seu melhor ROLE!
@@ -180,6 +225,7 @@ export function CreateEventModal() {
             <input
               className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
               id="roleName"
+              onChange={e => setName(e.target.value)}
             />
           </fieldset>
 
@@ -190,6 +236,7 @@ export function CreateEventModal() {
             <textarea
               className="h-24 px-2 py-2 resize-none bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
               id="description"
+              onChange={e => setDescription(e.target.value)}
             />
           </fieldset>
 
@@ -200,6 +247,7 @@ export function CreateEventModal() {
             <input
               className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
               id="adress"
+              onChange={e => setAddress(e.target.value)}
             />
           </fieldset>
 
@@ -207,10 +255,14 @@ export function CreateEventModal() {
             <label className="text-base text-white" htmlFor="date">
               Data
             </label>
-            <input
+            <input  
               className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet "
               id="date"
               type="datetime-local"
+              onChange={e => {
+                setDate(new Date(e.target.value))
+                console.log(e.target.value, date)
+              }}
             />
           </fieldset>
 
@@ -218,9 +270,9 @@ export function CreateEventModal() {
             <div className="flex flex-col gap-1">
               <label className="text-base text-white">Preço médio</label>
               <Rating
+                onClick={e => setPriceAvg(e)}
                 allowFraction={false}
                 emptyIcon={<CurrencyDollar size={32} className="inline" />}
-                initialValue={3}
                 fillIcon={
                   <CurrencyDollar size={32} className="inline fill-green-700" />
                 }
@@ -235,16 +287,15 @@ export function CreateEventModal() {
                 name="category"
                 id="category"
                 className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
+                onChange={e => setCategory(e.target.value)}
               >
-                <option className="outline-none" value="concert">
-                  Show
-                </option>
-                <option className="outline-none" value="club">
-                  Balada
-                </option>
-                <option className="outline-none" value="festival">
-                  Festival
-                </option>
+                {categories.map((category, index) => {
+                  return (
+                    <option value={category.key} key={index}>
+                      {category.value}
+                    </option>
+                  )
+                })}
               </select>
             </div>
 
@@ -257,12 +308,17 @@ export function CreateEventModal() {
                 id="age"
                 className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
               >
-                <option className="outline-none" value="all">
-                  Todas as idades
-                </option>
-                <option className="outline-none" value="legalAge">
-                  18+
-                </option>
+                {ageCategories.map((ageCategory, index) => {
+                  return (
+                    <option
+                      value={ageCategory.value}
+                      key={index}
+                      onChange={() => setAge(ageCategory.value)}
+                    >
+                      {ageCategory.label}
+                    </option>
+                  )
+                })}
               </select>
             </div>
           </fieldset>
@@ -272,19 +328,22 @@ export function CreateEventModal() {
               <label className="text-base text-white" htmlFor="musicType">
                 Tipo de música
               </label>
-              <select
+
+              {/* <select
                 name="musicType"
                 id="musicType"
                 className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
               >
-                {musicTypes.Types.map((types, index) => {
+                {options.map((types, index) => {
                   return (
                     <option value={index} key={index}>
-                      {musicTypes.Types[index]}
+                      {options[index].label}
                     </option>
                   )
                 })}
-              </select>
+              </select> */}
+
+              <MultiSelectComponent onChange={handleChange} options={options} />
             </div>
 
             <div className="flex flex-col gap-1 w-1/3">
@@ -295,16 +354,15 @@ export function CreateEventModal() {
                 name="category"
                 id="category"
                 className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
+                onChange={e => setEventStatus(e.target.value)}
               >
-                <option className="outline-none" value="active">
-                  {'🟢 Ativo'}
-                </option>
-                <option className="outline-none" value="inactive">
-                  {'🔴 Inativo'}
-                </option>
-                <option className="outline-none" value="maintenance">
-                  {'🟡 Manutenção'}
-                </option>
+                {status.map((status, index) => {
+                  return (
+                    <option value={status.value} key={index}>
+                      {status.label}
+                    </option>
+                  )
+                })}
               </select>
             </div>
           </fieldset>
@@ -317,35 +375,47 @@ export function CreateEventModal() {
               className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
               id="ticketLink"
               placeholder="https://www.example.com.br/ingressos/"
+              onChange={e => setTicketUrl(e.target.value)}
             />
           </fieldset>
 
           <fieldset className="mb-4 flex w-full justify-between flex-row gap-8 text-white">
-            <div className="flex flex-col gap-1  w-1/2">
-              <label className="text-base text-white" htmlFor="district">
-                Distrito
-              </label>
-              <select
-                name="district"
-                id="district"
-                className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
-                onChange={mudou}
-              >
-                {Distritos.map((types, index) => {
-                  return (
-                    <option
-                      value={index}
-                      defaultValue={currentDistrict}
-                      key={index}
-                    >
-                      {Distritos[index].name}
-                    </option>
-                  )
-                })}
-              </select>
+            <div className="flex gap-4 w-full">
+              <div className="flex flex-col gap-1 w-full">
+                <label className="text-base text-white" htmlFor="district">
+                  Distrito
+                </label>
+                <select
+                  name="district"
+                  id="district"
+                  className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
+                  onChange={(e) => setCurrentDistrict(e.target.value)}
+                >
+                  {districts.map((district, index) => {
+                    return (
+                      <option
+                        value={districts[index].districtId}
+                        key={index}
+                        // onChange={() => setCurrentDistrict(1)}
+                      >
+                        {districts[index].districtName}
+                      </option>
+                    )
+                  })}
+                </select>
+              </div>
+
+              <div className="flex flex-col w-full gap-1">
+                <label className="text-base text-white">Features</label>
+
+                <MultiSelectComponent
+                  onChange={handleFeaturesSelectChange}
+                  options={features}
+                />
+              </div>
             </div>
 
-            <div className="flex flex-col gap-1 w-1/2">
+            {/* <div className="flex flex-col gap-1 w-1/2">
               <label className="text-base text-white" htmlFor="age">
                 Bairro
               </label>
@@ -364,11 +434,20 @@ export function CreateEventModal() {
                   }
                 )}
               </select>
-            </div>
+            </div> */}
+          </fieldset>
+
+          <fieldset className="mb-4 flex flex-col gap-1 text-white">
+            <label className="text-base text-white">Pacotes</label>
+
+            <MultiSelectComponent
+              onChange={handlePackageTypeSelectChange}
+              options={packageTypeArray}
+            />
           </fieldset>
 
           <div className="mb-4 flex text-white justify-around gap-2">
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col w-1/3">
               <label
                 className="border flex rounded-md aspect-video cursor-pointer border-dashed text-sm flex-col gap-2 items-center justify-center "
                 htmlFor="bannerImage"
@@ -383,7 +462,7 @@ export function CreateEventModal() {
               />
             </div>
 
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col w-1/3">
               <label
                 className="border flex rounded-md aspect-video cursor-pointer border-dashed text-sm flex-col gap-2 items-center justify-center"
                 htmlFor="eventImage"
@@ -401,7 +480,10 @@ export function CreateEventModal() {
 
           <div className="mt-2 flex justify-end">
             <Dialog.Close asChild>
-              <button className="inline-flex h-[35px] items-center justify-center rounded bg-violet px-4 font-medium leading-none text-white  hover:bg-violet focus:shadow-[0_0_0_2px] focus:shadow-purple focus:outline-none">
+              <button
+                onClick={createEventRequest}
+                className="inline-flex h-[35px] items-center justify-center rounded bg-violet px-4 font-medium leading-none text-white  hover:bg-violet focus:shadow-[0_0_0_2px] focus:shadow-purple focus:outline-none"
+              >
                 Salvar Role
               </button>
             </Dialog.Close>
