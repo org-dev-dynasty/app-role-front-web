@@ -38,7 +38,7 @@ export function CreateEventModal() {
         name: z.string().min(5).max(30),
         description: z.string().min(5),
         address: z.string().max(70),
-        eventDate: z.string().datetime(),
+        eventDate: z.date(),
         price: z.number().min(1).max(5),
         category: z.string(),
         ageRange: z.string(),
