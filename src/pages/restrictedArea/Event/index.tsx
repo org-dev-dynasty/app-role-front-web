@@ -1,12 +1,13 @@
-import { CurrencyDollar } from '@phosphor-icons/react'
+import { CurrencyDollar, Eye } from '@phosphor-icons/react'
 import { Rating } from 'react-simple-star-rating'
 import { EventInfoUnit } from '../../../components/EventInfoUnit'
 import { EditEventModal } from '../../../components/EditEventModal'
 import { EventContext } from '../../../context/event_context'
 import { useContext, useEffect, useState } from 'react'
-import { Navigate, useParams } from 'react-router-dom'
+import { Link, Navigate, useParams } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { CreateEventModal } from '../../../components/CreateEventModal'
+import { features } from '../../../assets/options'
 
 export default function Role() {
   let { eventId } = useParams()
@@ -77,7 +78,7 @@ export default function Role() {
 
   return (
     <div className="bg-[#151515] w-screen h-screen text-white">
-      <div className="flex flex-col max-w-[1600px] mx-auto bg-[#151515] h-screen">
+      <div className="flex flex-col max-w-[1600px] mx-auto bg-[#151515]">
         <div className="flex p-4 mt-6 w-full">
           <div className="w-80 h-80">
             <img
@@ -122,6 +123,9 @@ export default function Role() {
 
             <EditEventModal />
             <CreateEventModal />
+            <Link to={`/Institute/${eventInstituteId}`} className="w-fit px-8 py-4 text-2xl rounded-lg bg-purple flex text-center gap-2">
+              <Eye className='self-center'/> Ver instituto
+            </Link>
           </div>
         </div>
 
@@ -150,13 +154,22 @@ export default function Role() {
             </EventInfoUnit>
 
             <EventInfoUnit value="musicType" label="Tipo de música">
-              {eventMusicType?.join(', ') ?? 'Não informado'}
+              {eventMusicType
+                .map(
+                  word =>
+                    word.toLowerCase().charAt(0).toUpperCase() +
+                    word.slice(1).toLowerCase()
+                )
+                .join(', ')}
             </EventInfoUnit>
           </div>
 
           <div className="flex flex-col gap-4">
             <EventInfoUnit value="features" label="Características">
-              {eventFeatures}
+              {features
+                .filter(feature => eventFeatures.includes(feature.value)) // Filtra os objetos com os valores selecionados
+                .map(feature => feature.label)
+                .join(', ')}
             </EventInfoUnit>
 
             <EventInfoUnit value="ticketUrl" label="Link para ingressos">
