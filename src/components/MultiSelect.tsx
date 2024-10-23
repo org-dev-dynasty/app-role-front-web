@@ -1,21 +1,21 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react';
 import Select, {
   ClearIndicatorProps,
   CSSObjectWithLabel,
   MultiValue,
   GroupBase,
-  StylesConfig
-} from 'react-select'
+  StylesConfig,
+} from 'react-select';
 
 export interface OptionsType {
-  value: string
-  label: string
+  value: string;
+  label: string;
 }
 
 export interface OptionsProps {
-  options: MultiValue<OptionsType>
-  onChange: (value: MultiValue<OptionsType>) => void
-  defaultValue?: string[]
+  options: MultiValue<OptionsType>; // Single array of options, not MultiValue
+  onChange: (value: MultiValue<OptionsType>) => void;
+  defaultValue?: string[]; // Array of string values
 }
 
 const customStyles: StylesConfig<OptionsType, true, GroupBase<OptionsType>> = {
@@ -26,28 +26,28 @@ const customStyles: StylesConfig<OptionsType, true, GroupBase<OptionsType>> = {
     flexWrap: 'nowrap',
     border: 'none',
     color: '#fff',
-    caretColor: '#fff'
+    caretColor: '#fff',
   }),
   menu: (provided: CSSObjectWithLabel) => ({
     ...provided,
-    background: '#616161'
+    background: '#616161',
   }),
   clearIndicator: (provided: CSSObjectWithLabel) => ({
     ...provided,
-    color: '#fff'
+    color: '#fff',
   }),
   dropdownIndicator: (provided: CSSObjectWithLabel) => ({
     ...provided,
-    color: '#fff'
+    color: '#fff',
   }),
   multiValue: (provided: CSSObjectWithLabel) => ({
     ...provided,
     background: '#8f8f8f',
-    color: '#fff'
+    color: '#fff',
   }),
   multiValueLabel: (provided: CSSObjectWithLabel) => ({
     ...provided,
-    color: '#fff'
+    color: '#fff',
   }),
   option: (provided: CSSObjectWithLabel, state) => ({
     ...provided,
@@ -55,49 +55,46 @@ const customStyles: StylesConfig<OptionsType, true, GroupBase<OptionsType>> = {
       ? '#454545 !important'
       : state.isFocused
       ? '#454545 !important'
-      : 'transparent'
+      : 'transparent',
   }),
-}
+};
 
 export function MultiSelectComponent(props: OptionsProps) {
-  const [selectedMusic, setSelectedMusic] =
-    useState<MultiValue<OptionsType> | null>(null)
+  const [selectedMusic, setSelectedMusic] = useState<MultiValue<OptionsType>>([]);
 
+  // Memoizing the options based on defaultValue
+  const selectedOptions = useMemo(() => {
+    if (props.defaultValue) {
+      return props.options.filter(option =>
+        props.defaultValue?.includes(option.value)
+      );
+    }
+    return [];
+  }, [props.defaultValue, props.options]);
+
+  useEffect(() => {
+    setSelectedMusic(selectedOptions); // Initialize the selected music based on defaultValue
+  }, [selectedOptions]);
 
   const handleChange = (selected: MultiValue<OptionsType>) => {
-    setSelectedMusic(selected)
-    props.onChange(selected)
-  }
-
-  const [selectedOptions, setSelectedOptions] = useState<MultiValue<OptionsType> | null>(null)
-
-
-  if (props.defaultValue) {
-    const selectedLabels = props.defaultValue; // Apenas os labels das opções selecionadas
-    const sel = props.options.filter(option => selectedLabels.includes(option.value))
-
-
-    // Encontra as opções correspondentes pelos labels
-    setSelectedOptions(sel);
-  }
-
-
+    setSelectedMusic(selected);
+    props.onChange(selected);
+  };
 
   return (
     <div className="text-white">
       <Select
-        defaultValue={selectedOptions}
-        value={selectedMusic}
+        value={selectedMusic} // Uses selectedMusic state as value
         onChange={handleChange}
         isMulti
         getOptionLabel={(option: OptionsType) => option.label}
         getOptionValue={(option: OptionsType) => option.value}
-        options={[props]}
+        options={props.options} // Passes correct options array
         isClearable={true}
         backspaceRemovesValue={true}
         placeholder="Selecione um ou mais valores"
         styles={customStyles}
       />
     </div>
-  )
+  );
 }
