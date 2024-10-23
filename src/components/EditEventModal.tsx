@@ -12,6 +12,7 @@ import { MultiSelectComponent, OptionsType } from './MultiSelect'
 import { EventInfoUnit } from './EventInfoUnit'
 import { z } from 'zod'
 import dayjs from 'dayjs'
+import { categories, ageCategories, features, packageTypeArray, status } from '../assets/options'
 
 interface MusicType {
   value: string
@@ -77,6 +78,9 @@ export function EditEventModal() {
       setMusicType(res.musicType)
       setPriceAvg(res.price)
       setTicketUrl(res.ticketUrl)
+      setSelectedMusics(res.musicType)
+      setSelectedFeatures(res.features)
+      setSelectedPackages(res.packageType)
 
       console.log(name)
       // setEventStatus(response?.eventStatus)
@@ -93,7 +97,7 @@ export function EditEventModal() {
         name: z.string(),
         description: z.string(),
         address: z.string(),
-        eventDate: z.date()/*z.string().datetime()*/,
+        eventDate: z.date() /*z.string().datetime()*/,
         price: z.number(),
         category: z.string(),
         ageRange: z.string(),
@@ -114,7 +118,7 @@ export function EditEventModal() {
         name: name,
         description: description,
         address: address,
-        eventDate: date/*date*/,
+        eventDate: date /*date*/,
         price: priceAvg,
         category: category,
         ageRange: age,
@@ -300,7 +304,7 @@ export function EditEventModal() {
 
     setSelectedMusics(selected.map(option => option.value))
 
-    console.log(selectedMusic)
+    console.log(selectedMusics)
   }
 
   const handleFeaturesSelectChange = (selected: MultiValue<OptionsType>) => {
@@ -331,48 +335,7 @@ export function EditEventModal() {
     return x
   }
 
-  const categories = [
-    { key: 'BALADA', value: 'Balada' },
-    { key: 'UNIVERSITARIO', value: 'Universitário' },
-    { key: 'BAR', value: 'Bar' },
-    { key: 'BAR_BALADA', value: 'Bar Balada' },
-    { key: 'SHOW', value: 'Show' },
-    { key: 'FESTIVAL', value: 'Festival' },
-    { key: 'FESTA', value: 'Festa' }
-  ]
 
-  const status = [
-    { value: 'ACTIVE', label: '🟢 Ativo' },
-    { value: 'INACTIVE', label: '🔴 Inativo' }
-  ]
-
-  const features = [
-    { value: 'ESTACIONAMENTO', label: 'Estacionamento' },
-    { value: 'FUMODROMO', label: 'Fumodromo' },
-    { value: 'VALET', label: 'Valet' },
-    { value: 'AREA_ABERTA', label: 'Area aberta' },
-    { value: 'WELCOME_SHOT', label: 'Welcome shot' },
-    { value: 'MESAS', label: 'Mesas' },
-    { value: 'OPEN_BAR', label: 'Open bar' },
-    { value: 'AO_VIVO', label: 'Ao vivo' },
-    { value: 'ESQUENTA', label: 'Esquenta' },
-    { value: 'AFTER', label: 'After' }
-  ]
-
-  const packageTypeArray = [
-    { value: 'COMBO', label: 'Combo' },
-    { value: 'ANIVERSARIO', label: 'Aniversario' },
-    { value: 'CAMAROTE', label: 'Camarote' }
-  ]
-
-  const ageCategories = [
-    { label: '18-20', value: 'Adolescent' },
-    { label: '21-25', value: 'Young Adult' },
-    { label: '26-30', value: 'Adult' },
-    { label: '31-40', value: 'Mature Adult' },
-    { label: '40+', value: 'Senior' },
-    { label: 'TODAS', value: 'All Ages' }
-  ]
 
   return (
     <Dialog.Root>
@@ -447,7 +410,9 @@ export function EditEventModal() {
               className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet "
               id="date"
               type="datetime-local"
-              defaultValue={convertToDateTimeLocalString(new Date(response?.eventDate ?? new Date()))}
+              defaultValue={convertToDateTimeLocalString(
+                new Date(response?.eventDate ?? new Date())
+              )}
               // onChange={e => {
               //   setDate(new Date(e.target.value).toISOString())
               //   console.log(e.target.value, date)
@@ -515,26 +480,31 @@ export function EditEventModal() {
           </fieldset>
 
           <fieldset className="mb-4 flex w-full justify-between flex-row gap-8 text-white">
-            <div className="flex flex-col gap-1  w-2/3">
-              <label className="text-base text-white" htmlFor="musicType">
-                Tipo de música
-              </label>
-
-              {/* <select
-                name="musicType"
-                id="musicType"
-                className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
-              >
-                {options.map((types, index) => {
-                  return (
-                    <option value={index} key={index}>
-                      {options[index].label}
-                    </option>
-                  )
-                })}
-              </select> */}
-
-              <MultiSelectComponent onChange={handleChange} options={options} />
+            <div className="flex gap-4 w-full">
+              <div className="flex flex-col gap-1 w-full">
+                <label className="text-base text-white" htmlFor="district">
+                  Distrito
+                </label>
+                <select
+                  name="district"
+                  id="district"
+                  className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
+                  onChange={mudou}
+                >
+                  {Distritos.map((types, index) => {
+                    return (
+                      <option
+                        value={index}
+                        defaultValue={currentDistrict}
+                        key={index}
+                        // onChange={() => setCurrentDistrict(1)}
+                      >
+                        {Distritos[index].name}
+                      </option>
+                    )
+                  })}
+                </select>
+              </div>
             </div>
 
             <div className="flex flex-col gap-1 w-1/3">
@@ -571,69 +541,37 @@ export function EditEventModal() {
             />
           </fieldset>
 
-          <fieldset className="mb-4 flex w-full justify-between flex-row gap-8 text-white">
-            <div className="flex gap-4 w-full">
-              <div className="flex flex-col gap-1 w-full">
-                <label className="text-base text-white" htmlFor="district">
-                  Distrito
-                </label>
-                <select
-                  name="district"
-                  id="district"
-                  className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
-                  onChange={mudou}
-                >
-                  {Distritos.map((types, index) => {
-                    return (
-                      <option
-                        value={index}
-                        defaultValue={currentDistrict}
-                        key={index}
-                        // onChange={() => setCurrentDistrict(1)}
-                      >
-                        {Distritos[index].name}
-                      </option>
-                    )
-                  })}
-                </select>
-              </div>
-
-              <div className="flex flex-col w-full gap-1">
-                <label className="text-base text-white">Features</label>
-
-                <MultiSelectComponent
-                  onChange={handleFeaturesSelectChange}
-                  options={features}
-                />
-              </div>
-            </div>
-
-            {/* <div className="flex flex-col gap-1 w-1/2">
-              <label className="text-base text-white" htmlFor="age">
-                Bairro
+          <fieldset>
+            <div className="flex flex-col gap-1">
+              <label className="text-base text-white" htmlFor="musicType">
+                Tipo de música
               </label>
-              <select
-                name="category"
-                id="category"
-                className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
-              >
-                {Distritos[currentDistrict].neighborhoods.map(
-                  (neighborhood, index) => {
-                    return (
-                      <option value={index} key={index}>
-                        {Distritos[currentDistrict].neighborhoods[index]}
-                      </option>
-                    )
-                  }
-                )}
-              </select>
-            </div> */}
+
+              <MultiSelectComponent
+                defaultValue={selectedMusics}
+                onChange={handleChange}
+                options={options}
+              />
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <div className="flex flex-col w-full gap-1">
+              <label className="text-base text-white">Features</label>
+
+              <MultiSelectComponent
+                defaultValue={selectedFeatures}
+                onChange={handleFeaturesSelectChange}
+                options={features}
+              />
+            </div>
           </fieldset>
 
           <fieldset className="mb-4 flex flex-col gap-1 text-white">
             <label className="text-base text-white">Pacotes</label>
 
             <MultiSelectComponent
+              defaultValue={selectedPackages}
               onChange={handlePackageTypeSelectChange}
               options={packageTypeArray}
             />
