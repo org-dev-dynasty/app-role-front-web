@@ -68,7 +68,7 @@ export class InstituteRepositoryHttp {
       throw new Error("Erro ao atualizar instituição: " + error.message);
     }
   }
-
+  
   async uploadInstituteImage(id: string, data: any) {
     try {
       const resp = await httpEvent.post(

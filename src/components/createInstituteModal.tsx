@@ -11,6 +11,7 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
   const [isVisible, setIsVisible] = useState(false); // Estado para controlar a visibilidade do modal
   const { createInstitute, uploadInstituteImage } = useContext(InstituteContext);
   const [instituteName, setInstituteName] = useState("");
+  const [err, setErr] = useState("");
   const [description, setDescription] = useState("");
   const [instituteType, setInstituteType] = useState("ESTABELECIMENTO_FIXO");
   const [partnerType, setPartnerType] = useState("GLOBAL_PARTNER");
@@ -47,6 +48,10 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
 
   const saveInstituteClick = async () => {
     if (isCreating) return; // Impede cliques múltiplos
+    if (!instituteName || !description) {
+      setErr("Preencha o nome e a descrição do instituto");
+      return;
+    }
     setIsCreating(true);
 
     const data = {
@@ -118,12 +123,13 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
             Nome
           </label>
           <input
-            className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
+            className={`h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet ${err && !instituteName ? 'border-solid border-2 border-red-500 ring-transparent' : ''}`}
             id="instituteName"
             value={instituteName}
             onChange={(e) => setInstituteName(e.target.value)}
           />
         </fieldset>
+        {err && !instituteName && <div className="text-red-500 text-sm mb-4">{err}</div>}
 
         {/* Descrição */}
         <fieldset className="mb-4 flex flex-col gap-1 text-white">
@@ -131,12 +137,13 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
             Descrição
           </label>
           <textarea
-            className="h-44 px-2 py-2 resize-none bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
+            className={`h-44 px-2 py-2 resize-none bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet ${err && !description ? 'border-solid border-2 border-red-500 ring-transparent' : ''}`}
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
         </fieldset>
+        {err && !description && <div className="text-red-500 text-sm mb-4">{err}</div> }
 
         <div className="flex flex-row justify-evenly ">
           {/* Tipo de Instituto */}
