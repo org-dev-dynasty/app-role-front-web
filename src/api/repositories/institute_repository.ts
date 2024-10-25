@@ -69,8 +69,6 @@ export class InstituteRepositoryHttp {
     }
   }
 
-  
-
   async uploadInstituteImage(id: string, data: any) {
     try {
       const resp = await httpEvent.post(

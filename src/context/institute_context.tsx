@@ -107,7 +107,7 @@ export function InstituteContextProvider({ children }: PropsWithChildren) {
     }
 
     return (
-        <InstituteContext.Provider value={{ getAllInstitutes, getInstituteById, createInstitute, deleteInstituteById, updateInstituteById, uploadInstituteImage  }}>
+        <InstituteContext.Provider value={{ getAllInstitutes, getInstituteById, createInstitute, deleteInstituteById, updateInstituteById, uploadInstituteImage }}>
             {children}
         </InstituteContext.Provider>
     )
