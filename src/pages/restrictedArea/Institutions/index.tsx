@@ -30,6 +30,10 @@ export default function Institutions() {
     const [search, setSearch] = useState("");
     const navigate = useNavigate();
 
+    useEffect(() => {
+        fetchInstitutes();
+    }, [getAllInstitutes, isCreateInstituteModalOpen]);
+
     const handleChange = (e: { target: { value: SetStateAction<string> } }) => {
         setSearch(e.target.value);
     };
@@ -40,7 +44,7 @@ export default function Institutions() {
             const response = await getAllInstitutes();
             console.log(response);
             if (response && response.institutes) {
-                setInstitutes(response.institutes);
+                setInstitutes([...response.institutes]);
             }
         } catch (error) {
             console.error("Erro ao buscar institutos:", error);
@@ -48,10 +52,6 @@ export default function Institutions() {
             setLoading(false);
         }
     };
-
-    useEffect(() => {
-        fetchInstitutes();
-    }, [getAllInstitutes]);
 
     const filteredInstitutes = institutes.filter((institute) =>
         institute.name.toLowerCase().includes(search.toLowerCase())

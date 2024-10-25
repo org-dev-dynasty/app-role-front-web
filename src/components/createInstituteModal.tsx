@@ -9,7 +9,7 @@ interface InstituteModalProps {
 
 export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCreated }: InstituteModalProps) {
   const [isVisible, setIsVisible] = useState(false); // Estado para controlar a visibilidade do modal
-  const { createInstitute } = useContext(InstituteContext);
+  const { createInstitute, uploadInstituteImage } = useContext(InstituteContext);
   const [instituteName, setInstituteName] = useState("");
   const [description, setDescription] = useState("");
   const [instituteType, setInstituteType] = useState("ESTABELECIMENTO_FIXO");
@@ -46,8 +46,9 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
   };
 
   const saveInstituteClick = async () => {
-    if (isCreating) return;
+    if (isCreating) return; // Impede cliques múltiplos
     setIsCreating(true);
+
     const data = {
       name: instituteName,
       description: description,
@@ -55,22 +56,51 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
       partner_type: partnerType,
       phone: phone,
       address: address,
-      logo_photo: logoPhoto,
-      photos_url: galleryPhotos
     };
 
     try {
-      await createInstitute(data);
-      if (onInstituteCreated) {
-        onInstituteCreated();
+      // Tenta criar o instituto
+      const createdInstitute = await createInstitute(data);
+
+      // Log para verificar o retorno da API
+      console.log("Instituto Criado:", createdInstitute);
+
+      // Verifica se o instituto foi criado e tem ID
+      if (createdInstitute?.institute_id) {
+        // Upload do logotipo, se houver
+        if (logoPhoto) {
+          const logoFormData = new FormData();
+          logoFormData.append("logo_photo", logoPhoto);
+          await uploadInstituteImage(createdInstitute.institute_id, logoFormData); // Certifique-se de que o campo está correto
+        }
+
+        // Upload da galeria de fotos, se houver
+        if (galleryPhotos.length > 0) {
+          const galleryFormData = new FormData();
+          galleryPhotos.forEach((photo, index) => {
+            galleryFormData.append(`gallery_photos[${index}]`, photo);
+          });
+          await uploadInstituteImage(createdInstitute.institute_id, galleryFormData); // Certifique-se de que o campo está correto
+        }
+
+        // Chama o callback se necessário
+        if (onInstituteCreated) {
+          onInstituteCreated();
+        }
+      } else {
+        // Caso o instituto não seja criado corretamente
+        console.error("Erro: Instituto criado sem ID válido");
       }
-      setIsCreateInstituteModalOpen(false);
     } catch (error: any) {
-      console.error("Erro ao criar instituto:", error.message);
+      // Log de erro para ver detalhes
+      console.error("Erro ao criar instituto ou fazer upload das imagens:", error.message);
     } finally {
-      setIsCreating(false);
+      // Sempre fecha o modal, mesmo com erro
+      setIsCreateInstituteModalOpen(false);
+      setIsCreating(false); // Libera o botão para ser clicado novamente
     }
   };
+
 
   return (
     <div className={`fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>

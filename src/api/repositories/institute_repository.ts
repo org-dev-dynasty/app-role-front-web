@@ -54,13 +54,39 @@ export class InstituteRepositoryHttp {
     try {
       const resp = await httpEvent.put(
         `/update-institute-by-id?instituteId=${id}`,
-        data
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
       if (resp) {
         return resp.data;
       }
     } catch (error: any) {
       throw new Error("Erro ao atualizar instituição: " + error.message);
+    }
+  }
+
+  
+
+  async uploadInstituteImage(id: string, data: any) {
+    try {
+      const resp = await httpEvent.post(
+        `/upload-institute-image?instituteId=${id}`,
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (resp) {
+        return resp.data;
+      }
+    } catch (error: any) {
+      throw new Error("Erro ao fazer upload da imagem: " + error.message);
     }
   }
 }
