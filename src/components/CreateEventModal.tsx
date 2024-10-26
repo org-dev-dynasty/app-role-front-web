@@ -204,8 +204,8 @@ export function CreateEventModal() {
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <button className="w-fit px-8 py-4 text-2xl rounded-lg bg-purple flex text-center gap-2">
-          <Pencil className="self-center" /> Criar ROLE
+        <button className="bg-white w-16 h-16 flex justify-center items-center rounded-xl text-3xl hover:cursor-pointer hover:bg-white-purple">
+          +
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>

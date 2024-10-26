@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { InstituteContext } from '../context/institute_context';
 
 interface InstituteModalProps {
   setIsUpdateInstituteModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -12,11 +13,11 @@ interface InstituteProps {
   institute_type: string;
   partner_type: string;
   phone: string;
-  logo_photo: string;
+  logo_photo: string | File | null;
   address: string;
   price: number;
   district_id: string;
-  photos_url: string[];
+  photos_url: string[] | File[];
   events_id: string[];
 }
 
@@ -28,13 +29,10 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
   const [partnerType, setPartnerType] = useState(institute.partner_type || "GLOBAL_PARTNER");
   const [phone, setPhone] = useState(institute.phone || "");
   const [address, setAddress] = useState(institute.address || "");
-  const [logoPhoto, setLogoPhoto] = useState<string | null>(null);
-  const [galleryPhotos, setGalleryPhotos] = useState<string[]>([]);
-
   const [logoPhotoIncoming, setLogoPhotoIncoming] = useState<File | null>(null);
   const [galleryPhotosIncoming, setGalleryPhotosIncoming] = useState<File[]>([]);
-
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     setInstituteNameDisplay(institute.name);
@@ -44,15 +42,13 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
     setPartnerType(institute.partner_type);
     setPhone(institute.phone);
     setAddress(institute.address);
-    setLogoPhoto(institute.logo_photo);
-    setGalleryPhotos(institute.photos_url);
+    setIsVisible(true); // Ativa a visibilidade do modal
   }, [institute]);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => setInstituteName(e.target.value);
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value);
   const handleInstituteTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => setInstituteType(e.target.value);
   const handlePartnerTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => setPartnerType(e.target.value);
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => setPhone(e.target.value.replace(/[^0-9]/g, ''));
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => setAddress(e.target.value);
   const handleLogoPhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) setLogoPhotoIncoming(e.target.files[0]);
@@ -61,15 +57,58 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
     if (e.target.files) setGalleryPhotosIncoming(Array.from(e.target.files));
   };
 
+  const formatPhone = (value: string) => {
+    const cleaned = value.replace(/\D/g, '');
+
+    if (cleaned.length > 14) {
+      return phone;
+    }
+
+    const match = cleaned.match(/^(\d{2})(\d{4})(\d{4})$/);
+
+    if (match) {
+      return `+${match[1]} ${match[2]}-${match[3]}`;
+    } else if (cleaned.length <= 10) {
+      return `+${cleaned}`;
+    }
+    return value;
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value;
+    const formatted = formatPhone(input);
+    setPhone(formatted);
+  };
+
   const handleUpdateClick = () => {
     setIsConfirmOpen(true);
   };
 
   return (
     <div className="inset-0 z-40">
-      {isConfirmOpen && <ConfirmUpdate setIsConfirmOpen={setIsConfirmOpen} setIsUpdateInstituteModalOpen={setIsUpdateInstituteModalOpen} />}
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsUpdateInstituteModalOpen(false)} />
-      <div className="fixed overflow-y-auto left-1/2 top-1/2 max-h-[85vh] w-[50vw] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-grayModal p-[25px] shadow-md focus:outline-none">
+      {isConfirmOpen && (
+        <ConfirmUpdate
+          setIsConfirmOpen={setIsConfirmOpen}
+          setIsUpdateInstituteModalOpen={setIsUpdateInstituteModalOpen}
+          instituteId={institute.institute_id}
+          newInstituteData={{
+            institute_id: institute.institute_id,
+            name: instituteName,
+            description: description,
+            institute_type: instituteType,
+            partner_type: partnerType,
+            phone: phone,
+            address: address,
+            logo_photo: logoPhotoIncoming,
+            photos_url: galleryPhotosIncoming,
+            events_id: institute.events_id,
+            price: institute.price,
+            district_id: institute.district_id,
+          }}
+        />
+      )}
+      <div className={`fixed inset-0 bg-black/50 backdrop-blur-sm ${isVisible ? "transition-opacity duration-300" : "opacity-0"}`} onClick={() => setIsUpdateInstituteModalOpen(false)} />
+      <div className={`fixed overflow-y-auto left-1/2 top-1/2 max-h-[85vh] w-[50vw] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-grayModal p-[25px] shadow-md focus:outline-none transition-transform duration-300 transform ${isVisible ? "scale-100" : "scale-95"}`}>
         <div className="m-0 text-3xl font-medium text-white">
           Atualizar Instituto: <span className="text-violet">{instituteNameDisplay}</span>
         </div>
@@ -160,74 +199,35 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
 
         {/* Upload da Logo */}
         <fieldset className="mb-4 flex flex-col gap-1 text-white">
-          <label className="text-base" htmlFor="logoPhoto">Foto do Logotipo</label>
+          <label className="text-base" htmlFor="logoPhoto">Logo do Instituto (opcional)</label>
           <input
-            className="bg-grayInputModal p-2 outline-none rounded-md focus:ring-2 ring-violet"
+            className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
             id="logoPhoto"
             type="file"
+            accept="image/*"
             onChange={handleLogoPhotoChange}
           />
         </fieldset>
 
-        <div className="flex flex-wrap gap-2">
-          {logoPhotoIncoming ? (
-            <img
-              src={URL.createObjectURL(logoPhotoIncoming)}
-              alt="Imagem logo"
-              className="w-24 h-24 mb-4 object-cover rounded-md bg-grayInputModal text-white"
-            />
-          ) : logoPhoto ? (
-            <img
-              src={logoPhoto}
-              alt="Imagem logo"
-              className="w-24 h-24 mb-4 object-cover rounded-md bg-grayInputModal text-white"
-            />
-          ) : null}
-        </div>
-
-        {/* Upload da Galeria de Imagens */}
+        {/* Upload de Fotos da Galeria */}
         <fieldset className="mb-4 flex flex-col gap-1 text-white">
-          <label className="text-base" htmlFor="galleryPhotos">Galeria de Imagens</label>
+          <label className="text-base" htmlFor="galleryPhotos">Fotos da Galeria (opcional)</label>
           <input
-            className="p-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
+            className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
             id="galleryPhotos"
             type="file"
+            accept="image/*"
             multiple
             onChange={handleGalleryPhotosChange}
           />
         </fieldset>
 
-        <div className="flex flex-wrap gap-2">
-          {galleryPhotosIncoming.length > 0
-            ? galleryPhotosIncoming.map((photo, idx) => (
-              <img
-                key={idx}
-                src={URL.createObjectURL(photo)}
-                alt={`Imagem carregada ${idx}`}
-                className="w-24 h-24 object-cover rounded-md bg-grayInputModal text-white"
-              />
-            ))
-            : galleryPhotos.map((photo, idx) => (
-              <img
-                key={idx}
-                src={photo}
-                alt={`Imagem galeria ${idx}`}
-                className="w-24 h-24 object-cover rounded-md bg-grayInputModal text-white"
-              />
-            ))}
-        </div>
-
-        <div className="flex justify-end gap-3 mt-5">
-          <button
-            className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-500 text-white"
-            onClick={() => setIsUpdateInstituteModalOpen(false)}
-          >
+        {/* Botões */}
+        <div className="flex justify-evenly mt-5">
+          <button className="h-10 w-1/4 rounded-lg border border-red-600 bg-red-600 text-white" onClick={() => setIsUpdateInstituteModalOpen(false)}>
             Cancelar
           </button>
-          <button
-            className="px-4 py-2 rounded-lg bg-violet text-white hover:bg-violet-dark"
-            onClick={handleUpdateClick}
-          >
+          <button className="h-10 w-1/4 rounded-lg border border-violet bg-violet text-white" onClick={handleUpdateClick}>
             Atualizar
           </button>
         </div>
@@ -236,26 +236,40 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
   );
 }
 
-interface ConfirmUpdateProp {
+
+
+interface ConfirmUpdateProps {
   setIsConfirmOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsUpdateInstituteModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  instituteId: string;
+  newInstituteData: InstituteProps;
 }
 
-function ConfirmUpdate({ setIsConfirmOpen, setIsUpdateInstituteModalOpen }: ConfirmUpdateProp) {
+function ConfirmUpdate({ setIsConfirmOpen, setIsUpdateInstituteModalOpen, newInstituteData }: ConfirmUpdateProps) {
+  const { updateInstituteById } = useContext(InstituteContext);
+
+  const handleConfirmClick = () => {
+    // Update the institute with the new data
+    updateInstituteById(newInstituteData.institute_id, newInstituteData);
+    setIsUpdateInstituteModalOpen(false);
+    setIsConfirmOpen(false);
+  };
+
   const handleCancelClick = () => {
-    setIsConfirmOpen(false); // Fecha somente o modal de confirmação
-  }
+    setIsConfirmOpen(false);
+  };
 
   return (
     <div className="fixed h-full w-full backdrop-blur-md bg-black/50 flex z-50 justify-center items-center">
-      <div
-        className="rounded-lg bg-grayModal p-6 w-1/3 text-center"
-        onClick={(e) => e.stopPropagation()} // Impede a propagação do clique para o fundo
-      >
+      <div className="rounded-lg bg-grayModal p-6 w-1/3 text-center">
         <p className="text-white mb-4">Você tem certeza que deseja atualizar este instituto?</p>
         <div className="flex justify-center gap-4">
-          <button className="px-4 py-2 rounded-lg bg-gray-600 text-white" onClick={handleCancelClick}>Cancelar</button>
-          <button className="px-4 py-2 rounded-lg bg-violet text-white" onClick={() => setIsUpdateInstituteModalOpen(false)}>Confirmar</button>
+          <button className="px-4 py-2 rounded-lg bg-gray-600 text-white" onClick={handleCancelClick}>
+            Cancelar
+          </button>
+          <button className="px-4 py-2 rounded-lg bg-violet text-white" onClick={handleConfirmClick}>
+            Confirmar
+          </button>
         </div>
       </div>
     </div>

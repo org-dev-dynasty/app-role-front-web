@@ -40,6 +40,9 @@ const defaultInstitute = {
   },
   editEventById: async () => {
     return {}
+  },
+  getEventByInstituteId: async () => {
+    return {}
   }
 }
 
@@ -65,7 +68,6 @@ export function EventContextProvider({ children }: PropsWithChildren) {
       return error
     }
   }
-
   async function createEvent(eventBody: EventType) {
     try {
       const response = await repo.createEvent(eventBody)

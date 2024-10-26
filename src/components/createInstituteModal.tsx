@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { InstituteContext } from '../context/institute_context';
 import { ClipLoader } from 'react-spinners';
 
@@ -7,60 +7,89 @@ interface InstituteModalProps {
   onInstituteCreated?: () => void;
 }
 
+const districts = [
+  {
+    "id": "ee6ba030-cebc-405b-b3e3-08f213cca415",
+    "name": "Zona Sul"
+  },
+  {
+    "id": "5e3e0505-2b29-462d-91fc-d9f538ee8186",
+    "name": "Zona Norte"
+  },
+  {
+    "id": "7d6b8023-2d03-4623-bc33-ebf58767c9b1",
+    "name": "Zona Leste"
+  },
+  {
+    "id": "1477c1ff-bdb4-4e38-8415-b2da7163b3f7",
+    "name": "Zona Oeste"
+  },
+  {
+    "id": "90fec991-6d11-4813-9482-343ebdca5514",
+    "name": "Centro"
+  }
+]
+
 export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCreated }: InstituteModalProps) {
-  const { createInstitute } = useContext(InstituteContext);
+  const [isVisible, setIsVisible] = useState(false); // Estado para controlar a visibilidade do modal
+  const { createInstitute, uploadInstituteImage } = useContext(InstituteContext);
   const [instituteName, setInstituteName] = useState("");
+  const [err, setErr] = useState("");
   const [description, setDescription] = useState("");
   const [instituteType, setInstituteType] = useState("ESTABELECIMENTO_FIXO");
   const [partnerType, setPartnerType] = useState("GLOBAL_PARTNER");
   const [phone, setPhone] = useState("");
+  const [districtId, setDistrictId] = useState(districts[0].id);
   const [address, setAddress] = useState("");
+  const [addErr, setAddErr] = useState("");
   const [logoPhoto, setLogoPhoto] = useState<File | null>(null);
   const [galleryPhotos, setGalleryPhotos] = useState<File[]>([]);
-  const [isCreating, setIsCreating] = useState(false); // Estado de controle de criação
+  const [isCreating, setIsCreating] = useState(false);
 
-  // Funções para manipulação dos inputs
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInstituteName(e.target.value);
-  }
+  useEffect(() => {
+    setIsVisible(true); // Torna o modal visível quando é montado
+  }, []);
 
-  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setDescription(e.target.value);
-  }
-
-  const handleInstituteTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setInstituteType(e.target.value);
-  }
-
-  const handlePartnerTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setPartnerType(e.target.value);
-  }
-
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPhone(e.target.value.replace(/[^0-9]/g, ''));
-  }
-
-  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAddress(e.target.value);
-  }
-
-  const handleLogoPhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setLogoPhoto(e.target.files[0]);
+  // Função para aplicar a máscara de telefone
+  const formatPhone = (value: string) => {
+    const cleaned = value.replace(/\D/g, '');
+    if (cleaned.length > 14) {
+      return phone;
     }
-  }
-
-  const handleGalleryPhotosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setGalleryPhotos(Array.from(e.target.files));
+    const match = cleaned.match(/^(\d{2})(\d{4})(\d{4})$/);
+    if (match) {
+      return `+${match[1]} ${match[2]}-${match[3]}`;
+    } else if (cleaned.length <= 10) {
+      return `+${cleaned}`;
     }
+    return value;
   };
 
-  // Função para salvar o instituto
-  const saveInstituteClick = async () => {
-    if (isCreating) return; // Previne múltiplos cliques
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value;
+    const formatted = formatPhone(input);
+    setPhone(formatted);
+  };
 
-    setIsCreating(true); // Desativa o botão
+  const saveInstituteClick = async () => {
+    if (isCreating) return; // Impede cliques múltiplos
+    if (!instituteName || !description) {
+      setErr("Preencha o nome e a descrição do instituto");
+      if (instituteType === "ESTABELECIMENTO_FIXO") {
+        if (!address) {
+          setAddErr("Preencha o endereço do instituto");
+          return;
+        }
+      }
+      return;
+    }
+    if (instituteType === "ESTABELECIMENTO_FIXO") {
+      if (!address) {
+        setAddErr("Preencha o endereço do instituto");
+        return;
+      }
+    }
+    setIsCreating(true);
 
     const data = {
       name: instituteName,
@@ -69,27 +98,61 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
       partner_type: partnerType,
       phone: phone,
       address: address,
-      logo_photo: logoPhoto,
-      photos_url: galleryPhotos
+      district_id: districtId
     };
 
     try {
-      await createInstitute(data); // Envia os dados para criação
-      if (onInstituteCreated) {
-        onInstituteCreated(); // Notifica que o instituto foi criado
+      // Tenta criar o instituto
+      const createdInstitute = await createInstitute(data);
+
+      // Log para verificar o retorno da API
+      console.log("Instituto Criado:", createdInstitute);
+
+      // Verifica se o instituto foi criado e tem ID
+      if (createdInstitute) {
+        // Upload do logotipo, se houver
+        if (logoPhoto?.name) {
+          console.log(logoPhoto.name);
+          const logoType = logoPhoto.type;
+          const formData = new FormData();
+          formData.append("name", instituteName,);
+          formData.append("typePhoto", logoType);
+          formData.append("files", logoPhoto);
+          const resp = await uploadInstituteImage(formData);
+          console.log("Logo Upload Response:", resp);
+        }
+
+        // Upload da galeria de fotos, se houver
+        // if (galleryPhotos.length > 0) {
+        //   const galleryFormData = new FormData();
+        //   galleryPhotos.forEach((photo, index) => {
+        //     galleryFormData.append(`gallery_photos[${index}]`, photo);
+        //   });
+        //   await uploadInstituteImage(createdInstitute.institute_id, galleryFormData); // Certifique-se de que o campo está correto
+        // }
+
+        // Chama o callback se necessário
+        if (onInstituteCreated) {
+          onInstituteCreated();
+        }
+      } else {
+        // Caso o instituto não seja criado corretamente
+        console.error("Erro: Instituto criado sem ID válido");
       }
-      setIsCreateInstituteModalOpen(false); // Fecha o modal após a criação
     } catch (error: any) {
-      console.error("Erro ao criar instituto:", error.message);
+      // Log de erro para ver detalhes
+      console.error("Erro ao criar instituto ou fazer upload das imagens:", error.message);
     } finally {
-      setIsCreating(false); // Reabilita o botão
+      // Sempre fecha o modal, mesmo com erro
+      setIsCreateInstituteModalOpen(false);
+      setIsCreating(false); // Libera o botão para ser clicado novamente
     }
   };
 
+
   return (
-    <div>
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsCreateInstituteModalOpen(false)} />
-      <div className="fixed overflow-y-auto left-1/2 top-1/2 max-h-[85vh] w-[50vw] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-grayModal p-[25px] shadow-lg">
+    <div className={`fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+      <div className={`fixed overflow-y-auto left-1/2 top-1/2 max-h-[85vh] w-[50vw] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-grayModal p-[25px] shadow-lg transition-transform duration-300 transform ${isVisible ? 'scale-100' : 'scale-95'}`}>
         <div className="m-0 text-3xl font-medium text-white">
           Criar <span className="text-violet">INSTITUTO</span>
         </div>
@@ -97,22 +160,20 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
           Utilize os campos abaixo para criar um instituto
         </div>
 
-        {/* Campos para Nome, Descrição, Tipo de Instituto, etc. */}
-
-        
-
         {/* Nome */}
         <fieldset className="mb-4 flex flex-col gap-1 text-white">
           <label className="text-base text-white" htmlFor="instituteName">
             Nome
           </label>
           <input
-            className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
+            className={`h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet ${err && !instituteName ? 'border-solid border-2 border-red-500 ring-transparent focus:ring-0' : ''}`}
             id="instituteName"
             value={instituteName}
-            onChange={handleNameChange}
+            placeholder='Digite o nome do instituto'
+            onChange={(e) => setInstituteName(e.target.value)}
           />
         </fieldset>
+        {err && !instituteName && <div className="text-red-500 text-sm mb-4">{err}</div>}
 
         {/* Descrição */}
         <fieldset className="mb-4 flex flex-col gap-1 text-white">
@@ -120,12 +181,14 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
             Descrição
           </label>
           <textarea
-            className="h-44 px-2 py-2 resize-none bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
+            className={`h-44 px-2 py-2 resize-none bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet ${err && !description ? 'border-solid border-2 border-red-500 focus:ring-0' : ''}`}
             id="description"
             value={description}
-            onChange={handleDescriptionChange}
+            placeholder='Digite a descrição do instituto'
+            onChange={(e) => setDescription(e.target.value)}
           />
         </fieldset>
+        {err && !description && <div className="text-red-500 text-sm mb-4">{err}</div>}
 
         <div className="flex flex-row justify-evenly ">
           {/* Tipo de Instituto */}
@@ -138,7 +201,7 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
               id="instituteType"
               className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
               value={instituteType}
-              onChange={handleInstituteTypeChange}
+              onChange={(e) => setInstituteType(e.target.value)}
             >
               <option value="ESTABELECIMENTO_FIXO">Estabelecimento Fixo</option>
               <option value="AGENCIA_DE_FESTAS">Agência de Festas</option>
@@ -155,13 +218,51 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
               id="partnerType"
               className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
               value={partnerType}
-              onChange={handlePartnerTypeChange}
+              onChange={(e) => setPartnerType(e.target.value)}
             >
               <option value="GLOBAL_PARTNER">Parceiro Global</option>
               <option value="PROMOTER_PARTNER">Promotor</option>
               <option value="NO_PARTNER">Sem Parceiro</option>
             </select>
           </fieldset>
+        </div>
+
+        <div className='flex w-full gap-4'>
+          {/* Distrito */}
+          <fieldset className="mb-4 flex flex-col gap-1 text-white">
+            <label className="text-base text-white" htmlFor="district">
+              Distrito
+            </label>
+            <select
+              name="district"
+              id="district"
+              className="h-10 bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
+              value={districtId}
+              onChange={(e) => setDistrictId(e.target.value)}
+            >
+              {districts.map((district) => (
+                <option key={district.id} value={district.id}>
+                  {district.name}
+                </option>
+              ))}
+            </select>
+          </fieldset>
+          <div className='flex flex-col w-full'>
+            {/* Endereço */}
+            <fieldset className="mb-4 flex flex-col gap-1 text-white">
+              <label className="text-base text-white" htmlFor="address">
+                Endereço{instituteType === "AGENCIA_DE_FESTAS" ? " (opcional)" : ""}
+              </label>
+              <input
+                className={`h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet ${addErr && !address ? 'border-solid border-2 border-red-500 focus:ring-0' : ''}`}
+                id="address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="Digite o endereço do instituto"
+              />
+            </fieldset>
+            {addErr && !address && <div className="text-red-500 text-sm mb-4">{addErr}</div>}
+          </div>
         </div>
 
         {/* Telefone */}
@@ -174,25 +275,9 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
             id="phone"
             value={phone}
             onChange={handlePhoneChange}
-            placeholder="(XX) XXXX-XXXX"
-            pattern="\(\d{2}\)\s\d{4,5}-\d{4}"
+            placeholder="+XX XXXX-XXXX"
             inputMode="numeric"
             type="tel"
-          />
-
-        </fieldset>
-
-        {/* Endereço */}
-        <fieldset className="mb-4 flex flex-col gap-1 text-white">
-          <label className="text-base text-white" htmlFor="address">
-            Endereço(opcional)
-          </label>
-          <input
-            className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
-            id="address"
-            value={address}
-            onChange={handleAddressChange}
-            placeholder="Digite o endereço"
           />
         </fieldset>
 
@@ -202,10 +287,15 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
             Foto do Logotipo
           </label>
           <input
-            className=" bg-grayInputModal p-2 outline-none rounded-md focus:ring-2 ring-violet"
+            className="bg-grayInputModal p-2 outline-none rounded-md focus:ring-2 ring-violet"
             id="logoPhoto"
             type="file"
-            onChange={handleLogoPhotoChange}
+            accept='image/*'
+            onChange={(e) => {
+              const file = e.target.files?.[0] || null;
+              console.log("Selected logo file:", file); // Verifica o arquivo selecionado
+              setLogoPhoto(file);
+            }}
           />
         </fieldset>
 
@@ -225,12 +315,11 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
             Galeria de Imagens
           </label>
           <input
-            className="p-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
+            className="bg-grayInputModal p-2 outline-none rounded-md focus:ring-2 ring-violet"
             id="galleryPhotos"
             type="file"
-            accept="image/*"
             multiple
-            onChange={handleGalleryPhotosChange}
+            onChange={(e) => e.target.files && setGalleryPhotos(Array.from(e.target.files))}
           />
         </fieldset>
 
@@ -240,20 +329,25 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
               <img
                 key={index}
                 src={URL.createObjectURL(photo)}
-                alt={`Imagem ${index + 1}`}
-          className="w-24 h-24 object-cover rounded-md"
-                />
-              ))}
+                alt="Imagem da galeria"
+                className="w-24 h-24 mb-4 object-cover rounded-md"
+              />
+            ))}
         </div>
 
-        {/* Botão para salvar */}
-        <div className="mt-2 flex justify-end">
+        <div className="flex flex-row justify-end gap-4">
           <button
-            className={`inline-flex h-[35px] items-center justify-center rounded px-4 font-medium leading-none text-white ${isCreating ? 'bg-gray-500 cursor-not-allowed' : 'bg-violet hover:bg-violet'}`}
-            onClick={saveInstituteClick}
-            disabled={isCreating} // Desativa o botão durante a criação
+            className="mt-5 inline-flex h-12 items-center justify-center rounded-md bg-red-600 px-6 font-medium text-white"
+            onClick={() => setIsCreateInstituteModalOpen(false)}
           >
-            {isCreating ? <ClipLoader size={20} color="#fff" /> : 'Salvar Instituto'}
+            Cancelar
+          </button>
+          <button
+            className="mt-5 inline-flex h-12 items-center justify-center rounded-md bg-violet px-6 font-medium text-white"
+            onClick={saveInstituteClick}
+            disabled={isCreating}
+          >
+            {isCreating ? <ClipLoader color="white" size={20} /> : "Salvar Instituto"}
           </button>
         </div>
       </div>
