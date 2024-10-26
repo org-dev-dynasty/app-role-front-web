@@ -1,10 +1,13 @@
-import { CurrencyDollar } from '@phosphor-icons/react'
+import { CurrencyDollar, Eye } from '@phosphor-icons/react'
 import { Rating } from 'react-simple-star-rating'
 import { EventInfoUnit } from '../../../components/EventInfoUnit'
 import { EditEventModal } from '../../../components/EditEventModal'
 import { EventContext } from '../../../context/event_context'
 import { useContext, useEffect, useState } from 'react'
-import { Navigate, useParams } from 'react-router-dom'
+import { Link, Navigate, useParams } from 'react-router-dom'
+import dayjs from 'dayjs'
+import { CreateEventModal } from '../../../components/CreateEventModal'
+import { features } from '../../../assets/options'
 
 export default function Role() {
   let { eventId } = useParams()
@@ -23,8 +26,8 @@ export default function Role() {
   const [eventMusicType, setEventMusicType] = useState<string[]>([])
   const [eventMenuLink, setEventMenuLink] = useState<string>()
   const [eventPhotoLink, setEventPhotoLink] = useState<string>()
-  const [eventGaleryLink, setEventGaleryLink] = useState<string>()
-  const [eventPackageType, setEventPackageType] = useState<string>()
+  const [eventGaleryLink, setEventGaleryLink] = useState<string[]>()
+  const [eventPackageType, setEventPackageType] = useState<string[]>()
   const [eventCategory, setEventCategory] = useState<string>()
   const [eventTicketUrl, setEventTicketUrl] = useState<string>()
   const [eventRating, setEventRating] = useState<number>()
@@ -54,6 +57,7 @@ export default function Role() {
       setEventAddress(response.address)
       setEventPrice(response.price)
       setEventDistrict(response.districtId)
+      setEventCategory(response.category)
       setEventInstituteId(response.instituteId)
       setEventFeatures(response.features)
       setEventMusicType(response.musicType)
@@ -66,8 +70,6 @@ export default function Role() {
     }
   }
 
-  
-
   useEffect(() => {
     console.log('Chamando useEffect getEvent:')
     console.log(eventId)
@@ -76,7 +78,7 @@ export default function Role() {
 
   return (
     <div className="bg-[#151515] w-screen h-screen text-white">
-      <div className="flex flex-col max-w-[1600px] mx-auto bg-[#151515] h-screen">
+      <div className="flex flex-col max-w-[1600px] mx-auto bg-[#151515]">
         <div className="flex p-4 mt-6 w-full">
           <div className="w-80 h-80">
             <img
@@ -112,12 +114,18 @@ export default function Role() {
 
             <div className="flex text-nowrap flex-col gap-2 text-[#ffffff]">
               <span className="text-2xl">
-                {eventDate?.toString() ?? 'Não informado'}
+                {new Date(eventDate).toLocaleDateString() ?? 'Não informado'}
               </span>
-              <span className="text-xl">Inicio as 22:00 {'GMT -03:00'}</span>
+              <span className="text-xl">
+                Inicio as {dayjs(new Date(eventDate)).format('HH:mm:ss')}
+              </span>
             </div>
 
             <EditEventModal />
+            <CreateEventModal />
+            <Link to={`/Institute/${eventInstituteId}`} className="w-fit px-8 py-4 text-2xl rounded-lg bg-purple flex text-center gap-2">
+              <Eye className='self-center'/> Ver instituto
+            </Link>
           </div>
         </div>
 
@@ -146,13 +154,22 @@ export default function Role() {
             </EventInfoUnit>
 
             <EventInfoUnit value="musicType" label="Tipo de música">
-              {eventMusicType?.join(', ') ?? 'Não informado'}
+              {eventMusicType
+                .map(
+                  word =>
+                    word.toLowerCase().charAt(0).toUpperCase() +
+                    word.slice(1).toLowerCase()
+                )
+                .join(', ')}
             </EventInfoUnit>
           </div>
 
           <div className="flex flex-col gap-4">
             <EventInfoUnit value="features" label="Características">
-              {eventFeatures}
+              {features
+                .filter(feature => eventFeatures.includes(feature.value)) // Filtra os objetos com os valores selecionados
+                .map(feature => feature.label)
+                .join(', ')}
             </EventInfoUnit>
 
             <EventInfoUnit value="ticketUrl" label="Link para ingressos">
@@ -165,8 +182,8 @@ export default function Role() {
           </div>
 
           <div className="flex flex-col gap-4">
-            <EventInfoUnit value="features" label="Características">
-              Música ao vivo, Rodizío
+            <EventInfoUnit value="features" label="Categoria">
+              {eventCategory}
             </EventInfoUnit>
 
             <EventInfoUnit value="ageRange" label="Idade permitida">

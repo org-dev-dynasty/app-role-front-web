@@ -6,8 +6,8 @@ import {
 
 type EventContextType = {
   getEventById: (id: string) => Promise<EventType>
-  editEventById: (event: EventType) => Promise<object>
-  getEventsByInstituteId?: (id: string) => Promise<object>
+  editEventById: (event: EventType) => Promise<object>,
+  createEvent: (event: EventType) => Promise<object>
 }
 
 const defaultInstitute = {
@@ -27,13 +27,16 @@ const defaultInstitute = {
       musicType: ['Não informado'],
       menuLink: 'Não informado',
       eventPhotoLink: 'Não informado',
-      galeryLink: 'Não informado',
-      packageType: 'Não informado',
+      galeryLink: ['Não informado'],
+      packageType: ['Não informado'],
       category: 'Não informado',
       ticketUrl: 'Não informado',
       rating: 0,
       reviews: 0
     }
+  },
+  createEvent: async () => {
+    return {}
   },
   editEventById: async () => {
     return {}
@@ -65,10 +68,9 @@ export function EventContextProvider({ children }: PropsWithChildren) {
       return error
     }
   }
-
-  async function getEventsByInstituteId(id: string) {
+  async function createEvent(eventBody: EventType) {
     try {
-      const response = await repo.getEventsByInstituteId(id)
+      const response = await repo.createEvent(eventBody)
       return response
     } catch (error: any) {
       return error
@@ -76,7 +78,7 @@ export function EventContextProvider({ children }: PropsWithChildren) {
   }
 
   return (
-    <EventContext.Provider value={{ getEventById, editEventById, getEventsByInstituteId }}>
+    <EventContext.Provider value={{ getEventById, editEventById, createEvent }}>
       {children}
     </EventContext.Provider>
   )

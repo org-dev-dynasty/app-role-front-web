@@ -4,103 +4,147 @@ import { Rating } from 'react-simple-star-rating'
 import React, { useContext, useEffect, useState } from 'react'
 import { EventType } from '../api/repositories/event_repository'
 import { EventContext } from '../context/event_context'
-import { redirect } from 'react-router-dom'
+import { Navigate, redirect, useParams } from 'react-router-dom'
+import { GroupBase, MultiValue } from 'react-select'
+import Select from 'react-select'
+import { MultiSelect } from 'react-multi-select-component'
+import { MultiSelectComponent, OptionsType } from './MultiSelect'
+import { EventInfoUnit } from './EventInfoUnit'
+import { z } from 'zod'
+import dayjs from 'dayjs'
+import { categories, ageCategories, features, packageTypeArray, status } from '../assets/options'
+
+interface MusicType {
+  value: string
+  label: string
+}
+
+interface ArrayObjectSelectState {
+  selectedMusic: MultiValue<MusicType> | null
+}
 
 export function EditEventModal() {
   const [name, setName] = useState<string>()
   const [description, setDescription] = useState<string>()
   const [address, setAddress] = useState<string>()
-  const [date, setDate] = useState<Date>()
+  const [date, setDate] = useState<Date>(new Date())
   const [priceAvg, setPriceAvg] = useState<number>()
-  const [category, setCategory] = useState<string>()
-  const [age, setAge] = useState<string>()
+  const [category, setCategory] = useState<string>('BALADA')
+  const [age, setAge] = useState<string>('ADULT')
   const [musicType, setMusicType] = useState<string[]>()
+  const [ticketUrl, setTicketUrl] = useState<string>()
   const [eventStatus, setEventStatus] = useState<string>()
+  const [selectedMusic, setSelectedMusic] =
+    useState<MultiValue<OptionsType> | null>(null)
+
+  const [selectedMusics, setSelectedMusics] = useState<string[]>([''])
+  const [selectedFeatures, setSelectedFeatures] = useState<string[]>([''])
+  const [selectedPackages, setSelectedPackages] = useState<string[]>([''])
+
+  const [selectedFeaturesOnSel, setSelectedFeaturesOnSel] =
+    useState<MultiValue<OptionsType> | null>(null)
+
+  const [selectedPackagesOnSel, setSelectedPackagesOnSel] =
+    useState<MultiValue<OptionsType> | null>(null)
 
   const { getEventById, editEventById } = useContext(EventContext)
 
   const [response, setResponse] = useState<EventType>()
 
+  let { eventId } = useParams()
+
   async function getEventByIdRequest() {
     try {
-      const res: EventType = (await getEventById(
-        '76595bea-336c-4ee1-af87-75adf05e7b9a'
-      )) as EventType
+      const res: EventType = (await getEventById(`${eventId}`)) as EventType
       console.log('Resposta do getEventByIdRequest: ', res)
 
       if (res) {
         setResponse(res)
       }
 
-      setName(response?.name)
-      setDescription(response?.description)
-      setAddress(response?.address)
-      setDate(response?.eventDate)
-      setPriceAvg(response?.price)
-      setCategory(response?.category)
-      setAge(response?.ageRange)
-      setMusicType(response?.musicType)
+      if (!res) {
+        console.log('erro response')
+        return
+      }
+
+      setName(res.name)
+      console.log('Nome:', name)
+      setDescription(res.description)
+      setAddress(res.address)
+      // setDate(res.eventDate)
+      setPriceAvg(res.price)
+      setCategory(res.category)
+      setAge(res.ageRange)
+      setMusicType(res.musicType)
+      setPriceAvg(res.price)
+      setTicketUrl(res.ticketUrl)
+      setSelectedMusics(res.musicType)
+      setSelectedFeatures(res.features)
+      setSelectedPackages(res.packageType)
+
+      console.log(name)
+      // setEventStatus(response?.eventStatus)
     } catch (error) {
       alert('Erro ao buscar evento: ')
     }
   }
 
   async function updateEventByIdRequest() {
-    await console.log('A')
-
     try {
-      if (
-        !name ||
-        !description ||
-        !address ||
-        !date ||
-        !priceAvg ||
-        !category ||
-        !age ||
-        !musicType
-      ) {
-        console.log('faltou')
-        console.log(
-          name,
-          description,
-          address,
-          date,
-          priceAvg,
-          category,
-          age,
-          musicType
-        )
-        return
-      }
+      if (!eventId) return
 
-      const updatedEvent: EventType = {
+      const updatedEventSchema = z.object({
+        name: z.string(),
+        description: z.string(),
+        address: z.string(),
+        eventDate: z.date() /*z.string().datetime()*/,
+        price: z.number(),
+        category: z.string(),
+        ageRange: z.string(),
+        musicType: z.array(z.string()),
+        bannerUrl: z.string(),
+        districtId: z.string(),
+        instituteId: z.string(),
+        features: z.array(z.string()),
+        menuLink: z.string(),
+        eventPhotoLink: z.string(),
+        galeryLink: z.array(z.string()),
+        packageType: z.array(z.string()),
+        ticketUrl: z.string(),
+        eventId: z.string()
+      })
+
+      const updatedEvent = {
         name: name,
         description: description,
         address: address,
-        eventDate: new Date(),
-        price: 3,
+        eventDate: date /*date*/,
+        price: priceAvg,
         category: category,
         ageRange: age,
-        musicType: musicType,
+        musicType: selectedMusics,
         bannerUrl: 'https://via.placeholder.com/300',
-        districtId: '1',
-        instituteId: '1',
-        features: ['feature1', 'feature2'],
+        districtId: 'ZONA-SUL',
+        instituteId: '2f3073ac-3633-4fc7-9cfe-c2084399bbc3',
+        features: selectedFeatures,
         menuLink: 'https://www.example.com.br/menu',
         eventPhotoLink: 'https://via.placeholder.com/300',
-        galeryLink: 'https://www.example.com.br/galeria',
-        packageType: 'PACKAGE',
-        ticketUrl: 'https://www.example.com.br/ingressos',
-        rating: 4.5,
-        reviews: 100,
-        eventId: '7c95b0a2-e207-4a07-90f5-c95f9d1ffd16'
+        galeryLink: ['https://www.example.com.br/galeria'],
+        packageType: selectedPackages,
+        ticketUrl: ticketUrl,
+        eventId: eventId
       }
 
-      await editEventById(updatedEvent)
+      await editEventById(updatedEventSchema.parse(updatedEvent))
+
+      // window.location.reload()
 
       console.log('evento atualizado:', updatedEvent)
     } catch (error) {
       alert('Erro ao editar evento: ')
+      console.log(error)
+
+      console.log('data:', date)
     }
   }
 
@@ -242,7 +286,7 @@ export function EditEventModal() {
     }
   ]
 
-  const options = [
+  const options: MultiValue<OptionsType> = [
     { value: 'FUNK', label: 'Funk' },
     { value: 'SERTANEJO', label: 'Sertanejo' },
     { value: 'TRAP', label: 'Trap' },
@@ -255,22 +299,43 @@ export function EditEventModal() {
     { value: 'MPB', label: 'MPB' }
   ]
 
-  const categories = [
-    { key: 'BALADA', value: 'Balada' },
-    { key: 'UNIVERSITARIO', value: 'Universitário' },
-    { key: 'BAR', value: 'Bar' },
-    { key: 'BAR_BALADA', value: 'Bar Balada' },
-    { key: 'SHOW', value: 'Show' },
-    { key: 'FESTIVAL', value: 'Festival' },
-    { key: 'FESTA', value: 'Festa' }
-  ]
+  const handleChange = (selected: MultiValue<OptionsType>) => {
+    setSelectedMusic(selected)
 
-  const status = [
-    { value: 'ACTIVE', label: '🟢 Ativo' },
-    { value: 'INACTIVE', label: '🔴 Inativo' }
-  ]
+    setSelectedMusics(selected.map(option => option.value))
 
-  const [selectedOption, setSelectedOption] = useState(null)
+    console.log(selectedMusics)
+  }
+
+  const handleFeaturesSelectChange = (selected: MultiValue<OptionsType>) => {
+    setSelectedFeaturesOnSel(selected)
+
+    setSelectedFeatures(selected.map(option => option.value))
+
+    console.log(selectedFeatures)
+  }
+
+  const handlePackageTypeSelectChange = (selected: MultiValue<OptionsType>) => {
+    setSelectedPackagesOnSel(selected)
+
+    setSelectedPackages(selected.map(option => option.value))
+
+    console.log(selectedPackagesOnSel)
+  }
+
+  const convertToDateTimeLocalString = (date: Date) => {
+    const year = date.getFullYear()
+    const month = (date.getMonth() + 1).toString().padStart(2, '0')
+    const day = date.getDate().toString().padStart(2, '0')
+    const hours = date.getHours().toString().padStart(2, '0')
+    const minutes = date.getMinutes().toString().padStart(2, '0')
+
+    const x: string = `${year}-${month}-${day}T${hours}:${minutes}`
+
+    return x
+  }
+
+
 
   return (
     <Dialog.Root>
@@ -297,6 +362,7 @@ export function EditEventModal() {
               className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
               id="roleName"
               defaultValue={response?.name}
+              onChange={e => setName(e.target.value)}
             />
           </fieldset>
 
@@ -308,6 +374,7 @@ export function EditEventModal() {
               className="h-24 px-2 py-2 resize-none bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
               id="description"
               defaultValue={response?.description}
+              onChange={e => setDescription(e.target.value)}
             />
           </fieldset>
 
@@ -319,6 +386,7 @@ export function EditEventModal() {
               className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
               id="adress"
               defaultValue={response?.address}
+              onChange={e => setAddress(e.target.value)}
             />
           </fieldset>
 
@@ -326,10 +394,29 @@ export function EditEventModal() {
             <label className="text-base text-white" htmlFor="date">
               Data
             </label>
+            {/* <input
+              className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet "
+              id="date"
+              type="datetime-local"
+              defaultValue={convertToDateTimeLocalString(
+                new Date(response?.eventDate ?? new Date())
+              )}
+              onChange={e => {
+                setDate(new Date(e.target.value))
+                console.log(e.target.value, date)
+              }}
+            /> */}
             <input
               className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet "
               id="date"
               type="datetime-local"
+              defaultValue={convertToDateTimeLocalString(
+                new Date(response?.eventDate ?? new Date())
+              )}
+              // onChange={e => {
+              //   setDate(new Date(e.target.value).toISOString())
+              //   console.log(e.target.value, date)
+              // }}
             />
           </fieldset>
 
@@ -337,9 +424,10 @@ export function EditEventModal() {
             <div className="flex flex-col gap-1">
               <label className="text-base text-white">Preço médio</label>
               <Rating
+                onClick={e => setPriceAvg(e)}
                 allowFraction={false}
                 emptyIcon={<CurrencyDollar size={32} className="inline" />}
-                initialValue={3}
+                initialValue={response?.price}
                 fillIcon={
                   <CurrencyDollar size={32} className="inline fill-green-700" />
                 }
@@ -355,14 +443,11 @@ export function EditEventModal() {
                 id="category"
                 className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
                 defaultValue={response?.category}
+                onChange={e => setCategory(e.target.value)}
               >
                 {categories.map((category, index) => {
                   return (
-                    <option
-                      value={category.key}
-                      key={index}
-                      onChange={() => setCategory(category.key)}
-                    >
+                    <option value={category.key} key={index}>
                       {category.value}
                     </option>
                   )
@@ -379,35 +464,47 @@ export function EditEventModal() {
                 id="age"
                 className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
               >
-                <option className="outline-none" value="all">
-                  Todas as idades
-                </option>
-                <option className="outline-none" value="legalAge">
-                  18+
-                </option>
+                {ageCategories.map((ageCategory, index) => {
+                  return (
+                    <option
+                      value={ageCategory.value}
+                      key={index}
+                      onChange={() => setAge(ageCategory.value)}
+                    >
+                      {ageCategory.label}
+                    </option>
+                  )
+                })}
               </select>
             </div>
           </fieldset>
 
           <fieldset className="mb-4 flex w-full justify-between flex-row gap-8 text-white">
-            <div className="flex flex-col gap-1  w-2/3">
-              <label className="text-base text-white" htmlFor="musicType">
-                Tipo de música
-              </label>
-
-              <select
-                name="musicType"
-                id="musicType"
-                className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
-              >
-                {options.map((types, index) => {
-                  return (
-                    <option value={index} key={index}>
-                      {options[index].label}
-                    </option>
-                  )
-                })}
-              </select>
+            <div className="flex gap-4 w-full">
+              <div className="flex flex-col gap-1 w-full">
+                <label className="text-base text-white" htmlFor="district">
+                  Distrito
+                </label>
+                <select
+                  name="district"
+                  id="district"
+                  className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
+                  onChange={mudou}
+                >
+                  {Distritos.map((types, index) => {
+                    return (
+                      <option
+                        value={index}
+                        defaultValue={currentDistrict}
+                        key={index}
+                        // onChange={() => setCurrentDistrict(1)}
+                      >
+                        {Distritos[index].name}
+                      </option>
+                    )
+                  })}
+                </select>
+              </div>
             </div>
 
             <div className="flex flex-col gap-1 w-1/3">
@@ -418,14 +515,11 @@ export function EditEventModal() {
                 name="category"
                 id="category"
                 className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
+                onChange={e => setEventStatus(e.target.value)}
               >
                 {status.map((status, index) => {
                   return (
-                    <option
-                      value={status.value}
-                      key={index}
-                      onChange={() => setEventStatus(status.value)}
-                    >
+                    <option value={status.value} key={index}>
                       {status.label}
                     </option>
                   )
@@ -442,54 +536,45 @@ export function EditEventModal() {
               className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
               id="ticketLink"
               placeholder="https://www.example.com.br/ingressos/"
+              defaultValue={ticketUrl}
+              onChange={e => setTicketUrl(e.target.value)}
             />
           </fieldset>
 
-          <fieldset className="mb-4 flex w-full justify-between flex-row gap-8 text-white">
-            <div className="flex flex-col gap-1  w-1/2">
-              <label className="text-base text-white" htmlFor="district">
-                Distrito
+          <fieldset>
+            <div className="flex flex-col gap-1">
+              <label className="text-base text-white" htmlFor="musicType">
+                Tipo de música
               </label>
-              <select
-                name="district"
-                id="district"
-                className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
-                onChange={mudou}
-              >
-                {Distritos.map((types, index) => {
-                  return (
-                    <option
-                      value={index}
-                      defaultValue={currentDistrict}
-                      key={index}
-                    >
-                      {Distritos[index].name}
-                    </option>
-                  )
-                })}
-              </select>
-            </div>
 
-            <div className="flex flex-col gap-1 w-1/2">
-              <label className="text-base text-white" htmlFor="age">
-                Bairro
-              </label>
-              <select
-                name="category"
-                id="category"
-                className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
-              >
-                {Distritos[currentDistrict].neighborhoods.map(
-                  (neighborhood, index) => {
-                    return (
-                      <option value={index} key={index}>
-                        {Distritos[currentDistrict].neighborhoods[index]}
-                      </option>
-                    )
-                  }
-                )}
-              </select>
+              <MultiSelectComponent
+                defaultValue={selectedMusics}
+                onChange={handleChange}
+                options={options}
+              />
             </div>
+          </fieldset>
+
+          <fieldset>
+            <div className="flex flex-col w-full gap-1">
+              <label className="text-base text-white">Features</label>
+
+              <MultiSelectComponent
+                defaultValue={selectedFeatures}
+                onChange={handleFeaturesSelectChange}
+                options={features}
+              />
+            </div>
+          </fieldset>
+
+          <fieldset className="mb-4 flex flex-col gap-1 text-white">
+            <label className="text-base text-white">Pacotes</label>
+
+            <MultiSelectComponent
+              defaultValue={selectedPackages}
+              onChange={handlePackageTypeSelectChange}
+              options={packageTypeArray}
+            />
           </fieldset>
 
           <div className="mb-4 flex text-white justify-around gap-2">
