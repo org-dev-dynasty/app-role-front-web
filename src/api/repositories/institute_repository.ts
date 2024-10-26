@@ -69,10 +69,10 @@ export class InstituteRepositoryHttp {
     }
   }
   
-  async uploadInstituteImage(id: string, data: any) {
+  async uploadInstituteImage(data: FormData) {
     try {
       const resp = await httpEvent.post(
-        `/upload-institute-image?instituteId=${id}`,
+        `/upload-institute-photo`,
         data,
         {
           headers: {

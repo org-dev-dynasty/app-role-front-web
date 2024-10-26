@@ -21,7 +21,7 @@ type InstituteContextType = {
     createInstitute?: (data: Institute) => Promise<object>
     deleteInstituteById?: (id: string) => Promise<object>
     updateInstituteById?: (id: string, data: Institute) => Promise<object>
-    uploadInstituteImage?: (id: string, data: FormData) => Promise<object>
+    uploadInstituteImage?: (data: FormData) => Promise<object>
 }
 
 
@@ -42,7 +42,7 @@ const defaultInstitute = {
     updateInstituteById: async (id: string, data: Institute) => {
         return {}
     },
-    uploadInstituteImage: async (id: string, data: FormData) => {
+    uploadInstituteImage: async (data: FormData) => {
         return {}
     }
 }
@@ -97,9 +97,9 @@ export function InstituteContextProvider({ children }: PropsWithChildren) {
         }
     }
 
-    async function uploadInstituteImage(id: string, data: FormData) {
+    async function uploadInstituteImage(data: FormData) {
         try {
-            const response = await repo.uploadInstituteImage(id, data)
+            const response = await repo.uploadInstituteImage(data)
             return response
         } catch (error: any) {
             return error

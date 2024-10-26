@@ -114,9 +114,9 @@ export default function Institute() {
       <div className="relative w-[70%] flex flex-col py-6 bg-[#2A2A2A] items-center gap-10 px-4">
 
         <div className="flex items-center w-full gap-4">
-          <div className="rounded-full h-72 w-72 bg-light-purple flex justify-center items-center">
+          <div className="rounded-full h-72 w-72 bg-light-purple flex justify-center items-center overflow-hidden">
             {institute.logo_photo ? (
-              <img src={institute.logo_photo} alt="Logo do instituto" />
+              <img src={institute.logo_photo} alt="Logo do instituto" className="h-full w-full object-cover flex justify-center items-center" />
             ) : (
               <p className="text-white">Sem logo disponível</p>
             )}

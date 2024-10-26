@@ -7,6 +7,29 @@ interface InstituteModalProps {
   onInstituteCreated?: () => void;
 }
 
+const districts = [
+  {
+    "id": "ee6ba030-cebc-405b-b3e3-08f213cca415",
+    "name": "Zona Sul"
+  },
+  {
+    "id": "5e3e0505-2b29-462d-91fc-d9f538ee8186",
+    "name": "Zona Norte"
+  },
+  {
+    "id": "7d6b8023-2d03-4623-bc33-ebf58767c9b1",
+    "name": "Zona Leste"
+  },
+  {
+    "id": "1477c1ff-bdb4-4e38-8415-b2da7163b3f7",
+    "name": "Zona Oeste"
+  },
+  {
+    "id": "90fec991-6d11-4813-9482-343ebdca5514",
+    "name": "Centro"
+  }
+]
+
 export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCreated }: InstituteModalProps) {
   const [isVisible, setIsVisible] = useState(false); // Estado para controlar a visibilidade do modal
   const { createInstitute, uploadInstituteImage } = useContext(InstituteContext);
@@ -16,6 +39,7 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
   const [instituteType, setInstituteType] = useState("ESTABELECIMENTO_FIXO");
   const [partnerType, setPartnerType] = useState("GLOBAL_PARTNER");
   const [phone, setPhone] = useState("");
+  const [districtId, setDistrictId] = useState(districts[0].id);
   const [address, setAddress] = useState("");
   const [addErr, setAddErr] = useState("");
   const [logoPhoto, setLogoPhoto] = useState<File | null>(null);
@@ -74,6 +98,7 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
       partner_type: partnerType,
       phone: phone,
       address: address,
+      district_id: districtId
     };
 
     try {
@@ -84,22 +109,27 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
       console.log("Instituto Criado:", createdInstitute);
 
       // Verifica se o instituto foi criado e tem ID
-      if (createdInstitute?.institute_id) {
+      if (createdInstitute) {
         // Upload do logotipo, se houver
-        if (logoPhoto) {
-          const logoFormData = new FormData();
-          logoFormData.append("logo_photo", logoPhoto);
-          await uploadInstituteImage(createdInstitute.institute_id, logoFormData); // Certifique-se de que o campo está correto
+        if (logoPhoto?.name) {
+          console.log(logoPhoto.name);
+          const logoType = logoPhoto.type;
+          const formData = new FormData();
+          formData.append("name", instituteName,);
+          formData.append("typePhoto", logoType);
+          formData.append("files", logoPhoto);
+          const resp = await uploadInstituteImage(formData);
+          console.log("Logo Upload Response:", resp);
         }
 
         // Upload da galeria de fotos, se houver
-        if (galleryPhotos.length > 0) {
-          const galleryFormData = new FormData();
-          galleryPhotos.forEach((photo, index) => {
-            galleryFormData.append(`gallery_photos[${index}]`, photo);
-          });
-          await uploadInstituteImage(createdInstitute.institute_id, galleryFormData); // Certifique-se de que o campo está correto
-        }
+        // if (galleryPhotos.length > 0) {
+        //   const galleryFormData = new FormData();
+        //   galleryPhotos.forEach((photo, index) => {
+        //     galleryFormData.append(`gallery_photos[${index}]`, photo);
+        //   });
+        //   await uploadInstituteImage(createdInstitute.institute_id, galleryFormData); // Certifique-se de que o campo está correto
+        // }
 
         // Chama o callback se necessário
         if (onInstituteCreated) {
@@ -197,20 +227,43 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
           </fieldset>
         </div>
 
-        {/* Endereço */}
-        <fieldset className="mb-4 flex flex-col gap-1 text-white">
-          <label className="text-base text-white" htmlFor="address">
-            Endereço{instituteType === "AGENCIA_DE_FESTAS" ? " (opcional)" : ""}
-          </label>
-          <input
-            className={`h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet ${addErr && !address ? 'border-solid border-2 border-red-500 focus:ring-0' : ''}`}
-            id="address"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            placeholder="Digite o endereço do instituto"
-          />
-        </fieldset>
-        {addErr && !address && <div className="text-red-500 text-sm mb-4">{addErr}</div>}
+        <div className='flex w-full gap-4'>
+          {/* Distrito */}
+          <fieldset className="mb-4 flex flex-col gap-1 text-white">
+            <label className="text-base text-white" htmlFor="district">
+              Distrito
+            </label>
+            <select
+              name="district"
+              id="district"
+              className="h-10 bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
+              value={districtId}
+              onChange={(e) => setDistrictId(e.target.value)}
+            >
+              {districts.map((district) => (
+                <option key={district.id} value={district.id}>
+                  {district.name}
+                </option>
+              ))}
+            </select>
+          </fieldset>
+          <div className='flex flex-col w-full'>
+            {/* Endereço */}
+            <fieldset className="mb-4 flex flex-col gap-1 text-white">
+              <label className="text-base text-white" htmlFor="address">
+                Endereço{instituteType === "AGENCIA_DE_FESTAS" ? " (opcional)" : ""}
+              </label>
+              <input
+                className={`h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet ${addErr && !address ? 'border-solid border-2 border-red-500 focus:ring-0' : ''}`}
+                id="address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="Digite o endereço do instituto"
+              />
+            </fieldset>
+            {addErr && !address && <div className="text-red-500 text-sm mb-4">{addErr}</div>}
+          </div>
+        </div>
 
         {/* Telefone */}
         <fieldset className="mb-4 flex flex-col gap-1 text-white">
@@ -237,7 +290,12 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
             className="bg-grayInputModal p-2 outline-none rounded-md focus:ring-2 ring-violet"
             id="logoPhoto"
             type="file"
-            onChange={(e) => e.target.files && setLogoPhoto(e.target.files[0])}
+            accept='image/*'
+            onChange={(e) => {
+              const file = e.target.files?.[0] || null;
+              console.log("Selected logo file:", file); // Verifica o arquivo selecionado
+              setLogoPhoto(file);
+            }}
           />
         </fieldset>
 

@@ -14,7 +14,7 @@ interface Institute {
     institute_type: string;
     partner_type: string;
     phone: string;
-    logo_photo: string;
+    logoPhoto: string;
     address: string;
     price: number;
     district_id: string;
@@ -106,7 +106,7 @@ export default function Institutions() {
                         <div className="h-fit" key={institute.instituteId} onClick={() => navigate(`/institute/${institute.instituteId}`)}>
                             <InstituteCard
                                 name={institute.name}
-                                imageUrl={institute.logo_photo}
+                                imageUrl={institute.logoPhoto}
                             />
                         </div>
                     ))
