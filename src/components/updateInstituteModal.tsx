@@ -21,12 +21,37 @@ interface InstituteProps {
   events_id: string[];
 }
 
+const districts = [
+  {
+    "id": "ee6ba030-cebc-405b-b3e3-08f213cca415",
+    "name": "Zona Sul"
+  },
+  {
+    "id": "5e3e0505-2b29-462d-91fc-d9f538ee8186",
+    "name": "Zona Norte"
+  },
+  {
+    "id": "7d6b8023-2d03-4623-bc33-ebf58767c9b1",
+    "name": "Zona Leste"
+  },
+  {
+    "id": "1477c1ff-bdb4-4e38-8415-b2da7163b3f7",
+    "name": "Zona Oeste"
+  },
+  {
+    "id": "90fec991-6d11-4813-9482-343ebdca5514",
+    "name": "Centro"
+  }
+]
+  
+
 export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, institute }: InstituteModalProps) {
   const [instituteNameDisplay, setInstituteNameDisplay] = useState("");
   const [instituteName, setInstituteName] = useState(institute.name || "");
   const [description, setDescription] = useState(institute.description || "");
   const [instituteType, setInstituteType] = useState(institute.institute_type || "ESTABELECIMENTO_FIXO");
   const [partnerType, setPartnerType] = useState(institute.partner_type || "GLOBAL_PARTNER");
+  const [districtId, setDistrictId] = useState(institute.district_id || "");
   const [phone, setPhone] = useState(institute.phone || "");
   const [address, setAddress] = useState(institute.address || "");
   const [logoPhotoIncoming, setLogoPhotoIncoming] = useState<File | null>(null);
@@ -185,23 +210,48 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
           />
         </fieldset>
 
-        {/* Endereço */}
-        <fieldset className="mb-4 flex flex-col gap-1 text-white">
-          <label className="text-base" htmlFor="address">Endereço (opcional)</label>
-          <input
-            className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
-            id="address"
-            value={address}
-            onChange={handleAddressChange}
-            placeholder="Digite o endereço"
-          />
-        </fieldset>
+        <div className='flex w-full gap-4'>
+          {/* Distrito */}
+          <fieldset className="mb-4 flex flex-col gap-1 text-white">
+            <label className="text-base text-white" htmlFor="district">
+              Distrito
+            </label>
+            <select
+              name="district"
+              id="district"
+              className="h-10 bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
+              value={districtId}
+              onChange={(e) => setDistrictId(e.target.value)}
+            >
+              {districts.map((district) => (
+                <option key={district.id} value={district.id}>
+                  {district.name}
+                </option>
+              ))}
+            </select>
+          </fieldset>
+          <div className='flex flex-col w-full'>
+            {/* Endereço */}
+            <fieldset className="mb-4 flex flex-col gap-1 text-white">
+              <label className="text-base text-white" htmlFor="address">
+                Endereço{instituteType === "AGENCIA_DE_FESTAS" ? " (opcional)" : ""}
+              </label>
+              <input
+                className={`h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet `}
+                id="address"
+                value={address}
+                onChange={handleAddressChange}
+                placeholder="Digite o endereço do instituto"
+              />
+            </fieldset>
+          </div>
+        </div>
 
         {/* Upload da Logo */}
         <fieldset className="mb-4 flex flex-col gap-1 text-white">
           <label className="text-base" htmlFor="logoPhoto">Logo do Instituto (opcional)</label>
           <input
-            className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
+            className="bg-grayInputModal p-2 outline-none rounded-md focus:ring-2 ring-violet"
             id="logoPhoto"
             type="file"
             accept="image/*"
@@ -213,7 +263,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
         <fieldset className="mb-4 flex flex-col gap-1 text-white">
           <label className="text-base" htmlFor="galleryPhotos">Fotos da Galeria (opcional)</label>
           <input
-            className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
+            className="bg-grayInputModal p-2 outline-none rounded-md focus:ring-2 ring-violet"
             id="galleryPhotos"
             type="file"
             accept="image/*"
@@ -223,11 +273,11 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
         </fieldset>
 
         {/* Botões */}
-        <div className="flex justify-evenly mt-5">
-          <button className="h-10 w-1/4 rounded-lg border border-red-600 bg-red-600 text-white" onClick={() => setIsUpdateInstituteModalOpen(false)}>
+        <div className="flex justify-end gap-4 mt-5">
+          <button className="h-10 px-8 rounded-lg border border-red-600 bg-red-600 text-white" onClick={() => setIsUpdateInstituteModalOpen(false)}>
             Cancelar
           </button>
-          <button className="h-10 w-1/4 rounded-lg border border-violet bg-violet text-white" onClick={handleUpdateClick}>
+          <button className="h-10 px-8 rounded-lg border border-violet bg-violet text-white" onClick={handleUpdateClick}>
             Atualizar
           </button>
         </div>

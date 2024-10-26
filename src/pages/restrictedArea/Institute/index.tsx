@@ -24,6 +24,29 @@ interface Institute {
   price: number;
 }
 
+const districts = [
+  {
+    "id": "ee6ba030-cebc-405b-b3e3-08f213cca415",
+    "name": "Zona Sul"
+  },
+  {
+    "id": "5e3e0505-2b29-462d-91fc-d9f538ee8186",
+    "name": "Zona Norte"
+  },
+  {
+    "id": "7d6b8023-2d03-4623-bc33-ebf58767c9b1",
+    "name": "Zona Leste"
+  },
+  {
+    "id": "1477c1ff-bdb4-4e38-8415-b2da7163b3f7",
+    "name": "Zona Oeste"
+  },
+  {
+    "id": "90fec991-6d11-4813-9482-343ebdca5514",
+    "name": "Centro"
+  }
+]
+
 export default function Institute() {
   const { getEventById } = useContext(EventContext);
   const { getInstituteById } = useContext(InstituteContext);
@@ -88,7 +111,6 @@ export default function Institute() {
     fetchInstitute();
   }, [instId, getInstituteById]);
 
-
   if (loading) {
     return (
       <div className="h-[100vh] w-full flex justify-center items-center bg-[#151515]">
@@ -100,6 +122,8 @@ export default function Institute() {
   if (!institute) {
     return <p className="text-white">Carregando ou nenhum instituto encontrado</p>; // Mensagem enquanto carrega
   }
+
+  const district = districts.find(d => d.id === institute.district_id);
 
   return (
     <div className="h-full w-full flex flex-row bg-[#151515]">
@@ -174,7 +198,7 @@ export default function Institute() {
             </div>
             <div>
               <h1>Distrito:</h1>
-              <h1>{institute.district_id || "Distrito indisponível"}</h1>
+              <h1>{district ? district.name : "Distrito indisponível"}</h1>
             </div>
           </div>
         </div>

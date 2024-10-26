@@ -1,3 +1,4 @@
+import { httpAuth } from "../http"
 
 export class AuthRepositoryHttp {
   async login(data: any) {
