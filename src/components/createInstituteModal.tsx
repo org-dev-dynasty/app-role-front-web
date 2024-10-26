@@ -17,6 +17,7 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
   const [partnerType, setPartnerType] = useState("GLOBAL_PARTNER");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [addErr, setAddErr] = useState("");
   const [logoPhoto, setLogoPhoto] = useState<File | null>(null);
   const [galleryPhotos, setGalleryPhotos] = useState<File[]>([]);
   const [isCreating, setIsCreating] = useState(false);
@@ -50,7 +51,19 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
     if (isCreating) return; // Impede cliques múltiplos
     if (!instituteName || !description) {
       setErr("Preencha o nome e a descrição do instituto");
+      if (instituteType === "ESTABELECIMENTO_FIXO") {
+        if (!address) {
+          setAddErr("Preencha o endereço do instituto");
+          return;
+        }
+      }
       return;
+    }
+    if (instituteType === "ESTABELECIMENTO_FIXO") {
+      if (!address) {
+        setAddErr("Preencha o endereço do instituto");
+        return;
+      }
     }
     setIsCreating(true);
 
@@ -123,9 +136,10 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
             Nome
           </label>
           <input
-            className={`h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet ${err && !instituteName ? 'border-solid border-2 border-red-500 ring-transparent' : ''}`}
+            className={`h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet ${err && !instituteName ? 'border-solid border-2 border-red-500 ring-transparent focus:ring-0' : ''}`}
             id="instituteName"
             value={instituteName}
+            placeholder='Digite o nome do instituto'
             onChange={(e) => setInstituteName(e.target.value)}
           />
         </fieldset>
@@ -137,13 +151,14 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
             Descrição
           </label>
           <textarea
-            className={`h-44 px-2 py-2 resize-none bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet ${err && !description ? 'border-solid border-2 border-red-500 ring-transparent' : ''}`}
+            className={`h-44 px-2 py-2 resize-none bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet ${err && !description ? 'border-solid border-2 border-red-500 focus:ring-0' : ''}`}
             id="description"
             value={description}
+            placeholder='Digite a descrição do instituto'
             onChange={(e) => setDescription(e.target.value)}
           />
         </fieldset>
-        {err && !description && <div className="text-red-500 text-sm mb-4">{err}</div> }
+        {err && !description && <div className="text-red-500 text-sm mb-4">{err}</div>}
 
         <div className="flex flex-row justify-evenly ">
           {/* Tipo de Instituto */}
@@ -182,6 +197,21 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
           </fieldset>
         </div>
 
+        {/* Endereço */}
+        <fieldset className="mb-4 flex flex-col gap-1 text-white">
+          <label className="text-base text-white" htmlFor="address">
+            Endereço{instituteType === "AGENCIA_DE_FESTAS" ? " (opcional)" : ""}
+          </label>
+          <input
+            className={`h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet ${addErr && !address ? 'border-solid border-2 border-red-500 focus:ring-0' : ''}`}
+            id="address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder="Digite o endereço do instituto"
+          />
+        </fieldset>
+        {addErr && !address && <div className="text-red-500 text-sm mb-4">{addErr}</div>}
+
         {/* Telefone */}
         <fieldset className="mb-4 flex flex-col gap-1 text-white">
           <label className="text-base text-white" htmlFor="phone">
@@ -195,20 +225,6 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
             placeholder="+XX XXXX-XXXX"
             inputMode="numeric"
             type="tel"
-          />
-        </fieldset>
-
-        {/* Endereço */}
-        <fieldset className="mb-4 flex flex-col gap-1 text-white">
-          <label className="text-base text-white" htmlFor="address">
-            Endereço(opcional)
-          </label>
-          <input
-            className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
-            id="address"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            placeholder="Digite o endereço"
           />
         </fieldset>
 
