@@ -1,24 +1,22 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { InstituteContext } from '../context/institute_context';
+// import { set } from 'zod';
 
 interface InstituteModalProps {
   setIsUpdateInstituteModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   institute: InstituteProps;
 }
 
-interface InstituteProps {
+export interface InstituteProps {
   institute_id: string;
   name: string;
   description: string;
   institute_type: string;
   partner_type: string;
   phone: string;
-  logo_photo: string | File | null;
   address: string;
   price: number;
   district_id: string;
-  photos_url: string[] | File[];
-  events_id: string[];
 }
 
 const districts = [
@@ -43,9 +41,10 @@ const districts = [
     "name": "Centro"
   }
 ]
-  
+
 
 export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, institute }: InstituteModalProps) {
+  const [instituteId, setInstituteId] = useState("");
   const [instituteNameDisplay, setInstituteNameDisplay] = useState("");
   const [instituteName, setInstituteName] = useState(institute.name || "");
   const [description, setDescription] = useState(institute.description || "");
@@ -54,12 +53,13 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
   const [districtId, setDistrictId] = useState(institute.district_id || "");
   const [phone, setPhone] = useState(institute.phone || "");
   const [address, setAddress] = useState(institute.address || "");
-  const [logoPhotoIncoming, setLogoPhotoIncoming] = useState<File | null>(null);
-  const [galleryPhotosIncoming, setGalleryPhotosIncoming] = useState<File[]>([]);
+  // const [logoPhotoIncoming, setLogoPhotoIncoming] = useState<File | null>(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    setInstituteId(institute.institute_id);
+    setDistrictId(institute.district_id);
     setInstituteNameDisplay(institute.name);
     setInstituteName(institute.name);
     setDescription(institute.description);
@@ -75,12 +75,9 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
   const handleInstituteTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => setInstituteType(e.target.value);
   const handlePartnerTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => setPartnerType(e.target.value);
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => setAddress(e.target.value);
-  const handleLogoPhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) setLogoPhotoIncoming(e.target.files[0]);
-  };
-  const handleGalleryPhotosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) setGalleryPhotosIncoming(Array.from(e.target.files));
-  };
+  // const handleLogoPhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (e.target.files) setLogoPhotoIncoming(e.target.files[0]);
+  // };
 
   const formatPhone = (value: string) => {
     const cleaned = value.replace(/\D/g, '');
@@ -117,18 +114,16 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
           setIsUpdateInstituteModalOpen={setIsUpdateInstituteModalOpen}
           instituteId={institute.institute_id}
           newInstituteData={{
-            institute_id: institute.institute_id,
+            institute_id: instituteId,
             name: instituteName,
             description: description,
             institute_type: instituteType,
             partner_type: partnerType,
             phone: phone,
             address: address,
-            logo_photo: logoPhotoIncoming,
-            photos_url: galleryPhotosIncoming,
-            events_id: institute.events_id,
             price: institute.price,
-            district_id: institute.district_id,
+            district_id: institute.district_id
+
           }}
         />
       )}
@@ -247,7 +242,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
           </div>
         </div>
 
-        {/* Upload da Logo */}
+        {/* Upload da Logo
         <fieldset className="mb-4 flex flex-col gap-1 text-white">
           <label className="text-base" htmlFor="logoPhoto">Logo do Instituto (opcional)</label>
           <input
@@ -257,20 +252,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
             accept="image/*"
             onChange={handleLogoPhotoChange}
           />
-        </fieldset>
-
-        {/* Upload de Fotos da Galeria */}
-        <fieldset className="mb-4 flex flex-col gap-1 text-white">
-          <label className="text-base" htmlFor="galleryPhotos">Fotos da Galeria (opcional)</label>
-          <input
-            className="bg-grayInputModal p-2 outline-none rounded-md focus:ring-2 ring-violet"
-            id="galleryPhotos"
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleGalleryPhotosChange}
-          />
-        </fieldset>
+        </fieldset> */}
 
         {/* Botões */}
         <div className="flex justify-end gap-4 mt-5">
@@ -300,7 +282,9 @@ function ConfirmUpdate({ setIsConfirmOpen, setIsUpdateInstituteModalOpen, newIns
 
   const handleConfirmClick = () => {
     // Update the institute with the new data
-    updateInstituteById(newInstituteData.institute_id, newInstituteData);
+    console.log(newInstituteData);
+    const resp = updateInstituteById(newInstituteData);
+    console.log(resp);
     setIsUpdateInstituteModalOpen(false);
     setIsConfirmOpen(false);
   };

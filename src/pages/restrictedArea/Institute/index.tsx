@@ -135,7 +135,7 @@ export default function Institute() {
       )}
       {isDeleteModalOpen && <ConfirDelete setIsDeleteModalOpen={setIsDeleteModalOpen} instituteId={instId} />}
 
-      <div className="relative w-[70%] flex flex-col py-6 bg-[#2A2A2A] items-center gap-10 px-4">
+      <div className="relative h-[100vh] w-[70%] flex flex-col py-6 bg-[#2A2A2A] items-center gap-10 px-4">
 
         <div className="flex items-center w-full gap-4">
           <div className="rounded-full h-72 w-72 bg-light-purple flex justify-center items-center overflow-hidden">
@@ -193,31 +193,12 @@ export default function Institute() {
               <h1>{institute.phone || "Telefone indisponível"}</h1>
             </div>
             <div>
-              <h1>Endereço:</h1>
-              <h1>{institute.address || "Endereço indisponível"}</h1>
-            </div>
-            <div>
               <h1>Distrito:</h1>
               <h1>{district ? district.name : "Distrito indisponível"}</h1>
             </div>
-          </div>
-        </div>
-
-        <div className="w-full min-h-96 bg-[#151515] rounded-xl flex flex-row text-white">
-          <div className="flex flex-col gap-4 h-full p-6 w-full">
-            <div className="flex gap-4 flex-wrap">
-              {institute.photos_url.length > 0 ? (
-                institute.photos_url.map((photo_url, index) => (
-                  <img
-                    key={index}
-                    className="min-w-52 border-2 min-h-72 border-dashed"
-                    src={photo_url}
-                    alt={`Foto do instituto ${index + 1}`}
-                  />
-                ))
-              ) : (
-                <p className="text-white">Sem fotos disponíveis</p>
-              )}
+            <div>
+              <h1>Endereço:</h1>
+              <h1>{institute.address || "Endereço indisponível"}</h1>
             </div>
           </div>
         </div>

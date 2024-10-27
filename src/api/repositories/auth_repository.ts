@@ -3,7 +3,7 @@ import { httpAuth } from "../http"
 export class AuthRepositoryHttp {
   async login(data: any) {
     try {
-      const resp = await httpAuth.post('/login', data)
+      const resp = await httpAuth.post('/sign-in', data)
 
       if (resp) {
         return resp.data

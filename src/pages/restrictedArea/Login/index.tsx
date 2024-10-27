@@ -40,6 +40,9 @@ export default function Login() {
       console.log("Senha: ", password)
       const resp = signIn({ email: username, password: password })
       console.log("Resposta: ", resp)
+      localStorage.setItem('accessToken', resp.accessToken);
+      localStorage.setItem('refreshToken', resp.refreshToken);
+      localStorage.setItem('idToken', resp.idToken);
     }
   }
 

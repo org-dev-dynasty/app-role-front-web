@@ -50,10 +50,10 @@ export class InstituteRepositoryHttp {
     }
   }
 
-  async updateInstituteById(id: string, data: any) {
+  async updateInstituteById(data: any) {
     try {
       const resp = await httpEvent.put(
-        `/update-institute-by-id?instituteId=${id}`,
+        `/update-institute`,
         data,
         {
           headers: {
