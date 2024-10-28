@@ -171,34 +171,30 @@ export default function Institute() {
           </div>
         </div>
 
-        <div className="w-full h-72 bg-[#151515] rounded-xl py-4 flex flex-row text-white">
+        <div className="w-full h-fit bg-[#151515] rounded-xl py-4 flex flex-row text-white">
           <div className="flex flex-col gap-4 border-r h-full justify-center p-6 w-full">
-            <div>
-              <h1>Tipo de instituição:</h1>
-              <h1>{formatInstituteType(institute.institute_type)}</h1>
+            <div className="bg-[#2a2a2a] p-2 pb-4 rounded-lg flex justify-center items-center flex-col gap-2 shadow-lg">
+              <h1 className="h-8 w-1/2 rounded-lg bg-[#444] flex justify-center items-center shadow-md">Telefone:</h1>
+              <h1>{institute.phone || "Telefone indisponível"}</h1>
             </div>
-            <div>
-              <h1>Tipo de Parceiro:</h1>
-              <h1>{formatPartnerType(institute.partner_type)}</h1>
+            <div className="bg-[#2a2a2a] p-2 pb-4 rounded-lg flex justify-center items-center flex-col gap-2 shadow-lg">
+              <h1 className="h-8 w-1/2 rounded-lg bg-[#444] flex justify-center items-center shadow-md">Distrito:</h1>
+              <h1>{district ? district.name : "Distrito indisponível"}</h1>
             </div>
-            <div>
-              <h1>Preço:</h1>
-              <h1>{institute.price > 5 ? "$".repeat(5) : "$".repeat(institute.price)}</h1>
+            <div className="bg-[#2a2a2a] p-2 pb-4 rounded-lg flex justify-center items-center flex-col gap-2 shadow-lg">
+              <h1 className="h-8 w-1/2 rounded-lg bg-[#444] flex justify-center items-center shadow-md">Endereço:</h1>
+              <h1>{institute.address || "Endereço indisponível"}</h1>
             </div>
           </div>
 
           <div className="flex flex-col gap-4 border-l h-full justify-center p-6 w-full">
-            <div>
-              <h1>Telefone:</h1>
-              <h1>{institute.phone || "Telefone indisponível"}</h1>
+            <div className="bg-[#2a2a2a] p-2 pb-4 rounded-lg flex justify-center items-center flex-col gap-2 shadow-lg">
+              <h1 className="h-8 w-1/2 rounded-lg bg-[#444] flex justify-center items-center shadow-md">Tipo de instituição:</h1>
+              <h1>{formatInstituteType(institute.institute_type)}</h1>
             </div>
-            <div>
-              <h1>Distrito:</h1>
-              <h1>{district ? district.name : "Distrito indisponível"}</h1>
-            </div>
-            <div>
-              <h1>Endereço:</h1>
-              <h1>{institute.address || "Endereço indisponível"}</h1>
+            <div className="bg-[#2a2a2a] p-2 pb-4 rounded-lg flex justify-center items-center flex-col gap-2 shadow-lg">
+              <h1 className="h-8 w-1/2 rounded-lg bg-[#444] flex justify-center items-center shadow-md">Tipo de Parceiro:</h1>
+              <h1>{formatPartnerType(institute.partner_type)}</h1>
             </div>
           </div>
         </div>

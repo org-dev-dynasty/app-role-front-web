@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { InstituteContext } from '../context/institute_context';
-// import { set } from 'zod';
 
 interface InstituteModalProps {
   setIsUpdateInstituteModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -15,7 +14,6 @@ export interface InstituteProps {
   partner_type: string;
   phone: string;
   address: string;
-  price: number;
   district_id: string;
 }
 
@@ -44,8 +42,7 @@ const districts = [
 
 
 export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, institute }: InstituteModalProps) {
-  const [instituteId, setInstituteId] = useState("");
-  const [instituteNameDisplay, setInstituteNameDisplay] = useState("");
+  const [initialData, setInitialData] = useState<InstituteProps>(institute);
   const [instituteName, setInstituteName] = useState(institute.name || "");
   const [description, setDescription] = useState(institute.description || "");
   const [instituteType, setInstituteType] = useState(institute.institute_type || "ESTABELECIMENTO_FIXO");
@@ -58,17 +55,22 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    setInstituteId(institute.institute_id);
-    setDistrictId(institute.district_id);
-    setInstituteNameDisplay(institute.name);
-    setInstituteName(institute.name);
-    setDescription(institute.description);
-    setInstituteType(institute.institute_type);
-    setPartnerType(institute.partner_type);
-    setPhone(institute.phone);
-    setAddress(institute.address);
+    setInitialData(institute);
     setIsVisible(true); // Ativa a visibilidade do modal
   }, [institute]);
+
+  const getModifiedFields = () => {
+    const modifiedFields: Partial<InstituteProps> = {};
+    modifiedFields.institute_id = institute.institute_id;
+    if (instituteName !== initialData.name) modifiedFields.name = instituteName;
+    if (description !== initialData.description) modifiedFields.description = description;
+    if (instituteType !== initialData.institute_type) modifiedFields.institute_type = instituteType;
+    if (partnerType !== initialData.partner_type) modifiedFields.partner_type = partnerType;
+    if (phone !== initialData.phone) modifiedFields.phone = phone;
+    if (address !== initialData.address) modifiedFields.address = address;
+    if (districtId !== initialData.district_id) modifiedFields.district_id = districtId;
+    return modifiedFields;
+  };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => setInstituteName(e.target.value);
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value);
@@ -82,7 +84,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
   const formatPhone = (value: string) => {
     const cleaned = value.replace(/\D/g, '');
 
-    if (cleaned.length > 14) {
+    if (cleaned.length > 12) {
       return phone;
     }
 
@@ -113,24 +115,13 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
           setIsConfirmOpen={setIsConfirmOpen}
           setIsUpdateInstituteModalOpen={setIsUpdateInstituteModalOpen}
           instituteId={institute.institute_id}
-          newInstituteData={{
-            institute_id: instituteId,
-            name: instituteName,
-            description: description,
-            institute_type: instituteType,
-            partner_type: partnerType,
-            phone: phone,
-            address: address,
-            price: institute.price,
-            district_id: institute.district_id
-
-          }}
+          newInstituteData={getModifiedFields()}
         />
       )}
       <div className={`fixed inset-0 bg-black/50 backdrop-blur-sm ${isVisible ? "transition-opacity duration-300" : "opacity-0"}`} onClick={() => setIsUpdateInstituteModalOpen(false)} />
       <div className={`fixed overflow-y-auto left-1/2 top-1/2 max-h-[85vh] w-[50vw] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-grayModal p-[25px] shadow-md focus:outline-none transition-transform duration-300 transform ${isVisible ? "scale-100" : "scale-95"}`}>
         <div className="m-0 text-3xl font-medium text-white">
-          Atualizar Instituto: <span className="text-violet">{instituteNameDisplay}</span>
+          Atualizar Instituto: <span className="text-violet">{initialData.name}</span>
         </div>
         <div className="mb-5 mt-2.5 text-[15px] leading-normal text-stone-300">
           Utilize os campos abaixo para atualizar as informações do instituto.
@@ -190,21 +181,6 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
           </fieldset>
         </div>
 
-        {/* Telefone */}
-        <fieldset className="mb-4 flex flex-col gap-1 text-white">
-          <label className="text-base" htmlFor="phone">Telefone (opcional)</label>
-          <input
-            className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
-            id="phone"
-            value={phone}
-            onChange={handlePhoneChange}
-            placeholder="(XX) XXXX-XXXX"
-            pattern="\(\d{2}\)\s\d{4,5}-\d{4}"
-            inputMode="numeric"
-            type="tel"
-          />
-        </fieldset>
-
         <div className='flex w-full gap-4'>
           {/* Distrito */}
           <fieldset className="mb-4 flex flex-col gap-1 text-white">
@@ -242,6 +218,21 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
           </div>
         </div>
 
+        {/* Telefone */}
+        <fieldset className="mb-4 flex flex-col gap-1 text-white">
+          <label className="text-base" htmlFor="phone">Telefone (opcional)</label>
+          <input
+            className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
+            id="phone"
+            value={phone}
+            onChange={handlePhoneChange}
+            placeholder="(XX) XXXX-XXXX"
+            pattern="\(\d{2}\)\s\d{4,5}-\d{4}"
+            inputMode="numeric"
+            type="tel"
+          />
+        </fieldset>
+
         {/* Upload da Logo
         <fieldset className="mb-4 flex flex-col gap-1 text-white">
           <label className="text-base" htmlFor="logoPhoto">Logo do Instituto (opcional)</label>
@@ -274,7 +265,7 @@ interface ConfirmUpdateProps {
   setIsConfirmOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsUpdateInstituteModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   instituteId: string;
-  newInstituteData: InstituteProps;
+  newInstituteData: Partial<InstituteProps>;
 }
 
 function ConfirmUpdate({ setIsConfirmOpen, setIsUpdateInstituteModalOpen, newInstituteData }: ConfirmUpdateProps) {

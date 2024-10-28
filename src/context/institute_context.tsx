@@ -20,7 +20,7 @@ type InstituteContextType = {
     getInstituteById: (id: string) => Promise<object>
     createInstitute?: (data: Institute) => Promise<object>
     deleteInstituteById?: (id: string) => Promise<object>
-    updateInstituteById?: (data: InstituteProps) => Promise<object>
+    updateInstituteById?: (data: Partial<InstituteProps>) => Promise<object>
     uploadInstituteImage?: (data: FormData) => Promise<object>
 }
 

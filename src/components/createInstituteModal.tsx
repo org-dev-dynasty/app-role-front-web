@@ -40,6 +40,7 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
   const [instituteType, setInstituteType] = useState("ESTABELECIMENTO_FIXO");
   const [partnerType, setPartnerType] = useState("GLOBAL_PARTNER");
   const [phone, setPhone] = useState("");
+  const [phoneErr, setPhoneErr] = useState("");
   const [districtId, setDistrictId] = useState(districts[0].id);
   const [address, setAddress] = useState("");
   const [addErr, setAddErr] = useState("");
@@ -54,7 +55,7 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
   // Função para aplicar a máscara de telefone
   const formatPhone = (value: string) => {
     const cleaned = value.replace(/\D/g, '');
-    if (cleaned.length > 14) {
+    if (cleaned.length > 12) {
       return phone;
     }
     const match = cleaned.match(/^(\d{2})(\d{4})(\d{4})$/);
@@ -87,8 +88,17 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
         valid = false;
       }
 
+      // Verifica se o endereço deve ser obrigatório com base no instituteType
       if (instituteType === "ESTABELECIMENTO_FIXO" && !address) {
         setAddErr("Preencha o endereço do instituto");
+        valid = false;
+      } else {
+        setAddErr(""); // Limpa o erro se o address não for obrigatório
+      }
+
+      if (phone && phone.length < 10) {
+        setPhone("+XX XXXX-XXXX");
+        setPhoneErr("Preencha o telefone corretamente");
         valid = false;
       }
 
@@ -115,6 +125,11 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
       // Verifica se a validação é bem-sucedida antes de continuar
       if (!validateFields()) {
         setIsCreating(false); // Libera o botão para ser clicado novamente
+        return;
+      }
+      if (logoPhoto?.size > 900000) {
+        setLogoErr("Imagem muito grande");
+        setIsCreating(false);
         return;
       }
 
@@ -282,6 +297,7 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
             type="tel"
           />
         </fieldset>
+        {phoneErr && <div className="text-red-500 text-sm mb-4">{phoneErr}</div>}
 
         {/* Upload da Logo */}
         <fieldset className="mb-4 flex flex-col gap-1 text-white">
@@ -297,6 +313,7 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
               const file = e.target.files?.[0] || null;
               console.log("Selected logo file:", file); // Verifica o arquivo selecionado
               setLogoPhoto(file);
+              setLogoErr("");
             }}
           />
         </fieldset>
