@@ -92,6 +92,7 @@ export default function Institute() {
   }
 
   const fetchInstitute = async () => {
+    setLoading(true);
     if (instId) {
       const response = await getInstituteById(instId);
       console.log(response);
@@ -106,10 +107,17 @@ export default function Institute() {
   };
 
   useEffect(() => {
-    fetchEvents();
-    fetchInstitute();
+    setTimeout(() => {
+      fetchInstitute();
+    }, 300);
   }, [instId, getInstituteById, isUpdateInstituteModalOpen]);
-    
+
+  useEffect(() => {
+    if (institute) {
+      fetchEvents();
+    }
+  }, [institute, getEventById]);
+
   if (loading) {
     return (
       <div className="h-[100vh] w-full flex justify-center items-center bg-[#151515]">

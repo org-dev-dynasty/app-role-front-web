@@ -44,12 +44,16 @@ const districts = [
 export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, institute }: InstituteModalProps) {
   const [initialData, setInitialData] = useState<InstituteProps>(institute);
   const [instituteName, setInstituteName] = useState(institute.name || "");
+  const [nameError, setNameError] = useState("");
   const [description, setDescription] = useState(institute.description || "");
+  const [descError, setDescError] = useState("");
   const [instituteType, setInstituteType] = useState(institute.institute_type || "ESTABELECIMENTO_FIXO");
   const [partnerType, setPartnerType] = useState(institute.partner_type || "GLOBAL_PARTNER");
   const [districtId, setDistrictId] = useState(institute.district_id || "");
   const [phone, setPhone] = useState(institute.phone || "");
+  const [phoneError, setPhoneError] = useState("");
   const [address, setAddress] = useState(institute.address || "");
+  const [addressError, setAddressError] = useState("");
   // const [logoPhotoIncoming, setLogoPhotoIncoming] = useState<File | null>(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -71,6 +75,35 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
     if (districtId !== initialData.district_id) modifiedFields.district_id = districtId;
     return modifiedFields;
   };
+
+  const validateFields = () => {
+    let isValid = true;
+    if (instituteName === "") {
+      setNameError("O nome do instituto é obrigatório.");
+      isValid = false;
+    } else {
+      setNameError("");
+    }
+    if (description === "") {
+      setDescError("A descrição do instituto é obrigatória.");
+      isValid = false;
+    } else {
+      setDescError("");
+    }
+    if (phone !== "" && phone.length < 14) {
+      setPhoneError("O telefone deve ter pelo menos 10 dígitos.");
+      isValid = false;
+    } else {
+      setPhoneError("");
+    }
+    if (address === "" && instituteType === "ESTABELECIMENTO_FIXO") {
+      setAddressError("O endereço do instituto é obrigatório.");
+      isValid = false;
+    } else {
+      setAddressError("");
+    }
+    return isValid;
+  }
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => setInstituteName(e.target.value);
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value);
@@ -104,6 +137,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
   };
 
   const handleUpdateClick = () => {
+    if (!validateFields()) return;
     setIsConfirmOpen(true);
   };
 
@@ -135,6 +169,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
             value={instituteName}
             onChange={handleNameChange}
           />
+        {nameError && <p className="text-red-600 text-sm">{nameError}</p>}
         </fieldset>
 
         {/* Descrição */}
@@ -146,6 +181,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
             value={description}
             onChange={handleDescriptionChange}
           />
+        {descError && <p className="text-red-600 text-sm">{descError}</p>}
         </fieldset>
 
         {/* Tipos */}
@@ -213,6 +249,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
                 onChange={handleAddressChange}
                 placeholder="Digite o endereço do instituto"
               />
+            {addressError && <p className="text-red-600 text-sm">{addressError}</p>}
             </fieldset>
           </div>
         </div>
@@ -230,6 +267,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
             inputMode="numeric"
             type="tel"
           />
+        {phoneError && <p className="text-red-600 text-sm">{phoneError}</p>}
         </fieldset>
 
         {/* Upload da Logo
