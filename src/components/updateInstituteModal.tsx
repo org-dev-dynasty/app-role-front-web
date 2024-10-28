@@ -83,18 +83,17 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
 
   const formatPhone = (value: string) => {
     const cleaned = value.replace(/\D/g, '');
-
-    if (cleaned.length > 12) {
+    if (cleaned.length > 11) {
       return phone;
     }
-
-    const match = cleaned.match(/^(\d{2})(\d{4})(\d{4})$/);
-
-    if (match) {
-      return `+${match[1]} ${match[2]}-${match[3]}`;
-    } else if (cleaned.length <= 10) {
-      return `+${cleaned}`;
+    // Verifica o comprimento do número e formata conforme necessário
+    if (cleaned.length === 11) {
+      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7)}`;
+    } else if (cleaned.length === 10) {
+      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
     }
+
+    // Se o número não corresponder a nenhum dos formatos acima, retorna o valor original
     return value;
   };
 

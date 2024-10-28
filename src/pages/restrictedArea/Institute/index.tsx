@@ -82,35 +82,34 @@ export default function Institute() {
   }
 
   const [institute, setInstitute] = useState<Institute | null>(null); // Use null ao invés de um objeto vazio
+  
+  const fetchEvents = async () => {
+    if (institute) {
+      const response = await Promise.all(institute.events_id.map((eventId) => getEventById(eventId)));
+      console.log(response);
+      setEvents(response);
+    }
+  }
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      if (institute) {
-        const response = await Promise.all(institute.events_id.map((eventId) => getEventById(eventId)));
-        console.log(response);
-        setEvents(response);
+  const fetchInstitute = async () => {
+    if (instId) {
+      const response = await getInstituteById(instId);
+      console.log(response);
+      if (response) {
+        setInstitute(response);
+        setLoading(false);
+      } else {
+        console.log("Instituto não encontrado");
+        setInstitute(null);
       }
     }
+  };
 
-
-    const fetchInstitute = async () => {
-      if (instId) {
-        const response = await getInstituteById(instId); // Faz a requisição
-        console.log(response);
-        if (response) {
-          setInstitute(response); // Atualiza o estado com os dados do instituto
-          setLoading(false)
-        } else {
-          console.log("Instituto não encontrado");
-          setInstitute(null); // Atualiza o estado com null
-        }
-      }
-    };
-
+  useEffect(() => {
     fetchEvents();
     fetchInstitute();
-  }, [instId, getInstituteById]);
-
+  }, [instId, getInstituteById, isUpdateInstituteModalOpen]);
+    
   if (loading) {
     return (
       <div className="h-[100vh] w-full flex justify-center items-center bg-[#151515]">
@@ -126,7 +125,7 @@ export default function Institute() {
   const district = districts.find(d => d.id === institute.district_id);
 
   return (
-    <div className="h-full w-full flex flex-row bg-[#151515]">
+    <div className="h-full w-full flex flex-col md:flex-row bg-[#151515]">
       {isUpdateInstituteModalOpen && (
         <UpdateInstituteModal
           setIsUpdateInstituteModalOpen={setIsUpdateInstituteModalOpen}
@@ -135,12 +134,12 @@ export default function Institute() {
       )}
       {isDeleteModalOpen && <ConfirDelete setIsDeleteModalOpen={setIsDeleteModalOpen} instituteId={instId} />}
 
-      <div className="relative h-[100vh] w-[70%] flex flex-col py-6 bg-[#2A2A2A] items-center gap-10 px-4">
+      <div className="relative h-[100vh] w-[100%] md:w-[70%] flex flex-col py-6 bg-[#2A2A2A] items-center gap-10 px-4">
 
-        <div className="flex items-center w-full gap-4">
-          <div className="rounded-full h-72 w-72 bg-light-purple flex justify-center items-center overflow-hidden">
+        <div className="flex flex-col md:flex-row items-center w-full gap-4">
+          <div className="rounded-full h-[30rem] md:h-72 w-72 bg-light-purple flex justify-center items-center overflow-hidden">
             {institute.logo_photo ? (
-              <img src={institute.logo_photo} alt="Logo do instituto" className="h-full w-full object-cover flex justify-center items-center" />
+              <img src={institute.logo_photo} alt="Logo do instituto" className="h-96 w-96 object-cover flex justify-center items-center" />
             ) : (
               <p className="text-white">Sem logo disponível</p>
             )}
