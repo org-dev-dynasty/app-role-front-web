@@ -42,16 +42,16 @@ export default function ResetPasswordCode() {
   };
 
   const handleValidPasswords = () => {
-    if (password === confirmPassword
-      && password.length >= 8
-      && confirmPassword.length >= 8) {
-      return true;
+    if (password.length < 8) {
+      setPasswordErr("A senha deve ter no mínimo 8 caracteres");
+    }
+    if (confirmPassword.length < 8) {
+      setConfirmPasswordErr("A senha deve ter no mínimo 8 caracteres");
     }
     if (password !== confirmPassword) {
       setConfirmPasswordErr("As senhas não coincidem");
       setPasswordErr("As senhas não coincidem");
     }
-    return false;
   }
 
   const handleVerifyCode = () => {
@@ -70,8 +70,8 @@ export default function ResetPasswordCode() {
     <div className="h-[100vh] flex justify-center items-center w-full bg-[#1c1c1c]">
       <div className="absolute h-2/3 w-1/2 flex p-6 py-18 flex-col justify-center items-center bg-[#444] overflow-y-scroll rounded-lg">
         <div className="flex flex-col w-full justify-center items-center">
-          <div className="flex">
-            <h1 className="text-white text-2xl mt-40">Coloque o código de confirmação</h1>
+          <div className="flex w-96">
+            <h1 className="text-white text-2xl mt-40 flex">Coloque o código de confirmação {isVerified !== null && (isVerified ? <Check size={32} color="green" /> : <X size={32} color="red" />)}</h1>
           </div>
           <div className="flex mb-4 mt-8 justify-center items-center space-x-4">
             {otp.map((digit, index) => (
@@ -93,18 +93,15 @@ export default function ResetPasswordCode() {
             <button className="bg-[#f1f1f1] text-black px-4 py-2 rounded-lg hover:bg-[#525252] shadow-sm shadow-white duration-300 hover:text-white">Reenviar</button>
             <button className="bg-[#f1f1f1] text-black px-4 py-2 rounded-lg hover:bg-[#525252] shadow-sm shadow-white duration-300 hover:text-white" onClick={handleVerifyCode}>Confirmar</button>
           </div>
-          <div className="relative left-[30%] top-[-25%]">
-            {isVerified !== null && (isVerified ? <Check size={32} color="green" /> : <X size={32} color="red" />)}
-          </div>
           <h1 className="text-white text-xl mt-12">Coloque a nova senha</h1>
           <div className="w-2/3 px-4 bg-transparent border-2 flex items-center rounded-lg mt-4 h-14 border-white outline-none text-white text-start font-semibold text-lg sm:text-xl lg:text-2xl spin-button-none focus:border-gray-400 focus:text-gray-400">
-            <input type={isPasswordVisible ? `text` : `password`} onChange={(e) => setPassword(e.target.value)} className="bg-transparent outline-none h-full w-[90%]" />
+            <input type={isPasswordVisible ? `text` : `password`} onChange={(e) => { setPassword(e.target.value);  setPasswordErr('')}} className="bg-transparent outline-none h-full w-[90%]" />
             {isPasswordVisible ? <Eye size={32} className="hover:cursor-pointer" onClick={() => setIsPasswordVisible(false)} /> : <EyeSlash size={32} className="hover:cursor-pointer" onClick={() => setIsPasswordVisible(true)} />}
           </div>
           {passwordErr && <p className="text-red-500 text-md mt-2">{passwordErr}</p>}
           <h1 className="text-white text-xl mt-8">Confirme a nova senha</h1>
           <div className="w-2/3 px-4 bg-transparent border-2 flex items-center rounded-lg mt-4 h-14 border-white outline-none text-white text-start font-semibold text-lg sm:text-xl lg:text-2xl spin-button-none focus:border-gray-400 focus:text-gray-400">
-            <input type={isPasswordVisible ? `text` : `password`} onChange={(e) => setConfirmPassword(e.target.value)} className="bg-transparent outline-none h-full w-[90%]" />
+            <input type={isPasswordVisible ? `text` : `password`} onChange={(e) => { setConfirmPassword(e.target.value);  setConfirmPasswordErr('')}} className="bg-transparent outline-none h-full w-[90%]" />
             {isPasswordVisible ? <Eye size={32} className="hover:cursor-pointer" onClick={() => setIsPasswordVisible(false)} /> : <EyeSlash size={32} className="hover:cursor-pointer" onClick={() => setIsPasswordVisible(true)} />}
           </div>
           {confirmPasswordErr && <p className="text-red-500 text-md mt-2">{confirmPasswordErr}</p>}
