@@ -151,7 +151,7 @@ export default function Institute() {
             ) : (
               <p className="text-white">Sem logo disponível</p>
             )}
-          </div>
+          </div> 
           <div className="flex flex-col h-full pb-14 justify-between flex-grow">
             <div className="flex flex-row w-full justify-between">
               <button className="text-xl bg-light-purple w-32 h-16 rounded-lg hover:bg-violet duration-100 hover:cursor-pointer" onClick={() => navigate("/institutes")}>
