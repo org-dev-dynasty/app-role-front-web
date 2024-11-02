@@ -8,6 +8,8 @@ type EventContextType = {
   getEventById: (id: string) => Promise<EventType>
   editEventById: (event: EventType) => Promise<object>,
   createEvent: (event: EventType) => Promise<object>
+  deleteEventById: (id: string) => Promise<object>
+  uploadEventImage: (data: FormData) => Promise<object>
 }
 
 const defaultInstitute = {
@@ -39,6 +41,12 @@ const defaultInstitute = {
     return {}
   },
   editEventById: async () => {
+    return {}
+  },
+  deleteEventById: async () => {
+    return {}
+  },
+  uploadEventImage: async () => {
     return {}
   }
 }
@@ -74,9 +82,27 @@ export function EventContextProvider({ children }: PropsWithChildren) {
       return error
     }
   }
+  
+  async function deleteEventById(id: string) {
+    try {
+      const response = await repo.deleteEventById(id)
+      return response
+    } catch (error: any) {
+      return error
+    } 
+  }
+
+  async function uploadEventImage(data: FormData) {
+    try {
+      const response = await repo.uploadEventImage(data)
+      return response
+    } catch (error: any) {
+      return error
+    }
+  }
 
   return (
-    <EventContext.Provider value={{ getEventById, editEventById, createEvent }}>
+    <EventContext.Provider value={{ getEventById, editEventById, createEvent, deleteEventById, uploadEventImage }}>
       {children}
     </EventContext.Provider>
   )
