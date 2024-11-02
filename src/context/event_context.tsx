@@ -6,7 +6,7 @@ import {
 
 type EventContextType = {
   getEventById: (id: string) => Promise<EventType>
-  editEventById: (event: EventType) => Promise<object>,
+  editEventById: (event: EventType) => Promise<object>
   createEvent: (event: EventType) => Promise<object>
   deleteEventById: (id: string) => Promise<object>
   uploadEventImage: (data: FormData) => Promise<object>
@@ -48,6 +48,9 @@ const defaultInstitute = {
   },
   uploadEventImage: async () => {
     return {}
+  },
+  getEventByInstituteId: async () => {
+    return {}
   }
 }
 
@@ -73,7 +76,6 @@ export function EventContextProvider({ children }: PropsWithChildren) {
       return error
     }
   }
-
   async function createEvent(eventBody: EventType) {
     try {
       const response = await repo.createEvent(eventBody)

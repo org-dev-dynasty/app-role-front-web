@@ -5,6 +5,9 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { InstituteContext } from "../../../context/institute_context";
 import { ClipLoader } from "react-spinners";
+import { EventContext } from "../../../context/event_context";
+import { EventType } from "../../../api/repositories/event_repository";
+import { CreateEventModal } from "../../../components/CreateEventModal";
 
 interface Institute {
   address: string;
@@ -22,11 +25,13 @@ interface Institute {
 }
 
 export default function Institute() {
+  const { getEventById } = useContext(EventContext);
   const { getInstituteById } = useContext(InstituteContext);
   const { instId } = useParams<{ instId: string }>();
   const [loading, setLoading] = useState(true); // Estado de carregamento
   const [isUpdateInstituteModalOpen, setIsUpdateInstituteModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [events, setEvents] = useState<EventType[]>([]);
   const navigate = useNavigate();
 
   function formatPartnerType(partnerType: string) {
@@ -56,6 +61,15 @@ export default function Institute() {
   const [institute, setInstitute] = useState<Institute | null>(null); // Use null ao invés de um objeto vazio
 
   useEffect(() => {
+    const fetchEvents = async () => {
+      if (institute) {
+        const response = await Promise.all(institute.events_id.map((eventId) => getEventById(eventId)));
+        console.log(response);
+        setEvents(response);
+      }
+    }
+
+
     const fetchInstitute = async () => {
       if (instId) {
         const response = await getInstituteById(instId); // Faz a requisição
@@ -70,6 +84,7 @@ export default function Institute() {
       }
     };
 
+    fetchEvents();
     fetchInstitute();
   }, [instId, getInstituteById]);
 
@@ -97,32 +112,38 @@ export default function Institute() {
       {isDeleteModalOpen && <ConfirDelete setIsDeleteModalOpen={setIsDeleteModalOpen} instituteId={instId} />}
 
       <div className="relative w-[70%] flex flex-col py-6 bg-[#2A2A2A] items-center gap-10 px-4">
-        <button className="absolute top-8 left-[32%] text-xl bg-light-purple w-32 h-16 rounded-lg hover:bg-violet duration-100 hover:cursor-pointer" onClick={() => navigate("/institutes")}>
-          <h1 className="text-white text-3xl">Voltar</h1>
-        </button>
-        <button
-          className="absolute top-8 left-[76%] text-xl bg-red-500 w-32 h-16 rounded-lg hover:bg-red-400 duration-100 hover:cursor-pointer"
-          onClick={() => setIsDeleteModalOpen(true)}
-        >
-          <h1 className="text-white text-3xl">Deletar</h1>
-        </button>
-        <Pen
-          size={32}
-          className="absolute top-8 left-[90%] bg-white w-16 h-16 rounded-lg hover:bg-white-purple hover:cursor-pointer"
-          onClick={() => setIsUpdateInstituteModalOpen(true)}
-        />
 
         <div className="flex items-center w-full gap-4">
-          <div className="rounded-full h-72 w-72 bg-light-purple flex justify-center items-center">
+          <div className="rounded-full h-72 w-72 bg-light-purple flex justify-center items-center overflow-hidden">
             {institute.logo_photo ? (
-              <img src={institute.logo_photo} alt="Logo do instituto" />
+              <img src={institute.logo_photo} alt="Logo do instituto" className="h-full w-full object-cover flex justify-center items-center" />
             ) : (
               <p className="text-white">Sem logo disponível</p>
             )}
           </div>
-          <div>
-            <h1 className="text-white text-[60px]">{institute.name || "Nome indisponível"}</h1>
-            <p className="text-white text-xl">{institute.description || "Sem descrição"}</p>
+          <div className="flex flex-col h-full pb-14 justify-between flex-grow">
+            <div className="flex flex-row w-full justify-between">
+              <button className="text-xl bg-light-purple w-32 h-16 rounded-lg hover:bg-violet duration-100 hover:cursor-pointer" onClick={() => navigate("/institutes")}>
+                <h1 className="text-white text-3xl">Voltar</h1>
+              </button>
+              <div className="flex gap-6">
+                <button
+                  className="text-xl bg-red-500 w-32 h-16 rounded-lg hover:bg-red-400 duration-100 hover:cursor-pointer"
+                  onClick={() => setIsDeleteModalOpen(true)}
+                >
+                  <h1 className="text-white text-3xl">Deletar</h1>
+                </button>
+                <Pen
+                  size={32}
+                  className="bg-white w-16 h-16 rounded-lg hover:bg-white-purple duration-100 hover:cursor-pointer"
+                  onClick={() => setIsUpdateInstituteModalOpen(true)}
+                />
+              </div>
+            </div>
+            <div>
+              <h1 className="text-white text-[60px]">{institute.name || "Nome indisponível"}</h1>
+              <p className="text-white text-xl">{institute.description || "Sem descrição"}</p>
+            </div>
           </div>
         </div>
 
@@ -182,13 +203,13 @@ export default function Institute() {
         <div className="flex w-full justify-between items-center px-6">
           <h1 className="text-white text-[48px]">Roles</h1>
           <div className="bg-white w-16 h-16 flex justify-center items-center rounded-xl text-3xl hover:cursor-pointer hover:bg-white-purple">
-            +
+            <CreateEventModal />
           </div>
         </div>
         {institute.events_id.length > 0 ? (
-          institute.events_id.map((eventId) => (
+          events.map((event, eventId) => (
             <div key={eventId} id={eventId}>
-              <EventCard name="Role" imageUrl="url_para_logo.jpg" />
+              <EventCard name={event.name} imageUrl={event.bannerUrl} />
             </div>
           ))
         ) : (
@@ -206,42 +227,53 @@ interface ConfirDeleteProps {
 
 function ConfirDelete({ setIsDeleteModalOpen, instituteId }: ConfirDeleteProps) {
   const { deleteInstituteById } = useContext(InstituteContext);
+  const [clicked, setClicked] = useState(false);
   const navigate = useNavigate();
+
   function handleCancelClick() {
     setIsDeleteModalOpen(false);
   }
 
   const handleDeleteClick = async () => {
+    setClicked(true);
     try {
       await deleteInstituteById(instituteId);
       setIsDeleteModalOpen(false);
       navigate("/institutes");
     } catch (error: any) {
       console.log("Erro ao deletar instituto: " + error.message);
+      setIsDeleteModalOpen(false);
     }
-  }
+  };
+
   return (
     <div className="fixed h-full w-full backdrop-blur-md bg-black/50 flex z-50 justify-center items-center">
       <div
-        className="rounded-lg bg-grayModal p-6 w-1/3 text-center"
+        className="rounded-lg bg-grayModal p-6 w-1/3 text-center transition-opacity duration-300"
         onClick={(e) => e.stopPropagation()} // Impede a propagação do clique para o fundo
       >
-        <p className="text-white mb-4">
+        <p className="text-white text-xl mb-4">
           Você tem certeza que deseja{" "}
           <span className="text-red-400">deletar</span> este instituto?
         </p>
-        <div className="flex justify-center gap-4">
-          <button
-            className="bg-green-500 p-4 rounded-lg w-[50%] text-white hover:bg-green-300 duration-150"
-            onClick={handleCancelClick}
-          >
-            Cancelar
-          </button>
-          <button className="bg-red-500 p-4 rounded-lg w-[50%] text-white hover:bg-red-300 duration-150" onClick={handleDeleteClick}>
-            Deletar
-          </button>
-        </div>
+        {clicked ? <ClipLoader color="#fff" loading={clicked} size={50} /> :
+          <div className="flex justify-center gap-4">
+            <button
+              className="bg-green-500 p-4 rounded-lg w-[50%] text-white text-3xl hover:bg-green-300 duration-150"
+              onClick={handleCancelClick}
+            >
+              Cancelar
+            </button>
+            <button
+              className="bg-red-500 p-4 rounded-lg w-[50%] text-white text-3xl hover:bg-red-300 duration-150"
+              onClick={handleDeleteClick}
+            >
+              Deletar
+            </button>
+          </div>
+        }
       </div>
     </div>
   );
 }
+

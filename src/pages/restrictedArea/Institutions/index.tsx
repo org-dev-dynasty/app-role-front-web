@@ -2,9 +2,8 @@ import { SetStateAction, useContext, useEffect, useState } from "react";
 import { envs } from "../../../utils/envs";
 import InstituteCard from "../../../components/InstituteCard";
 import { MagnifyingGlass } from "@phosphor-icons/react";
-import { InstituteContext } from "../../../context/institute_context";// Certifique-se de que o modal está corretamente importado
+import { InstituteContext } from "../../../context/institute_context";
 import CreateInstituteModal from "../../../components/createInstituteModal";
-import Institute from "../Institute";
 import { useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 
@@ -15,7 +14,7 @@ interface Institute {
     institute_type: string;
     partner_type: string;
     phone: string;
-    logo_photo: string;
+    logoPhoto: string;
     address: string;
     price: number;
     district_id: string;
@@ -28,30 +27,38 @@ export default function Institutions() {
     const [institutes, setInstitutes] = useState<Institute[]>([]);
     const [loading, setLoading] = useState(true);
     const [isCreateInstituteModalOpen, setIsCreateInstituteModalOpen] = useState(false);
-
     const [search, setSearch] = useState("");
     const navigate = useNavigate();
+
+    useEffect(() => {
+        fetchInstitutes();
+    }, [getAllInstitutes, isCreateInstituteModalOpen]);
 
     const handleChange = (e: { target: { value: SetStateAction<string> } }) => {
         setSearch(e.target.value);
     };
 
     const fetchInstitutes = async () => {
-        setLoading(true); // Inicia o carregamento
-        const response = await getAllInstitutes();
-        console.log(response);
-        setInstitutes(response.institutes); // Access the 'institutes' array
-        setLoading(false); // Finaliza o carregamento
+        setLoading(true);
+        try {
+            const response = await getAllInstitutes();
+            console.log(response);
+            if (response && response.institutes) {
+                setInstitutes([...response.institutes]);
+            }
+        } catch (error) {
+            console.error("Erro ao buscar institutos:", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    // Chamar getAllInstitutes e atualizar estado com os institutos
-    useEffect(() => {
-        fetchInstitutes();
-    }, [getAllInstitutes]);
+    const filteredInstitutes = institutes.filter((institute) =>
+        institute.name.toLowerCase().includes(search.toLowerCase())
+    );
 
     return (
         <div className="h-full w-full flex flex-col bg-[#151515]">
-            {/* Verifica se o modal está aberto */}
             {isCreateInstituteModalOpen && (
                 <CreateInstituteModal
                     setIsCreateInstituteModalOpen={setIsCreateInstituteModalOpen}
@@ -95,11 +102,11 @@ export default function Institutions() {
                         <ClipLoader color="#ffffff" size={150} />
                     </div>
                 ) : (
-                    institutes.map((institute) => (
+                    filteredInstitutes.map((institute) => (
                         <div className="h-fit" key={institute.instituteId} onClick={() => navigate(`/institute/${institute.instituteId}`)}>
                             <InstituteCard
                                 name={institute.name}
-                                imageUrl={institute.logo_photo}
+                                imageUrl={institute.logoPhoto}
                             />
                         </div>
                     ))

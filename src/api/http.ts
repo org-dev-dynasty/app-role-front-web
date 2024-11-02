@@ -10,3 +10,8 @@ export const http = axios.create({
 export const httpEvent = axios.create({
   baseURL: 'https://6vy38xggch.execute-api.sa-east-1.amazonaws.com/prod/mss-role-event'
 })
+
+export const httpAuth = axios.create({
+  baseURL:
+    "https://79tft305ml.execute-api.sa-east-1.amazonaws.com/prod/mss-role-auth",
+});

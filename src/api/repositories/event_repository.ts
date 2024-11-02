@@ -66,6 +66,7 @@ export class EventRepositoryHttp {
     }
   }
 
+
   async deleteEventById(id: string) {
     try {
       const resp = await httpEvent.delete(`/delete-event-by-id?eventId=${id}`)
@@ -92,6 +93,20 @@ export class EventRepositoryHttp {
       }
     } catch (error: any) {
       throw new Error("Erro ao fazer upload da imagem: " + error.message);
+    } 
+  }
+
+  async getEventsByInstituteId(id: string) {
+    try {
+      const resp = await httpEvent.get<{ events: EventType[] }>(
+        `/get-all-events-by-filter?institute_id=${id}`
+      );
+
+      if (resp) {
+        return resp.data
+      }
+    } catch (error: any) {
+      throw new Error('Erro ao buscar eventos: ' + error.message)
     }
   }
 }

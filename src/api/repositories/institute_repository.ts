@@ -49,4 +49,42 @@ export class InstituteRepositoryHttp {
       throw new Error("Erro ao deletar instituição: " + error.message);
     }
   }
+
+  async updateInstituteById(id: string, data: any) {
+    try {
+      const resp = await httpEvent.put(
+        `/update-institute-by-id?instituteId=${id}`,
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (resp) {
+        return resp.data;
+      }
+    } catch (error: any) {
+      throw new Error("Erro ao atualizar instituição: " + error.message);
+    }
+  }
+  
+  async uploadInstituteImage(data: FormData) {
+    try {
+      const resp = await httpEvent.post(
+        `/upload-institute-photo`,
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (resp) {
+        return resp.data;
+      }
+    } catch (error: any) {
+      throw new Error("Erro ao fazer upload da imagem: " + error.message);
+    }
+  }
 }
