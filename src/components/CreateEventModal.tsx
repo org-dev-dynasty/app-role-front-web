@@ -505,38 +505,6 @@ export function CreateEventModal() {
             />
           </fieldset>
 
-          <div className="mb-4 flex text-white justify-around gap-2">
-            <div className="flex flex-col w-1/3">
-              <label
-                className="border flex rounded-md aspect-video cursor-pointer border-dashed text-sm flex-col gap-2 items-center justify-center "
-                htmlFor="bannerImage"
-              >
-                <Image size={32} className="mx-auto" />
-                Imagem do banner
-              </label>
-              <input
-                className="h-10 invisible bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
-                id="bannerImage"
-                type="file"
-              />
-            </div>
-
-            <div className="flex flex-col w-1/3">
-              <label
-                className="border flex rounded-md aspect-video cursor-pointer border-dashed text-sm flex-col gap-2 items-center justify-center"
-                htmlFor="eventImage"
-              >
-                <Image size={32} className="mx-auto" />
-                Imagem do banner
-              </label>
-              <input
-                className="h-10 invisible bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
-                id="eventImage"
-                type="file"
-              />
-            </div>
-          </div>
-
           <div className="flex gap-4">
             <div className='w-full'>
               <ImageInputFile onImageUploaded={e => setEventImage(e)} label='Selecione a imagem do ROLE'/>
