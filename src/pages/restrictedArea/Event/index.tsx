@@ -8,6 +8,7 @@ import { Link, Navigate, useParams } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { CreateEventModal } from '../../../components/CreateEventModal'
 import { features } from '../../../assets/options'
+import DeleteEventModal from '../../../components/DeleteEventModal'
 
 export default function Role() {
   let { eventId } = useParams()
@@ -77,7 +78,7 @@ export default function Role() {
   }, [])
 
   return (
-    <div className="bg-[#151515] w-screen h-screen text-white">
+    <div className="bg-[#151515] w-screen text-white">
       <div className="flex flex-col max-w-[1600px] mx-auto bg-[#151515]">
         <div className="flex p-4 mt-6 w-full">
           <div className="w-80 h-80">
@@ -121,16 +122,22 @@ export default function Role() {
               </span>
             </div>
 
-            <EditEventModal />
+            <div className='flex'>
+              <EditEventModal />
+              <DeleteEventModal />
+            </div>
+
             <CreateEventModal />
-            <Link to={`/Institute/${eventInstituteId}`} className="w-fit px-8 py-4 text-2xl rounded-lg bg-purple flex text-center gap-2">
-              <Eye className='self-center'/> Ver instituto
+            <Link
+              to={`/Institute/${eventInstituteId}`}
+              className="w-fit px-8 py-4 text-2xl rounded-lg bg-purple flex text-center gap-2"
+            >
+              <Eye className="self-center" /> Ver instituto
             </Link>
           </div>
         </div>
 
-        <div className="justify-center items-center my-12 text-2xl flex bg-purple/10 rounded-2xl p-10">
-          <div className="flex flex-col gap-4">
+        <div className="grid grid-cols-4 gap-4 justify-center items-center my-12 text-2xl bg-neutral-900 rounded-2xl p-10">
             <EventInfoUnit value="address" label="Endereço">
               {eventAddress}
             </EventInfoUnit>
@@ -139,12 +146,10 @@ export default function Role() {
               {eventDistrict}
             </EventInfoUnit>
 
-            <EventInfoUnit value="neighbourhood" label="Bairro">
-              Vila Nova Conceição
+            <EventInfoUnit value="vazio" label="vazio">
+              Vazio
             </EventInfoUnit>
-          </div>
 
-          <div className="flex flex-col gap-4">
             <EventInfoUnit value="musicType" label="Tipo de música">
               {eventMusicType}
             </EventInfoUnit>
@@ -162,9 +167,7 @@ export default function Role() {
                 )
                 .join(', ')}
             </EventInfoUnit>
-          </div>
 
-          <div className="flex flex-col gap-4">
             <EventInfoUnit value="features" label="Características">
               {features
                 .filter(feature => eventFeatures.includes(feature.value)) // Filtra os objetos com os valores selecionados
@@ -179,9 +182,7 @@ export default function Role() {
             <EventInfoUnit value="instituteId" label="ID do instituto">
               {eventInstituteId}
             </EventInfoUnit>
-          </div>
 
-          <div className="flex flex-col gap-4">
             <EventInfoUnit value="features" label="Categoria">
               {eventCategory}
             </EventInfoUnit>
@@ -193,7 +194,6 @@ export default function Role() {
             <EventInfoUnit value="eventStatus" label="Status do evento">
               🟢 Ativo
             </EventInfoUnit>
-          </div>
         </div>
       </div>
     </div>
