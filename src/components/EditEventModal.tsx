@@ -94,7 +94,7 @@ export function EditEventModal() {
       if (!eventId) return
 
       const updatedEventSchema = z.object({
-        name: z.string(),
+        name: z.string().min(3),
         description: z.string(),
         address: z.string(),
         eventDate: z.date() /*z.string().datetime()*/,
@@ -137,7 +137,7 @@ export function EditEventModal() {
 
       await editEventById(updatedEventSchema.parse(updatedEvent))
 
-      // window.location.reload()
+      window.location.reload()
 
       console.log('evento atualizado:', updatedEvent)
     } catch (error) {
@@ -146,10 +146,6 @@ export function EditEventModal() {
 
       console.log('data:', date)
     }
-  }
-
-  function updateEvent() {
-    updateEventByIdRequest()
   }
 
   useEffect(() => {
