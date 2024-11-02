@@ -17,7 +17,7 @@ export const features = [
   { value: 'ESTACIONAMENTO', label: 'Estacionamento' },
   { value: 'FUMODROMO', label: 'Fumodromo' },
   { value: 'VALET', label: 'Valet' },
-  { value: 'AREA_ABERTA', label: 'Area aberta' },
+  { value: 'AREA_ABERTA', label: 'Área aberta' },
   { value: 'WELCOME_SHOT', label: 'Welcome shot' },
   { value: 'MESAS', label: 'Mesas' },
   { value: 'OPEN_BAR', label: 'Open bar' },
