@@ -12,7 +12,14 @@ import { MultiSelectComponent, OptionsType } from './MultiSelect'
 import { EventInfoUnit } from './EventInfoUnit'
 import { z } from 'zod'
 import dayjs from 'dayjs'
-import { categories, ageCategories, features, packageTypeArray, status } from '../assets/options'
+import {
+  categories,
+  ageCategories,
+  features,
+  packageTypeArray,
+  status
+} from '../assets/options'
+import { ImageInputFile } from './ImageInputFile'
 
 interface MusicType {
   value: string
@@ -36,6 +43,9 @@ export function EditEventModal() {
   const [eventStatus, setEventStatus] = useState<string>()
   const [selectedMusic, setSelectedMusic] =
     useState<MultiValue<OptionsType> | null>(null)
+
+    const [eventImage, setEventImage] = useState<File>()
+  const [bannerImage, setBannerImage] = useState<File>()
 
   const [selectedMusics, setSelectedMusics] = useState<string[]>([''])
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([''])
@@ -331,8 +341,6 @@ export function EditEventModal() {
     return x
   }
 
-
-
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
@@ -573,34 +581,21 @@ export function EditEventModal() {
             />
           </fieldset>
 
-          <div className="mb-4 flex text-white justify-around gap-2">
-            <div className="flex flex-col w-1/3">
-              <label
-                className="border flex rounded-md aspect-video cursor-pointer border-dashed text-sm flex-col gap-2 items-center justify-center "
-                htmlFor="bannerImage"
-              >
-                <Image size={32} className="mx-auto" />
-                Imagem do banner
-              </label>
-              <input
-                className="h-10 invisible bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
-                id="bannerImage"
-                type="file"
+          <div className="flex gap-4">
+            <div className="w-full">
+              <ImageInputFile
+                onImageUploaded={e => setEventImage(e)}
+                defaultValue={response?.eventPhotoLink}
+                label="Selecione a imagem do ROLE"
               />
             </div>
 
-            <div className="flex flex-col w-1/3">
-              <label
-                className="border flex rounded-md aspect-video cursor-pointer border-dashed text-sm flex-col gap-2 items-center justify-center"
-                htmlFor="eventImage"
-              >
-                <Image size={32} className="mx-auto" />
-                Imagem do banner
-              </label>
-              <input
-                className="h-10 invisible bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
-                id="eventImage"
-                type="file"
+            <div className="w-full">
+              <ImageInputFile
+                onImageUploaded={e => setBannerImage(e)}
+                defaultValue={response?.bannerUrl}
+                aspect="video"
+                label="Selecione a imagem do banner"
               />
             </div>
           </div>
