@@ -13,7 +13,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { ageCategories, categories, districts, features, musicTypes, packageTypeArray, status } from "../assets/options"
 
 export function CreateEventModal() {
-  let { eventId } = useParams()
+
+  let { instId } = useParams()
 
   const navigate = useNavigate()
 
@@ -42,7 +43,7 @@ export function CreateEventModal() {
   async function createEventRequest() {
     try {
       const eventBodySchema = z.object({
-        name: z.string().min(5).max(30),
+        name: z.string().min(5).max(100),
         description: z.string().min(5),
         address: z.string().max(70),
         eventDate: z.date(),
@@ -73,7 +74,7 @@ export function CreateEventModal() {
         musicType: selectedMusics,
         bannerUrl: 'https://via.placeholder.com/300',
         districtId: currentDistrict,
-        instituteId: '2f3073ac-3633-4fc7-9cfe-c2084399bbc3',
+        instituteId: instId,
         features: selectedFeatures,
         menuLink: 'https://www.example.com.br/menu',
         eventPhotoLink: 'https://via.placeholder.com/300',
@@ -160,7 +161,7 @@ export function CreateEventModal() {
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <button className="bg-white w-16 h-16 flex justify-center items-center rounded-xl text-3xl hover:cursor-pointer hover:bg-white-purple">
+        <button className="bg-white text-black w-16 h-16 flex justify-center items-center rounded-xl text-3xl hover:cursor-pointer hover:bg-white-purple">
           +
         </button>
       </Dialog.Trigger>
