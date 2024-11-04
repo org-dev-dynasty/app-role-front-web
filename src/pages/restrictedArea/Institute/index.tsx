@@ -109,7 +109,7 @@ export default function Institute() {
   useEffect(() => {
     setTimeout(() => {
       fetchInstitute();
-    }, 500);
+    }, 502);
   }, [instId, getInstituteById, isUpdateInstituteModalOpen]);
 
   useEffect(() => {
