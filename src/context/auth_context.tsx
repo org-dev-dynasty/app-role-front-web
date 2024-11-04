@@ -2,7 +2,7 @@ import { createContext, PropsWithChildren } from "react"
 import { AuthRepositoryHttp } from "../api/repositories/auth_repository"
 
 interface SignInData {
-  email: string;
+  identifier: string;
   password: string;
 }
 

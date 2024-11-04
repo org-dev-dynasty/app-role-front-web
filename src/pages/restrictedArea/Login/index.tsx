@@ -38,7 +38,7 @@ export default function Login() {
     if (username && password) {
       console.log("Usuário: ", username)
       console.log("Senha: ", password)
-      const resp = signIn({ email: username, password: password })
+      const resp = signIn({ identifier: username, password: password })
       console.log("Resposta: ", resp)
       localStorage.setItem('accessToken', resp.accessToken);
       localStorage.setItem('refreshToken', resp.refreshToken);
