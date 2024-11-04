@@ -18,7 +18,7 @@ export interface EventType {
   galeryLink: string[] // ou null, se puder ser opcional
   packageType: string[] // ou enum, dependendo do uso
   category: string // ou enum, dependendo do uso
-  ticketUrl: string // ou null, se puder ser opcional
+  ticketUrl?: string // ou null, se puder ser opcional
   reviews?: number // opcional, se não houver sempre
 }
 
@@ -95,6 +95,27 @@ export class EventRepositoryHttp {
       throw new Error("Erro ao fazer upload da imagem: " + error.message);
     } 
   }
+
+  async uploadEventBanner(data: FormData) {
+    try {
+      const resp = await httpEvent.post(
+        `/upload-event-banner`,
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (resp) {
+        return resp.data;
+      }
+    } catch (error: any) {
+      throw new Error("Erro ao fazer upload da imagem do banner: " + error.message);
+    } 
+  }
+
+
 
   async getEventsByInstituteId(id: string) {
     try {
