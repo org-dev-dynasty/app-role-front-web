@@ -40,3 +40,39 @@ export const ageCategories = [
   { label: '40+', value: 'Senior' },
   { label: 'TODAS', value: 'All Ages' }
 ]
+
+export const musicTypes = [
+  { value: 'FUNK', label: 'Funk' },
+  { value: 'SERTANEJO', label: 'Sertanejo' },
+  { value: 'TRAP', label: 'Trap' },
+  { value: 'ELETRONICA', label: 'Eletrônica' },
+  { value: 'PAGODE', label: 'Pagode' },
+  { value: 'ROCK', label: 'Rock' },
+  { value: 'RAP', label: 'Rap' },
+  { value: 'REGGAE', label: 'Reggae' },
+  { value: 'FORRO', label: 'Forró' },
+  { value: 'MPB', label: 'MPB' }
+]
+
+export const districts = [
+  {
+    districtName: 'Zona Sul',
+    districtId: 'ee6ba030-cebc-405b-b3e3-08f213cca415'
+  },
+  {
+    districtName: 'Zona Norte',
+    districtId: '5e3e0505-2b29-462d-91fc-d9f538ee8186'
+  },
+  {
+    districtName: 'Zona Leste',
+    districtId: '7d6b8023-2d03-4623-bc33-ebf58767c9b1'
+  },
+  {
+    districtName: 'Zona Oeste',
+    districtId: '1477c1ff-bdb4-4e38-8415-b2da7163b3f7'
+  },
+  {
+    districtName: 'Centro',
+    districtId: '90fec991-6d11-4813-9482-343ebdca5514'
+  }
+]
