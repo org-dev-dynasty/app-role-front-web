@@ -1,7 +1,7 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import { X, CurrencyDollar, Image, Pencil } from '@phosphor-icons/react'
 import { Rating } from 'react-simple-star-rating'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { EventType } from '../api/repositories/event_repository'
 import { EventContext } from '../context/event_context'
 import { MultiValue } from 'react-select'
@@ -10,30 +10,24 @@ import { z } from 'zod'
 import { ImageInputFile } from './ImageInputFile'
 import { useNavigate, useParams } from 'react-router-dom'
 
+import { ageCategories, categories, districts, features, musicTypes, packageTypeArray, status } from "../assets/options"
+
 export function CreateEventModal() {
   let { eventId } = useParams()
 
-  // useNavigate
   const navigate = useNavigate()
 
   const [name, setName] = useState<string>()
   const [description, setDescription] = useState<string>()
   const [address, setAddress] = useState<string>()
   const [date, setDate] = useState<Date>()
-  const [priceAvg, setPriceAvg] = useState<number>()
+  const [priceAvg, setPriceAvg] = useState<number>(1)
   const [category, setCategory] = useState<string>('BALADA')
   const [age, setAge] = useState<string>('ADULT')
   const [musicType, setMusicType] = useState<string[]>()
   const [ticketUrl, setTicketUrl] = useState<string>()
   const [eventStatus, setEventStatus] = useState<string>('ACTIVE')
-  const [currentDistrict, setCurrentDistrict] = useState<string>()
-
-  const [selectedFeaturesOnSel, setSelectedFeaturesOnSel] =
-    useState<MultiValue<OptionsType> | null>(null)
-  const [selectedMusic, setSelectedMusic] =
-    useState<MultiValue<OptionsType> | null>(null)
-  const [selectedPackagesOnSel, setSelectedPackagesOnSel] =
-    useState<MultiValue<OptionsType> | null>(null)
+  const [currentDistrict, setCurrentDistrict] = useState<string>(districts[0].districtId)
 
   const [selectedMusics, setSelectedMusics] = useState<string[]>([''])
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([''])
@@ -43,7 +37,7 @@ export function CreateEventModal() {
   const [eventImage, setEventImage] = useState<File>()
   const [bannerImage, setBannerImage] = useState<File>()
 
-  const { createEvent, uploadEventImage } = useContext(EventContext)
+  const { createEvent, uploadEventImage, uploadEventBanner  } = useContext(EventContext)
 
   async function createEventRequest() {
     try {
@@ -64,7 +58,7 @@ export function CreateEventModal() {
         eventPhotoLink: z.string(),
         galeryLink: z.array(z.string()),
         packageType: z.array(z.string()),
-        ticketUrl: z.string(),
+        ticketUrl: z.string().optional(),
         eventStatus: z.string()
       })
 
@@ -99,20 +93,11 @@ export function CreateEventModal() {
       
       console.log(resp, resp.id)
 
-      // if(!eventImage) {
-      //   alert('Evento criado sem imagem')
-      //   return;
-      // };
-
-      console.log(eventImage)
-
       await uploadEventImageReq(resp.id, eventImage)
+      await uploadEventBannerReq(resp.id, bannerImage)
 
-      navigate(`/event/${resp.id}`)
+      navigate(`/role/${resp.id}`)
 
-      
-
-      console.log(eventImage)
 
       //reload page
       // window.location.reload()
@@ -126,10 +111,7 @@ export function CreateEventModal() {
   }
 
   async function uploadEventImageReq(id: string, image: File | undefined) {
-    console.log(id, image)
-
-    if(!image) return;
-    if(!id) return;
+    if(!image || !id) return;
 
     const formData = new FormData()
     const imgType = image.type
@@ -138,127 +120,42 @@ export function CreateEventModal() {
     formData.append("typePhoto", imgType) 
     formData.append("eventPhoto", image)
 
-    
-
     const resp = await uploadEventImage(formData)
 
     console.log('Imagem enviada:', resp)
-
   }
 
+  async function uploadEventBannerReq(id: string, image: File | undefined) {
+    if(!image || !id) return;
 
-  useEffect(() => {
-      console.log('Event image updated:', eventImage);
-  }, [eventImage]);
+    const formData = new FormData()
+    const imgType = image.type
 
-  // useEffect(() => {
-  //   console.log('Chamando useEffect getEvent:')
+    formData.append("eventId", id)
+    formData.append("typePhoto", imgType) 
+    formData.append("eventPhoto", image)
 
-  //   // setEventStatus(response?.eventStatus)
-  // }, [])
+    const resp = await uploadEventBanner(formData)
+    console.log('Banner enviado:', resp)
+  }
 
   const handleChange = (selected: MultiValue<OptionsType>) => {
-    setSelectedMusic(selected)
 
     setSelectedMusics(selected.map(option => option.value))
 
-    console.log(selectedMusic)
   }
 
   const handleFeaturesSelectChange = (selected: MultiValue<OptionsType>) => {
-    setSelectedFeaturesOnSel(selected)
 
     setSelectedFeatures(selected.map(option => option.value))
 
-    console.log(selectedFeatures)
   }
 
   const handlePackageTypeSelectChange = (selected: MultiValue<OptionsType>) => {
-    setSelectedPackagesOnSel(selected)
 
     setSelectedPackages(selected.map(option => option.value))
 
-    console.log(selectedPackagesOnSel)
   }
-
-  const categories = [
-    { key: 'BALADA', value: 'Balada' },
-    { key: 'UNIVERSITARIO', value: 'Universitário' },
-    { key: 'BAR', value: 'Bar' },
-    { key: 'BAR_BALADA', value: 'Bar Balada' },
-    { key: 'SHOW', value: 'Show' },
-    { key: 'FESTIVAL', value: 'Festival' },
-    { key: 'FESTA', value: 'Festa' }
-  ]
-
-  const status = [
-    { value: 'ACTIVE', label: '🟢 Ativo' },
-    { value: 'INACTIVE', label: '🔴 Inativo' }
-  ]
-
-  const features = [
-    { value: 'ESTACIONAMENTO', label: 'Estacionamento' },
-    { value: 'FUMODROMO', label: 'Fumodromo' },
-    { value: 'VALET', label: 'Valet' },
-    { value: 'AREA_ABERTA', label: 'Area aberta' },
-    { value: 'WELCOME_SHOT', label: 'Welcome shot' },
-    { value: 'MESAS', label: 'Mesas' },
-    { value: 'OPEN_BAR', label: 'Open bar' },
-    { value: 'AO_VIVO', label: 'Ao vivo' },
-    { value: 'ESQUENTA', label: 'Esquenta' },
-    { value: 'AFTER', label: 'After' }
-  ]
-
-  const packageTypeArray = [
-    { value: 'COMBO', label: 'Combo' },
-    { value: 'ANIVERSARIO', label: 'Aniversario' },
-    { value: 'CAMAROTE', label: 'Camarote' }
-  ]
-
-  const ageCategories = [
-    { label: '18-20', value: 'Adolescent' },
-    { label: '21-25', value: 'Young Adult' },
-    { label: '26-30', value: 'Adult' },
-    { label: '31-40', value: 'Mature Adult' },
-    { label: '40+', value: 'Senior' },
-    { label: 'TODAS', value: 'All Ages' }
-  ]
-
-  const districts = [
-    {
-      districtName: 'Zona Sul',
-      districtId: 'ee6ba030-cebc-405b-b3e3-08f213cca415'
-    },
-    {
-      districtName: 'Zona Norte',
-      districtId: '5e3e0505-2b29-462d-91fc-d9f538ee8186'
-    },
-    {
-      districtName: 'Zona Leste',
-      districtId: '7d6b8023-2d03-4623-bc33-ebf58767c9b1'
-    },
-    {
-      districtName: 'Zona Oeste',
-      districtId: '1477c1ff-bdb4-4e38-8415-b2da7163b3f7'
-    },
-    {
-      districtName: 'Centro',
-      districtId: '90fec991-6d11-4813-9482-343ebdca5514'
-    }
-  ]
-
-  const options = [
-    { value: 'FUNK', label: 'Funk' },
-    { value: 'SERTANEJO', label: 'Sertanejo' },
-    { value: 'TRAP', label: 'Trap' },
-    { value: 'ELETRONICA', label: 'Eletrônica' },
-    { value: 'PAGODE', label: 'Pagode' },
-    { value: 'ROCK', label: 'Rock' },
-    { value: 'RAP', label: 'Rap' },
-    { value: 'REGGAE', label: 'Reggae' },
-    { value: 'FORRO', label: 'Forró' },
-    { value: 'MPB', label: 'MPB' }
-  ]
 
   return (
     <Dialog.Root>
@@ -271,7 +168,7 @@ export function CreateEventModal() {
         <Dialog.Overlay className="fixed inset-0 bg-black/50 data-[state=open]:animate-overlayShow" />
         <Dialog.Content className="fixed overflow-y-auto left-1/2 top-1/2 max-h-[85vh] w-[90vw] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-grayModal p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow">
           <Dialog.Title className="m-0 text-3xl font-medium text-white">
-            Editar <span className="text-violet">ROLE</span>
+            Criar <span className="text-violet">ROLE</span>
           </Dialog.Title>
           <Dialog.Description className="mb-5 mt-2.5 text-[15px] leading-normal text-stone-300">
             Utilize os campos abaixos para criar o seu melhor ROLE!
@@ -402,7 +299,7 @@ export function CreateEventModal() {
                 })}
               </select> */}
 
-              <MultiSelectComponent onChange={handleChange} options={options} />
+              <MultiSelectComponent onChange={handleChange} options={musicTypes} />
             </div>
 
             <div className="flex flex-col gap-1 w-1/3">
