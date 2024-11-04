@@ -6,71 +6,127 @@ interface InstituteModalProps {
   institute: InstituteProps;
 }
 
-interface InstituteProps {
+export interface InstituteProps {
   institute_id: string;
   name: string;
   description: string;
   institute_type: string;
   partner_type: string;
   phone: string;
-  logo_photo: string | File | null;
   address: string;
-  price: number;
   district_id: string;
-  photos_url: string[] | File[];
-  events_id: string[];
 }
 
+const districts = [
+  {
+    "id": "ee6ba030-cebc-405b-b3e3-08f213cca415",
+    "name": "Zona Sul"
+  },
+  {
+    "id": "5e3e0505-2b29-462d-91fc-d9f538ee8186",
+    "name": "Zona Norte"
+  },
+  {
+    "id": "7d6b8023-2d03-4623-bc33-ebf58767c9b1",
+    "name": "Zona Leste"
+  },
+  {
+    "id": "1477c1ff-bdb4-4e38-8415-b2da7163b3f7",
+    "name": "Zona Oeste"
+  },
+  {
+    "id": "90fec991-6d11-4813-9482-343ebdca5514",
+    "name": "Centro"
+  }
+]
+
+
 export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, institute }: InstituteModalProps) {
-  const [instituteNameDisplay, setInstituteNameDisplay] = useState("");
+  const [initialData, setInitialData] = useState<InstituteProps>(institute);
   const [instituteName, setInstituteName] = useState(institute.name || "");
+  const [nameError, setNameError] = useState("");
   const [description, setDescription] = useState(institute.description || "");
+  const [descError, setDescError] = useState("");
   const [instituteType, setInstituteType] = useState(institute.institute_type || "ESTABELECIMENTO_FIXO");
   const [partnerType, setPartnerType] = useState(institute.partner_type || "GLOBAL_PARTNER");
+  const [districtId, setDistrictId] = useState(institute.district_id || "");
   const [phone, setPhone] = useState(institute.phone || "");
+  const [phoneError, setPhoneError] = useState("");
   const [address, setAddress] = useState(institute.address || "");
-  const [logoPhotoIncoming, setLogoPhotoIncoming] = useState<File | null>(null);
-  const [galleryPhotosIncoming, setGalleryPhotosIncoming] = useState<File[]>([]);
+  const [addressError, setAddressError] = useState("");
+  // const [logoPhotoIncoming, setLogoPhotoIncoming] = useState<File | null>(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    setInstituteNameDisplay(institute.name);
-    setInstituteName(institute.name);
-    setDescription(institute.description);
-    setInstituteType(institute.institute_type);
-    setPartnerType(institute.partner_type);
-    setPhone(institute.phone);
-    setAddress(institute.address);
+    setInitialData(institute);
     setIsVisible(true); // Ativa a visibilidade do modal
   }, [institute]);
+
+  const getModifiedFields = () => {
+    const modifiedFields: Partial<InstituteProps> = {};
+    modifiedFields.institute_id = institute.institute_id;
+    if (instituteName !== initialData.name) modifiedFields.name = instituteName;
+    if (description !== initialData.description) modifiedFields.description = description;
+    if (instituteType !== initialData.institute_type) modifiedFields.institute_type = instituteType;
+    if (partnerType !== initialData.partner_type) modifiedFields.partner_type = partnerType;
+    if (phone !== initialData.phone) modifiedFields.phone = phone;
+    if (address !== initialData.address) modifiedFields.address = address;
+    if (districtId !== initialData.district_id) modifiedFields.district_id = districtId;
+    return modifiedFields;
+  };
+
+  const validateFields = () => {
+    let isValid = true;
+    if (instituteName === "") {
+      setNameError("O nome do instituto é obrigatório.");
+      isValid = false;
+    } else {
+      setNameError("");
+    }
+    if (description === "") {
+      setDescError("A descrição do instituto é obrigatória.");
+      isValid = false;
+    } else {
+      setDescError("");
+    }
+    if (phone !== "" && phone.length < 14) {
+      setPhoneError("O telefone deve ter pelo menos 10 dígitos.");
+      isValid = false;
+    } else {
+      setPhoneError("");
+    }
+    if (address === "" && instituteType === "ESTABELECIMENTO_FIXO") {
+      setAddressError("O endereço do instituto é obrigatório.");
+      isValid = false;
+    } else {
+      setAddressError("");
+    }
+    return isValid;
+  }
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => setInstituteName(e.target.value);
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value);
   const handleInstituteTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => setInstituteType(e.target.value);
   const handlePartnerTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => setPartnerType(e.target.value);
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => setAddress(e.target.value);
-  const handleLogoPhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) setLogoPhotoIncoming(e.target.files[0]);
-  };
-  const handleGalleryPhotosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) setGalleryPhotosIncoming(Array.from(e.target.files));
-  };
+  // const handleLogoPhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (e.target.files) setLogoPhotoIncoming(e.target.files[0]);
+  // };
 
   const formatPhone = (value: string) => {
     const cleaned = value.replace(/\D/g, '');
-
-    if (cleaned.length > 14) {
+    if (cleaned.length > 11) {
       return phone;
     }
-
-    const match = cleaned.match(/^(\d{2})(\d{4})(\d{4})$/);
-
-    if (match) {
-      return `+${match[1]} ${match[2]}-${match[3]}`;
-    } else if (cleaned.length <= 10) {
-      return `+${cleaned}`;
+    // Verifica o comprimento do número e formata conforme necessário
+    if (cleaned.length === 11) {
+      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7)}`;
+    } else if (cleaned.length === 10) {
+      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
     }
+
+    // Se o número não corresponder a nenhum dos formatos acima, retorna o valor original
     return value;
   };
 
@@ -81,6 +137,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
   };
 
   const handleUpdateClick = () => {
+    if (!validateFields()) return;
     setIsConfirmOpen(true);
   };
 
@@ -91,26 +148,13 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
           setIsConfirmOpen={setIsConfirmOpen}
           setIsUpdateInstituteModalOpen={setIsUpdateInstituteModalOpen}
           instituteId={institute.institute_id}
-          newInstituteData={{
-            institute_id: institute.institute_id,
-            name: instituteName,
-            description: description,
-            institute_type: instituteType,
-            partner_type: partnerType,
-            phone: phone,
-            address: address,
-            logo_photo: logoPhotoIncoming,
-            photos_url: galleryPhotosIncoming,
-            events_id: institute.events_id,
-            price: institute.price,
-            district_id: institute.district_id,
-          }}
+          newInstituteData={getModifiedFields()}
         />
       )}
       <div className={`fixed inset-0 bg-black/50 backdrop-blur-sm ${isVisible ? "transition-opacity duration-300" : "opacity-0"}`} onClick={() => setIsUpdateInstituteModalOpen(false)} />
       <div className={`fixed overflow-y-auto left-1/2 top-1/2 max-h-[85vh] w-[50vw] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-grayModal p-[25px] shadow-md focus:outline-none transition-transform duration-300 transform ${isVisible ? "scale-100" : "scale-95"}`}>
         <div className="m-0 text-3xl font-medium text-white">
-          Atualizar Instituto: <span className="text-violet">{instituteNameDisplay}</span>
+          Atualizar Instituto: <span className="text-violet">{initialData.name}</span>
         </div>
         <div className="mb-5 mt-2.5 text-[15px] leading-normal text-stone-300">
           Utilize os campos abaixo para atualizar as informações do instituto.
@@ -125,6 +169,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
             value={instituteName}
             onChange={handleNameChange}
           />
+        {nameError && <p className="text-red-600 text-sm">{nameError}</p>}
         </fieldset>
 
         {/* Descrição */}
@@ -136,6 +181,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
             value={description}
             onChange={handleDescriptionChange}
           />
+        {descError && <p className="text-red-600 text-sm">{descError}</p>}
         </fieldset>
 
         {/* Tipos */}
@@ -170,6 +216,44 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
           </fieldset>
         </div>
 
+        <div className='flex w-full gap-4'>
+          {/* Distrito */}
+          <fieldset className="mb-4 flex flex-col gap-1 text-white">
+            <label className="text-base text-white" htmlFor="district">
+              Distrito
+            </label>
+            <select
+              name="district"
+              id="district"
+              className="h-10 bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
+              value={districtId}
+              onChange={(e) => setDistrictId(e.target.value)}
+            >
+              {districts.map((district) => (
+                <option key={district.id} value={district.id}>
+                  {district.name}
+                </option>
+              ))}
+            </select>
+          </fieldset>
+          <div className='flex flex-col w-full'>
+            {/* Endereço */}
+            <fieldset className="mb-4 flex flex-col gap-1 text-white">
+              <label className="text-base text-white" htmlFor="address">
+                Endereço{instituteType === "AGENCIA_DE_FESTAS" ? " (opcional)" : ""}
+              </label>
+              <input
+                className={`h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet `}
+                id="address"
+                value={address}
+                onChange={handleAddressChange}
+                placeholder="Digite o endereço do instituto"
+              />
+            {addressError && <p className="text-red-600 text-sm">{addressError}</p>}
+            </fieldset>
+          </div>
+        </div>
+
         {/* Telefone */}
         <fieldset className="mb-4 flex flex-col gap-1 text-white">
           <label className="text-base" htmlFor="phone">Telefone (opcional)</label>
@@ -183,51 +267,27 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
             inputMode="numeric"
             type="tel"
           />
+        {phoneError && <p className="text-red-600 text-sm">{phoneError}</p>}
         </fieldset>
 
-        {/* Endereço */}
-        <fieldset className="mb-4 flex flex-col gap-1 text-white">
-          <label className="text-base" htmlFor="address">Endereço (opcional)</label>
-          <input
-            className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
-            id="address"
-            value={address}
-            onChange={handleAddressChange}
-            placeholder="Digite o endereço"
-          />
-        </fieldset>
-
-        {/* Upload da Logo */}
+        {/* Upload da Logo
         <fieldset className="mb-4 flex flex-col gap-1 text-white">
           <label className="text-base" htmlFor="logoPhoto">Logo do Instituto (opcional)</label>
           <input
-            className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
+            className="bg-grayInputModal p-2 outline-none rounded-md focus:ring-2 ring-violet"
             id="logoPhoto"
             type="file"
             accept="image/*"
             onChange={handleLogoPhotoChange}
           />
-        </fieldset>
-
-        {/* Upload de Fotos da Galeria */}
-        <fieldset className="mb-4 flex flex-col gap-1 text-white">
-          <label className="text-base" htmlFor="galleryPhotos">Fotos da Galeria (opcional)</label>
-          <input
-            className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
-            id="galleryPhotos"
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleGalleryPhotosChange}
-          />
-        </fieldset>
+        </fieldset> */}
 
         {/* Botões */}
-        <div className="flex justify-evenly mt-5">
-          <button className="h-10 w-1/4 rounded-lg border border-red-600 bg-red-600 text-white" onClick={() => setIsUpdateInstituteModalOpen(false)}>
+        <div className="flex justify-end gap-4 mt-5">
+          <button className="h-10 px-8 rounded-lg border border-red-600 bg-red-600 text-white" onClick={() => setIsUpdateInstituteModalOpen(false)}>
             Cancelar
           </button>
-          <button className="h-10 w-1/4 rounded-lg border border-violet bg-violet text-white" onClick={handleUpdateClick}>
+          <button className="h-10 px-8 rounded-lg border border-violet bg-violet text-white" onClick={handleUpdateClick}>
             Atualizar
           </button>
         </div>
@@ -242,7 +302,7 @@ interface ConfirmUpdateProps {
   setIsConfirmOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsUpdateInstituteModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   instituteId: string;
-  newInstituteData: InstituteProps;
+  newInstituteData: Partial<InstituteProps>;
 }
 
 function ConfirmUpdate({ setIsConfirmOpen, setIsUpdateInstituteModalOpen, newInstituteData }: ConfirmUpdateProps) {
@@ -250,7 +310,9 @@ function ConfirmUpdate({ setIsConfirmOpen, setIsUpdateInstituteModalOpen, newIns
 
   const handleConfirmClick = () => {
     // Update the institute with the new data
-    updateInstituteById(newInstituteData.institute_id, newInstituteData);
+    console.log(newInstituteData);
+    const resp = updateInstituteById(newInstituteData);
+    console.log(resp);
     setIsUpdateInstituteModalOpen(false);
     setIsConfirmOpen(false);
   };

@@ -1,5 +1,6 @@
 import { createContext, PropsWithChildren } from "react"
 import { InstituteRepositoryHttp } from "../api/repositories/institute_repository"
+import { InstituteProps } from "../components/updateInstituteModal";
 
 interface Institute {
     institute_id: string;
@@ -11,7 +12,6 @@ interface Institute {
     address?: string | undefined;
     price?: number | undefined;
     district_id?: string | undefined;
-    photos_url?: string[] | undefined;
     events_id?: string[] | undefined;
 }
 
@@ -20,7 +20,7 @@ type InstituteContextType = {
     getInstituteById: (id: string) => Promise<object>
     createInstitute?: (data: Institute) => Promise<object>
     deleteInstituteById?: (id: string) => Promise<object>
-    updateInstituteById?: (id: string, data: Institute) => Promise<object>
+    updateInstituteById?: (data: Partial<InstituteProps>) => Promise<object>
     uploadInstituteImage?: (data: FormData) => Promise<object>
 }
 
@@ -39,7 +39,7 @@ const defaultInstitute = {
     deleteInstituteById: async (id: string) => {
         return {}
     },
-    updateInstituteById: async (id: string, data: Institute) => {
+    updateInstituteById: async (data: InstituteProps) => {
         return {}
     },
     uploadInstituteImage: async (data: FormData) => {
@@ -88,9 +88,9 @@ export function InstituteContextProvider({ children }: PropsWithChildren) {
         }
     }
 
-    async function updateInstituteById(id: string, data: Institute) {
+    async function updateInstituteById(data: InstituteProps) {
         try {
-            const response = await repo.updateInstituteById(id, data)
+            const response = await repo.updateInstituteById(data)
             return response
         } catch (error: any) {
             return error

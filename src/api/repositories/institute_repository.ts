@@ -50,17 +50,14 @@ export class InstituteRepositoryHttp {
     }
   }
 
-  async updateInstituteById(id: string, data: any) {
+  async updateInstituteById(data: any) {
     try {
-      const resp = await httpEvent.put(
-        `/update-institute-by-id?instituteId=${id}`,
-        data,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      console.log("before Request: ", data);
+      const resp = await httpEvent.put(`/update-institute`, data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       if (resp) {
         return resp.data;
       }
@@ -68,18 +65,14 @@ export class InstituteRepositoryHttp {
       throw new Error("Erro ao atualizar instituição: " + error.message);
     }
   }
-  
+
   async uploadInstituteImage(data: FormData) {
     try {
-      const resp = await httpEvent.post(
-        `/upload-institute-photo`,
-        data,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const resp = await httpEvent.post(`/upload-institute-photo`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       if (resp) {
         return resp.data;
       }

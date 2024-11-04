@@ -66,40 +66,43 @@ export default function Institutions() {
                 />
             )}
 
-            <div className="h-[16vh] w-full flex flex-col py-6 bg-[#2A2A2A] items-center gap-10 px-14 border-b-2 border-[#6A6A6A]">
-                <div className="flex h-full items-center w-full justify-between">
-                    <div className="flex h-full items-center gap-4">
-                        <div className="h-16 px-4 rounded-lg flex justify-center items-center w-[34vw] text-white text-3xl bg-[#6A6A6A] placeholder:text-white">
-                            <MagnifyingGlass size={32} />
+            <div className="md:h-[18vh] h-[20vh] w-full flex flex-col py-6 bg-[#2A2A2A] items-center gap-4 md:gap-6 px-4 md:px-10 border-b-2 border-[#6A6A6A]">
+                <div className="flex h-full items-center w-full justify-between flex-wrap gap-4">
+                    <div className="flex h-full mt-4 md:mt-0 flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+                        <div className="flex items-center h-12 md:h-16 px-2 md:px-4 rounded-lg w-full md:w-[34vw] text-white text-lg md:text-3xl bg-[#6A6A6A] placeholder:text-white">
+                            <MagnifyingGlass size={24} />
                             <input
                                 type="text"
                                 value={search}
                                 onChange={handleChange}
                                 placeholder="Pesquisar"
-                                className="h-16 px-4 rounded-lg w-full text-white text-3xl bg-[#6A6A6A] placeholder:text-white outline-none"
+                                className="h-full px-2 md:px-4 rounded-lg w-full text-white text-lg md:text-3xl bg-[#6A6A6A] placeholder:text-white outline-none"
                             />
                         </div>
-                        <button
-                            className="h-16 w-16 rounded-lg bg-light-purple text-white text-2xl hover:bg-purple"
-                            onClick={() => setIsCreateInstituteModalOpen(true)}
-                        >
-                            +
-                        </button>
-                        <h1 className="text-white text-3xl">Nova Instituição</h1>
+                        <div className="flex items-center gap-4">
+                            <button
+                                className="h-12 w-12 md:h-16 md:w-16 rounded-lg bg-light-purple text-white text-lg md:text-2xl hover:bg-purple"
+                                onClick={() => setIsCreateInstituteModalOpen(true)}
+                            >
+                                +
+                            </button>
+                            <h1 className="text-white text-lg md:text-3xl">Nova Instituição</h1>
+                        </div>
                     </div>
-                    <div>
+                    <div className="flex invisible lg:visible justify-center md:justify-end w-full md:w-auto">
                         <img
                             src={`${envs.cloudfrontUrl}/approle_logo_navbar.png`}
                             alt="AppRole Logo"
-                            className="h-16"
+                            className="h-12 md:h-16"
                         />
                     </div>
                 </div>
             </div>
-            <div className="flex flex-wrap h-[84vh] overflow-y-auto justify-center pt-6 pb-6">
+
+            <div className="flex flex-wrap h-[80vh] overflow-y-auto justify-center pt-4 pb-4 md:h-[82vh] gap-4 md:gap-6">
                 {loading ? (
                     <div className="flex justify-center items-center h-full">
-                        <ClipLoader color="#ffffff" size={150} />
+                        <ClipLoader color="#ffffff" size={100} />
                     </div>
                 ) : (
                     filteredInstitutes.map((institute) => (

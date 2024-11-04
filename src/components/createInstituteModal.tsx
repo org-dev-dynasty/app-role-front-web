@@ -34,16 +34,18 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
   const [isVisible, setIsVisible] = useState(false); // Estado para controlar a visibilidade do modal
   const { createInstitute, uploadInstituteImage } = useContext(InstituteContext);
   const [instituteName, setInstituteName] = useState("");
-  const [err, setErr] = useState("");
+  const [nameErr, setNameErr] = useState("");
   const [description, setDescription] = useState("");
+  const [descErr, setDescErr] = useState("");
   const [instituteType, setInstituteType] = useState("ESTABELECIMENTO_FIXO");
   const [partnerType, setPartnerType] = useState("GLOBAL_PARTNER");
   const [phone, setPhone] = useState("");
+  const [phoneErr, setPhoneErr] = useState("");
   const [districtId, setDistrictId] = useState(districts[0].id);
   const [address, setAddress] = useState("");
   const [addErr, setAddErr] = useState("");
   const [logoPhoto, setLogoPhoto] = useState<File | null>(null);
-  const [galleryPhotos, setGalleryPhotos] = useState<File[]>([]);
+  const [logoErr, setLogoErr] = useState("");
   const [isCreating, setIsCreating] = useState(false);
 
   useEffect(() => {
@@ -53,15 +55,17 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
   // Função para aplicar a máscara de telefone
   const formatPhone = (value: string) => {
     const cleaned = value.replace(/\D/g, '');
-    if (cleaned.length > 14) {
+    if (cleaned.length > 11) {
       return phone;
     }
-    const match = cleaned.match(/^(\d{2})(\d{4})(\d{4})$/);
-    if (match) {
-      return `+${match[1]} ${match[2]}-${match[3]}`;
-    } else if (cleaned.length <= 10) {
-      return `+${cleaned}`;
+    // Verifica o comprimento do número e formata conforme necessário
+    if (cleaned.length === 11) {
+      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7)}`;
+    } else if (cleaned.length === 10) {
+      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
     }
+
+    // Se o número não corresponder a nenhum dos formatos acima, retorna o valor original
     return value;
   };
 
@@ -72,23 +76,41 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
   };
 
   const saveInstituteClick = async () => {
-    if (isCreating) return; // Impede cliques múltiplos
-    if (!instituteName || !description) {
-      setErr("Preencha o nome e a descrição do instituto");
-      if (instituteType === "ESTABELECIMENTO_FIXO") {
-        if (!address) {
-          setAddErr("Preencha o endereço do instituto");
-          return;
-        }
+    if (isCreating) return;
+
+    const validateFields = () => {
+      let valid = true;
+      if (!instituteName) {
+        setNameErr("Preencha o nome do instituto");
+        valid = false;
       }
-      return;
-    }
-    if (instituteType === "ESTABELECIMENTO_FIXO") {
-      if (!address) {
+
+      if (!description) {
+        setDescErr("Preencha a descrição do instituto");
+        valid = false;
+      }
+
+      // Verifica se o endereço deve ser obrigatório com base no instituteType
+      if (instituteType === "ESTABELECIMENTO_FIXO" && !address) {
         setAddErr("Preencha o endereço do instituto");
-        return;
+        valid = false;
+      } else {
+        setAddErr(""); // Limpa o erro se o address não for obrigatório
       }
-    }
+
+      if (phone && phone.length < 10) {
+        setPhone("+XX XXXX-XXXX");
+        setPhoneErr("O numero de telefone deve ter no mínimo 10 dígitos");
+        valid = false;
+      }
+
+      if (!logoPhoto) {
+        setLogoErr("Selecione uma imagem para o logotipo");
+        valid = false;
+      }
+      return valid;
+    };
+
     setIsCreating(true);
 
     const data = {
@@ -102,52 +124,49 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
     };
 
     try {
-      // Tenta criar o instituto
+      // Verifica se a validação é bem-sucedida antes de continuar
+      if (!validateFields()) {
+        setIsCreating(false); // Libera o botão para ser clicado novamente
+        return;
+      }
+      if (logoPhoto?.size > 900000) {
+        setLogoErr("Imagem muito grande");
+        setIsCreating(false);
+        return;
+      }
+
       const createdInstitute = await createInstitute(data);
 
-      // Log para verificar o retorno da API
       console.log("Instituto Criado:", createdInstitute);
 
-      // Verifica se o instituto foi criado e tem ID
       if (createdInstitute) {
-        // Upload do logotipo, se houver
         if (logoPhoto?.name) {
           console.log(logoPhoto.name);
           const logoType = logoPhoto.type;
           const formData = new FormData();
-          formData.append("name", instituteName,);
+          formData.append("name", instituteName);
           formData.append("typePhoto", logoType);
           formData.append("files", logoPhoto);
           const resp = await uploadInstituteImage(formData);
           console.log("Logo Upload Response:", resp);
         }
 
-        // Upload da galeria de fotos, se houver
-        // if (galleryPhotos.length > 0) {
-        //   const galleryFormData = new FormData();
-        //   galleryPhotos.forEach((photo, index) => {
-        //     galleryFormData.append(`gallery_photos[${index}]`, photo);
-        //   });
-        //   await uploadInstituteImage(createdInstitute.institute_id, galleryFormData); // Certifique-se de que o campo está correto
-        // }
-
-        // Chama o callback se necessário
         if (onInstituteCreated) {
           onInstituteCreated();
         }
+
+        // Fecha o modal somente se a criação e o upload forem bem-sucedidos
+        setIsCreateInstituteModalOpen(false);
       } else {
-        // Caso o instituto não seja criado corretamente
         console.error("Erro: Instituto criado sem ID válido");
       }
     } catch (error: any) {
-      // Log de erro para ver detalhes
       console.error("Erro ao criar instituto ou fazer upload das imagens:", error.message);
     } finally {
-      // Sempre fecha o modal, mesmo com erro
-      setIsCreateInstituteModalOpen(false);
-      setIsCreating(false); // Libera o botão para ser clicado novamente
+      setIsCreating(false);
     }
   };
+
 
 
   return (
@@ -166,14 +185,14 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
             Nome
           </label>
           <input
-            className={`h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet ${err && !instituteName ? 'border-solid border-2 border-red-500 ring-transparent focus:ring-0' : ''}`}
+            className={`h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet ${nameErr && !instituteName ? 'border-solid border-2 border-red-500 ring-transparent focus:ring-0' : ''}`}
             id="instituteName"
             value={instituteName}
             placeholder='Digite o nome do instituto'
             onChange={(e) => setInstituteName(e.target.value)}
           />
         </fieldset>
-        {err && !instituteName && <div className="text-red-500 text-sm mb-4">{err}</div>}
+        {nameErr && !instituteName && <div className="text-red-500 text-sm mb-4">{nameErr}</div>}
 
         {/* Descrição */}
         <fieldset className="mb-4 flex flex-col gap-1 text-white">
@@ -181,14 +200,14 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
             Descrição
           </label>
           <textarea
-            className={`h-44 px-2 py-2 resize-none bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet ${err && !description ? 'border-solid border-2 border-red-500 focus:ring-0' : ''}`}
+            className={`h-44 px-2 py-2 resize-none bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet ${descErr && !description ? 'border-solid border-2 border-red-500 focus:ring-0' : ''}`}
             id="description"
             value={description}
             placeholder='Digite a descrição do instituto'
             onChange={(e) => setDescription(e.target.value)}
           />
         </fieldset>
-        {err && !description && <div className="text-red-500 text-sm mb-4">{err}</div>}
+        {descErr && !description && <div className="text-red-500 text-sm mb-4">{descErr}</div>}
 
         <div className="flex flex-row justify-evenly ">
           {/* Tipo de Instituto */}
@@ -280,6 +299,7 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
             type="tel"
           />
         </fieldset>
+        {phoneErr && <div className="text-red-500 text-sm mb-4">{phoneErr}</div>}
 
         {/* Upload da Logo */}
         <fieldset className="mb-4 flex flex-col gap-1 text-white">
@@ -295,10 +315,13 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
               const file = e.target.files?.[0] || null;
               console.log("Selected logo file:", file); // Verifica o arquivo selecionado
               setLogoPhoto(file);
+              setLogoErr("");
             }}
           />
         </fieldset>
+        {logoErr && <div className="text-red-500 text-sm mb-4">{logoErr}</div>}
 
+        {/* Exibição da imagem selecionada */}
         <div className="flex flex-wrap gap-2">
           {logoPhoto && (
             <img
@@ -307,32 +330,6 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
               className="w-24 h-24 mb-4 object-cover rounded-md"
             />
           )}
-        </div>
-
-        {/* Upload da Galeria de Imagens */}
-        <fieldset className="mb-4 flex flex-col gap-1 text-white">
-          <label className="text-base text-white" htmlFor="galleryPhotos">
-            Galeria de Imagens
-          </label>
-          <input
-            className="bg-grayInputModal p-2 outline-none rounded-md focus:ring-2 ring-violet"
-            id="galleryPhotos"
-            type="file"
-            multiple
-            onChange={(e) => e.target.files && setGalleryPhotos(Array.from(e.target.files))}
-          />
-        </fieldset>
-
-        <div className="flex flex-wrap gap-2">
-          {galleryPhotos.length > 0 &&
-            galleryPhotos.map((photo, index) => (
-              <img
-                key={index}
-                src={URL.createObjectURL(photo)}
-                alt="Imagem da galeria"
-                className="w-24 h-24 mb-4 object-cover rounded-md"
-              />
-            ))}
         </div>
 
         <div className="flex flex-row justify-end gap-4">

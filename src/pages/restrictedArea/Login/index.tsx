@@ -1,6 +1,7 @@
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useContext, useState } from "react";
 import { envs } from "../../../utils/envs";
 import { EyeSlash, Eye, User } from "@phosphor-icons/react";
+import { AuthContext } from "../../../context/auth_context";
 
 
 
@@ -9,6 +10,7 @@ export default function Login() {
   const [userError, setUserError] = useState<string>("")
   const [password, setPassword] = useState<string>()
   const [passwordError, setPasswordError] = useState<string>("")
+  const { signIn } = useContext(AuthContext)
 
   const handleUsername = (e: { target: { value: SetStateAction<string> } }) => {
     setUsername(e.target.value)
@@ -31,6 +33,16 @@ export default function Login() {
       setPasswordError("Senha não pode ser vazia")
     } else {
       setPasswordError("")
+    }
+
+    if (username && password) {
+      console.log("Usuário: ", username)
+      console.log("Senha: ", password)
+      const resp = signIn({ identifier: username, password: password })
+      console.log("Resposta: ", resp)
+      localStorage.setItem('accessToken', resp.accessToken);
+      localStorage.setItem('refreshToken', resp.refreshToken);
+      localStorage.setItem('idToken', resp.idToken);
     }
   }
 

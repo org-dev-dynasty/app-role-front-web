@@ -7,6 +7,7 @@ import { InstituteContextProvider } from './context/institute_context'
 import { EventContextProvider } from './context/event_context'
 import { AuthContextProvider } from './context/auth_context'
 import Login from './pages/restrictedArea/Login'
+import ResetPasswordCode from './pages/restrictedArea/confirmCode'
 
 export function AppRouter() {
   return (
@@ -22,6 +23,7 @@ export function AppRouter() {
               <Route path="role">
                 <Route path=":eventId" element={<Role />} />
               </Route>
+              <Route Component={ResetPasswordCode} path='/verifyCode' element={<ResetPasswordCode />} />
             </Routes>
           </BrowserRouter>
         </InstituteContextProvider>

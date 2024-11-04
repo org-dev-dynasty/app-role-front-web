@@ -24,6 +24,29 @@ interface Institute {
   price: number;
 }
 
+const districts = [
+  {
+    "id": "ee6ba030-cebc-405b-b3e3-08f213cca415",
+    "name": "Zona Sul"
+  },
+  {
+    "id": "5e3e0505-2b29-462d-91fc-d9f538ee8186",
+    "name": "Zona Norte"
+  },
+  {
+    "id": "7d6b8023-2d03-4623-bc33-ebf58767c9b1",
+    "name": "Zona Leste"
+  },
+  {
+    "id": "1477c1ff-bdb4-4e38-8415-b2da7163b3f7",
+    "name": "Zona Oeste"
+  },
+  {
+    "id": "90fec991-6d11-4813-9482-343ebdca5514",
+    "name": "Centro"
+  }
+]
+
 export default function Institute() {
   const { getEventById } = useContext(EventContext);
   const { getInstituteById } = useContext(InstituteContext);
@@ -59,35 +82,41 @@ export default function Institute() {
   }
 
   const [institute, setInstitute] = useState<Institute | null>(null); // Use null ao invés de um objeto vazio
+  
+  const fetchEvents = async () => {
+    if (institute) {
+      const response = await Promise.all(institute.events_id.map((eventId) => getEventById(eventId)));
+      console.log(response);
+      setEvents(response);
+    }
+  }
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      if (institute) {
-        const response = await Promise.all(institute.events_id.map((eventId) => getEventById(eventId)));
-        console.log(response);
-        setEvents(response);
+  const fetchInstitute = async () => {
+    setLoading(true);
+    if (instId) {
+      const response = await getInstituteById(instId);
+      console.log(response);
+      if (response) {
+        setInstitute(response);
+        setLoading(false);
+      } else {
+        console.log("Instituto não encontrado");
+        setInstitute(null);
       }
     }
+  };
 
+  useEffect(() => {
+    setTimeout(() => {
+      fetchInstitute();
+    }, 502);
+  }, [instId, getInstituteById, isUpdateInstituteModalOpen]);
 
-    const fetchInstitute = async () => {
-      if (instId) {
-        const response = await getInstituteById(instId); // Faz a requisição
-        console.log(response);
-        if (response) {
-          setInstitute(response); // Atualiza o estado com os dados do instituto
-          setLoading(false)
-        } else {
-          console.log("Instituto não encontrado");
-          setInstitute(null); // Atualiza o estado com null
-        }
-      }
-    };
-
-    fetchEvents();
-    fetchInstitute();
-  }, [instId, getInstituteById]);
-
+  useEffect(() => {
+    if (institute) {
+      fetchEvents();
+    }
+  }, [institute, getEventById]);
 
   if (loading) {
     return (
@@ -101,8 +130,10 @@ export default function Institute() {
     return <p className="text-white">Carregando ou nenhum instituto encontrado</p>; // Mensagem enquanto carrega
   }
 
+  const district = districts.find(d => d.id === institute.district_id);
+
   return (
-    <div className="h-full w-full flex flex-row bg-[#151515]">
+    <div className="h-full w-full flex flex-col md:flex-row bg-[#151515]">
       {isUpdateInstituteModalOpen && (
         <UpdateInstituteModal
           setIsUpdateInstituteModalOpen={setIsUpdateInstituteModalOpen}
@@ -111,16 +142,16 @@ export default function Institute() {
       )}
       {isDeleteModalOpen && <ConfirDelete setIsDeleteModalOpen={setIsDeleteModalOpen} instituteId={instId} />}
 
-      <div className="relative w-[70%] flex flex-col py-6 bg-[#2A2A2A] items-center gap-10 px-4">
+      <div className="relative h-[100vh] w-[100%] md:w-[70%] flex flex-col py-6 bg-[#2A2A2A] items-center gap-10 px-4">
 
-        <div className="flex items-center w-full gap-4">
-          <div className="rounded-full h-72 w-72 bg-light-purple flex justify-center items-center overflow-hidden">
+        <div className="flex flex-col md:flex-row items-center w-full gap-4">
+          <div className="rounded-full h-[30rem] md:h-72 w-72 bg-light-purple flex justify-center items-center overflow-hidden">
             {institute.logo_photo ? (
-              <img src={institute.logo_photo} alt="Logo do instituto" className="h-full w-full object-cover flex justify-center items-center" />
+              <img src={institute.logo_photo} alt="Logo do instituto" className="h-96 w-96 object-cover flex justify-center items-center" />
             ) : (
               <p className="text-white">Sem logo disponível</p>
             )}
-          </div>
+          </div> 
           <div className="flex flex-col h-full pb-14 justify-between flex-grow">
             <div className="flex flex-row w-full justify-between">
               <button className="text-xl bg-light-purple w-32 h-16 rounded-lg hover:bg-violet duration-100 hover:cursor-pointer" onClick={() => navigate("/institutes")}>
@@ -147,53 +178,30 @@ export default function Institute() {
           </div>
         </div>
 
-        <div className="w-full h-72 bg-[#151515] rounded-xl py-4 flex flex-row text-white">
+        <div className="w-full h-fit bg-[#151515] rounded-xl py-4 flex flex-row text-white">
           <div className="flex flex-col gap-4 border-r h-full justify-center p-6 w-full">
-            <div>
-              <h1>Tipo de instituição:</h1>
-              <h1>{formatInstituteType(institute.institute_type)}</h1>
+            <div className="bg-[#2a2a2a] p-2 pb-4 rounded-lg flex justify-center items-center flex-col gap-2 shadow-lg">
+              <h1 className="h-8 w-1/2 rounded-lg bg-[#444] flex justify-center items-center shadow-md">Telefone:</h1>
+              <h1>{institute.phone || "Telefone indisponível"}</h1>
             </div>
-            <div>
-              <h1>Tipo de Parceiro:</h1>
-              <h1>{formatPartnerType(institute.partner_type)}</h1>
+            <div className="bg-[#2a2a2a] p-2 pb-4 rounded-lg flex justify-center items-center flex-col gap-2 shadow-lg">
+              <h1 className="h-8 w-1/2 rounded-lg bg-[#444] flex justify-center items-center shadow-md">Distrito:</h1>
+              <h1>{district ? district.name : "Distrito indisponível"}</h1>
             </div>
-            <div>
-              <h1>Preço:</h1>
-              <h1>{institute.price > 5 ? "$".repeat(5) : "$".repeat(institute.price)}</h1>
+            <div className="bg-[#2a2a2a] p-2 pb-4 rounded-lg flex justify-center items-center flex-col gap-2 shadow-lg">
+              <h1 className="h-8 w-1/2 rounded-lg bg-[#444] flex justify-center items-center shadow-md">Endereço:</h1>
+              <h1>{institute.address || "Endereço indisponível"}</h1>
             </div>
           </div>
 
           <div className="flex flex-col gap-4 border-l h-full justify-center p-6 w-full">
-            <div>
-              <h1>Telefone:</h1>
-              <h1>{institute.phone || "Telefone indisponível"}</h1>
+            <div className="bg-[#2a2a2a] p-2 pb-4 rounded-lg flex justify-center items-center flex-col gap-2 shadow-lg">
+              <h1 className="h-8 w-1/2 rounded-lg bg-[#444] flex justify-center items-center shadow-md">Tipo de instituição:</h1>
+              <h1>{formatInstituteType(institute.institute_type)}</h1>
             </div>
-            <div>
-              <h1>Endereço:</h1>
-              <h1>{institute.address || "Endereço indisponível"}</h1>
-            </div>
-            <div>
-              <h1>Distrito:</h1>
-              <h1>{institute.district_id || "Distrito indisponível"}</h1>
-            </div>
-          </div>
-        </div>
-
-        <div className="w-full min-h-96 bg-[#151515] rounded-xl flex flex-row text-white">
-          <div className="flex flex-col gap-4 h-full p-6 w-full">
-            <div className="flex gap-4 flex-wrap">
-              {institute.photos_url.length > 0 ? (
-                institute.photos_url.map((photo_url, index) => (
-                  <img
-                    key={index}
-                    className="min-w-52 border-2 min-h-72 border-dashed"
-                    src={photo_url}
-                    alt={`Foto do instituto ${index + 1}`}
-                  />
-                ))
-              ) : (
-                <p className="text-white">Sem fotos disponíveis</p>
-              )}
+            <div className="bg-[#2a2a2a] p-2 pb-4 rounded-lg flex justify-center items-center flex-col gap-2 shadow-lg">
+              <h1 className="h-8 w-1/2 rounded-lg bg-[#444] flex justify-center items-center shadow-md">Tipo de Parceiro:</h1>
+              <h1>{formatPartnerType(institute.partner_type)}</h1>
             </div>
           </div>
         </div>
