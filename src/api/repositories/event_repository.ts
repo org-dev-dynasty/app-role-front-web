@@ -66,6 +66,36 @@ export class EventRepositoryHttp {
     }
   }
 
+
+  async deleteEventById(id: string) {
+    try {
+      const resp = await httpEvent.delete(`/delete-event-by-id?eventId=${id}`)
+
+      return resp.data
+    } catch (error: any) {
+      throw new Error('Erro ao deletar evento: ' + error.message)
+    }
+  }
+
+  async uploadEventImage(data: FormData) {
+    try {
+      const resp = await httpEvent.post(
+        `/upload-event-photo`,
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (resp) {
+        return resp.data;
+      }
+    } catch (error: any) {
+      throw new Error("Erro ao fazer upload da imagem: " + error.message);
+    } 
+  }
+
   async getEventsByInstituteId(id: string) {
     try {
       const resp = await httpEvent.get<{ events: EventType[] }>(

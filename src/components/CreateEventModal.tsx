@@ -1,14 +1,21 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import { X, CurrencyDollar, Image, Pencil } from '@phosphor-icons/react'
 import { Rating } from 'react-simple-star-rating'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { EventType } from '../api/repositories/event_repository'
 import { EventContext } from '../context/event_context'
 import { MultiValue } from 'react-select'
 import { MultiSelectComponent, OptionsType } from './MultiSelect'
 import { z } from 'zod'
+import { ImageInputFile } from './ImageInputFile'
+import { useNavigate, useParams } from 'react-router-dom'
 
 export function CreateEventModal() {
+  let { eventId } = useParams()
+
+  // useNavigate
+  const navigate = useNavigate()
+
   const [name, setName] = useState<string>()
   const [description, setDescription] = useState<string>()
   const [address, setAddress] = useState<string>()
@@ -18,19 +25,25 @@ export function CreateEventModal() {
   const [age, setAge] = useState<string>('ADULT')
   const [musicType, setMusicType] = useState<string[]>()
   const [ticketUrl, setTicketUrl] = useState<string>()
-  const [eventStatus, setEventStatus] = useState<string>("ACTIVE")
+  const [eventStatus, setEventStatus] = useState<string>('ACTIVE')
   const [currentDistrict, setCurrentDistrict] = useState<string>()
-  
-  const [selectedFeaturesOnSel, setSelectedFeaturesOnSel] = useState<MultiValue<OptionsType> | null>(null)
-  const [selectedMusic, setSelectedMusic] = useState<MultiValue<OptionsType> | null>(null)
-  const [selectedPackagesOnSel, setSelectedPackagesOnSel] = useState<MultiValue<OptionsType> | null>(null)
+
+  const [selectedFeaturesOnSel, setSelectedFeaturesOnSel] =
+    useState<MultiValue<OptionsType> | null>(null)
+  const [selectedMusic, setSelectedMusic] =
+    useState<MultiValue<OptionsType> | null>(null)
+  const [selectedPackagesOnSel, setSelectedPackagesOnSel] =
+    useState<MultiValue<OptionsType> | null>(null)
 
   const [selectedMusics, setSelectedMusics] = useState<string[]>([''])
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([''])
   const [selectedPackages, setSelectedPackages] = useState<string[]>([''])
 
 
-  const { createEvent } = useContext(EventContext)
+  const [eventImage, setEventImage] = useState<File>()
+  const [bannerImage, setBannerImage] = useState<File>()
+
+  const { createEvent, uploadEventImage } = useContext(EventContext)
 
   async function createEventRequest() {
     try {
@@ -76,7 +89,30 @@ export function CreateEventModal() {
         eventStatus: eventStatus
       }
 
-      await createEvent(eventBodySchema.parse(eventBody))
+      type CreateEvent = {
+        message: string,
+        id: string
+      }
+
+      const resp: CreateEvent = await createEvent(eventBodySchema.parse(eventBody)) as CreateEvent
+      
+      
+      console.log(resp, resp.id)
+
+      // if(!eventImage) {
+      //   alert('Evento criado sem imagem')
+      //   return;
+      // };
+
+      console.log(eventImage)
+
+      await uploadEventImageReq(resp.id, eventImage)
+
+      navigate(`/event/${resp.id}`)
+
+      
+
+      console.log(eventImage)
 
       //reload page
       // window.location.reload()
@@ -89,14 +125,37 @@ export function CreateEventModal() {
     }
   }
 
+  async function uploadEventImageReq(id: string, image: File | undefined) {
+    console.log(id, image)
+
+    if(!image) return;
+    if(!id) return;
+
+    const formData = new FormData()
+    const imgType = image.type
+
+    formData.append("eventId", id)
+    formData.append("typePhoto", imgType) 
+    formData.append("eventPhoto", image)
+
+    
+
+    const resp = await uploadEventImage(formData)
+
+    console.log('Imagem enviada:', resp)
+
+  }
+
+
+  useEffect(() => {
+      console.log('Event image updated:', eventImage);
+  }, [eventImage]);
+
   // useEffect(() => {
   //   console.log('Chamando useEffect getEvent:')
 
   //   // setEventStatus(response?.eventStatus)
   // }, [])
-
-
-
 
   const handleChange = (selected: MultiValue<OptionsType>) => {
     setSelectedMusic(selected)
@@ -167,26 +226,26 @@ export function CreateEventModal() {
 
   const districts = [
     {
-      districtName: "Zona Sul",
-      districtId: "ee6ba030-cebc-405b-b3e3-08f213cca415"
+      districtName: 'Zona Sul',
+      districtId: 'ee6ba030-cebc-405b-b3e3-08f213cca415'
     },
     {
-      districtName: "Zona Norte",
-      districtId: "5e3e0505-2b29-462d-91fc-d9f538ee8186"
+      districtName: 'Zona Norte',
+      districtId: '5e3e0505-2b29-462d-91fc-d9f538ee8186'
     },
     {
-      districtName: "Zona Leste",
-      districtId: "7d6b8023-2d03-4623-bc33-ebf58767c9b1"
+      districtName: 'Zona Leste',
+      districtId: '7d6b8023-2d03-4623-bc33-ebf58767c9b1'
     },
     {
-      districtName: "Zona Oeste",
-      districtId: "1477c1ff-bdb4-4e38-8415-b2da7163b3f7"
+      districtName: 'Zona Oeste',
+      districtId: '1477c1ff-bdb4-4e38-8415-b2da7163b3f7'
     },
     {
-      districtName: "Centro",
-      districtId: "90fec991-6d11-4813-9482-343ebdca5514"
+      districtName: 'Centro',
+      districtId: '90fec991-6d11-4813-9482-343ebdca5514'
     }
-  ];
+  ]
 
   const options = [
     { value: 'FUNK', label: 'Funk' },
@@ -255,7 +314,7 @@ export function CreateEventModal() {
             <label className="text-base text-white" htmlFor="date">
               Data
             </label>
-            <input  
+            <input
               className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet "
               id="date"
               type="datetime-local"
@@ -389,7 +448,7 @@ export function CreateEventModal() {
                   name="district"
                   id="district"
                   className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
-                  onChange={(e) => setCurrentDistrict(e.target.value)}
+                  onChange={e => setCurrentDistrict(e.target.value)}
                 >
                   {districts.map((district, index) => {
                     return (
@@ -446,35 +505,13 @@ export function CreateEventModal() {
             />
           </fieldset>
 
-          <div className="mb-4 flex text-white justify-around gap-2">
-            <div className="flex flex-col w-1/3">
-              <label
-                className="border flex rounded-md aspect-video cursor-pointer border-dashed text-sm flex-col gap-2 items-center justify-center "
-                htmlFor="bannerImage"
-              >
-                <Image size={32} className="mx-auto" />
-                Imagem do banner
-              </label>
-              <input
-                className="h-10 invisible bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
-                id="bannerImage"
-                type="file"
-              />
+          <div className="flex gap-4">
+            <div className='w-full'>
+              <ImageInputFile onImageUploaded={e => setEventImage(e)} label='Selecione a imagem do ROLE'/>
             </div>
 
-            <div className="flex flex-col w-1/3">
-              <label
-                className="border flex rounded-md aspect-video cursor-pointer border-dashed text-sm flex-col gap-2 items-center justify-center"
-                htmlFor="eventImage"
-              >
-                <Image size={32} className="mx-auto" />
-                Imagem do banner
-              </label>
-              <input
-                className="h-10 invisible bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
-                id="eventImage"
-                type="file"
-              />
+            <div className='w-full'>
+              <ImageInputFile onImageUploaded={e => setBannerImage(e)} aspect="video" label='Selecione a imagem do banner' />
             </div>
           </div>
 
