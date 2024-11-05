@@ -48,7 +48,7 @@ const districts = [
 ]
 
 export default function Institute() {
-  const { getEventById } = useContext(EventContext);
+  const { getEventsByInstituteId } = useContext(EventContext);
   const { getInstituteById } = useContext(InstituteContext);
   const { instId } = useParams<{ instId: string }>();
   const [loading, setLoading] = useState(true); // Estado de carregamento
@@ -85,9 +85,9 @@ export default function Institute() {
   
   const fetchEvents = async () => {
     if (institute) {
-      const response = await Promise.all(institute.events_id.map((eventId) => getEventById(eventId)));
+      const response = await getEventsByInstituteId(institute.institute_id)
       console.log(response);
-      setEvents(response);
+      setEvents(response.events);
     }
   }
 
@@ -116,7 +116,7 @@ export default function Institute() {
     if (institute) {
       fetchEvents();
     }
-  }, [institute, getEventById]);
+  }, [institute, getEventsByInstituteId]);
 
   if (loading) {
     return (
@@ -214,15 +214,17 @@ export default function Institute() {
             <CreateEventModal />
           </div>
         </div>
-        {institute.events_id.length > 0 ? (
-          events.map((event, eventId) => (
-            <div key={eventId} id={eventId}>
-              <EventCard name={event.name} imageUrl={event.bannerUrl} />
-            </div>
-          ))
-        ) : (
-          <p className="text-white">Nenhum evento disponível</p>
-        )}
+        <div className="border-t-2 border-white rounded-3xl flex flex-col h-[calc(100vh-7rem)] overflow-y-scroll items-center w-full">
+          {events.length > 0 ? (
+            events.map((event, eventId) => (
+              <div key={eventId} id={eventId}>
+                <EventCard name={event.name} imageUrl={event.bannerUrl}/>
+              </div>
+            ))
+          ) : (
+            <p className="text-white">Nenhum evento disponível</p>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -284,4 +286,3 @@ function ConfirDelete({ setIsDeleteModalOpen, instituteId }: ConfirDeleteProps) 
     </div>
   );
 }
-
