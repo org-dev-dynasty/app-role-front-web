@@ -218,7 +218,7 @@ export default function Institute() {
           {events.length > 0 ? (
             events.map((event, eventId) => (
               <div key={eventId} id={eventId}>
-                <EventCard name={event.name} imageUrl={event.bannerUrl}/>
+                <EventCard name={event.name} imageUrl={event.bannerUrl} onclick={() => navigate(`/role/${event.eventId}`)}/>
               </div>
             ))
           ) : (
