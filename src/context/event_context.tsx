@@ -13,7 +13,7 @@ type EventContextType = {
   uploadEventBanner: (data: FormData) => Promise<object>
   uploadImageToEventGallery: (data: FormData) => Promise<object>
   deleteEventGallery: (id: string) => Promise<object>
-  getEventsByInstituteId: (id: string) => Promise<EventType[]>
+  getEventsByInstituteId: (id: string) => Promise<object>
 }
 
 const defaultInstitute = {
@@ -53,7 +53,7 @@ const defaultInstitute = {
   uploadEventImage: async () => {
     return {}
   },
-  getEventByInstituteId: async () => {
+  getEventsByInstituteId: async () => {
     return {}
   },
   uploadEventBanner: async () => {
