@@ -3,7 +3,7 @@ import { httpEvent } from '../http'
 export interface EventType {
   eventId?: string // ou number, dependendo de como você deseja armazenar
   name: string
-  bannerUrl: string
+  bannerUrl?: string
   address: string
   price: number // pode ser number ou string, dependendo do formato
   description: string
@@ -13,13 +13,14 @@ export interface EventType {
   instituteId: string // ou number, dependendo do tipo
   features: string[] // ou outra estrutura, dependendo do que você precisa
   musicType: string[] // ou um tipo enum, dependendo do uso
-  menuLink: string // ou snull, se puder ser opcional
-  eventPhotoLink: string // ou null, se puder ser opcional
-  galeryLink: string[] // ou null, se puder ser opcional
-  packageType: string[] // ou enum, dependendo do uso
+  menuLink?: string // ou snull, se puder ser opcional
+  eventPhotoLink?: string // ou null, se puder ser opcional
+  galeryLink?: string[] // ou null, se puder ser opcional
+  packageType?: string[] // ou enum, dependendo do uso
   category: string // ou enum, dependendo do uso
   ticketUrl?: string // ou null, se puder ser opcional
-  reviews?: number // opcional, se não houver sempre
+  reviews?: number 
+  eventStatus: string// opcional, se não houver sempre
 }
 
 export class EventRepositoryHttp {
