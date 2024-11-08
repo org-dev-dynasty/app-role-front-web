@@ -1,4 +1,4 @@
-import { CurrencyDollar, Eye } from '@phosphor-icons/react'
+import { CaretLeft, CurrencyDollar, Eye } from '@phosphor-icons/react'
 import { Rating } from 'react-simple-star-rating'
 import { EventInfoUnit } from '../../../components/EventInfoUnit'
 import { EditEventModal } from '../../../components/EditEventModal'
@@ -7,7 +7,7 @@ import { useContext, useEffect, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { CreateEventModal } from '../../../components/CreateEventModal'
-import { features } from '../../../assets/options'
+import { categories, districts, features, status } from '../../../assets/options'
 import DeleteEventModal from '../../../components/DeleteEventModal'
 import { AddImageToGalleryModal } from '../../../components/AddImageToGalleryModal'
 import { InteractableImage } from '../../../components/InteractableImage'
@@ -35,6 +35,7 @@ export default function Role() {
   const [eventCategory, setEventCategory] = useState<string>()
   const [eventTicketUrl, setEventTicketUrl] = useState<string>()
   const [eventRating, setEventRating] = useState<number>()
+  const [eventStatus, setEventStatus] = useState<string>()
 
   async function getEventByIdRequest() {
     // try {
@@ -71,6 +72,7 @@ export default function Role() {
       setEventPackageType(response.packageType)
       setEventAge(response.ageRange)
       setEventTicketUrl(response.ticketUrl)
+      setEventStatus(response.eventStatus)
     }
   }
 
@@ -121,7 +123,7 @@ export default function Role() {
                 {new Date(eventDate).toLocaleDateString() ?? 'Não informado'}
               </span>
               <span className="text-xl">
-                Inicio as {dayjs(new Date(eventDate)).format('HH:mm:ss')}
+                Inicio as {dayjs(new Date(eventDate)).format('HH:mm')}
               </span>
             </div>
 
@@ -130,12 +132,11 @@ export default function Role() {
               <DeleteEventModal />
             </div>
 
-            <CreateEventModal />
             <Link
               to={`/Institute/${eventInstituteId}`}
-              className="w-fit px-8 py-4 text-2xl rounded-lg bg-purple flex text-center gap-2"
+              className="absolute top-6 left-2 w-fit px-8 py-4 text-2xl rounded-lg text-violet flex items-center text-center gap-2"
             >
-              <Eye className="self-center" /> Ver instituto
+              <CaretLeft /> Voltar
             </Link>
           </div>
         </div>
@@ -146,15 +147,7 @@ export default function Role() {
           </EventInfoUnit>
 
           <EventInfoUnit value="district" label="Distrito">
-            {eventDistrict}
-          </EventInfoUnit>
-
-          <EventInfoUnit value="vazio" label="vazio">
-            Vazio
-          </EventInfoUnit>
-
-          <EventInfoUnit value="musicType" label="Tipo de música">
-            {eventMusicType}
+            {districts.find(d => d.districtId === eventDistrict)?.districtName}
           </EventInfoUnit>
 
           <EventInfoUnit value="ageRange" label="Idade permitida">
@@ -182,20 +175,12 @@ export default function Role() {
             {eventTicketUrl}
           </EventInfoUnit>
 
-          <EventInfoUnit value="instituteId" label="ID do instituto">
-            {eventInstituteId}
-          </EventInfoUnit>
-
-          <EventInfoUnit value="features" label="Categoria">
-            {eventCategory}
-          </EventInfoUnit>
-
-          <EventInfoUnit value="ageRange" label="Idade permitida">
-            18+
+          <EventInfoUnit value="category" label="Categoria">
+            {categories.find(e => e.key === eventCategory)?.value}
           </EventInfoUnit>
 
           <EventInfoUnit value="eventStatus" label="Status do evento">
-            🟢 Ativo
+            {status.find(s => s.value === eventStatus)?.label}
           </EventInfoUnit>
         </div>
 
@@ -207,22 +192,11 @@ export default function Role() {
           </div>
 
           <div className="grid grid-cols-5 gap-8 mt-8">
-            <InteractableImage
-              alt="Teste"
-              src="https://d2sw4frthbnrzj.cloudfront.net/2c9afd51-c478-4952-a70d-b582f8de0245-Test4Test4image/jpeg"
-            />
-            <InteractableImage
-              alt="Teste"
-              src="https://d2sw4frthbnrzj.cloudfront.net/2c9afd51-c478-4952-a70d-b582f8de0245-Test4Test4image/jpeg"
-            />
-            <InteractableImage
-              alt="Teste"
-              src="https://d2sw4frthbnrzj.cloudfront.net/2c9afd51-c478-4952-a70d-b582f8de0245-Test4Test4image/jpeg"
-            />
-            <InteractableImage
-              alt="Teste"
-              src="https://d2sw4frthbnrzj.cloudfront.net/2c9afd51-c478-4952-a70d-b582f8de0245-Test4Test4image/jpeg"
-            />
+            {eventGaleryLink?.length === 0 && (
+              <div className="col-span-5 text-center text-2xl">
+                Nenhuma imagem na galeria
+              </div>
+            )}
 
             {eventGaleryLink?.map((image, index) => (
               <InteractableImage key={index} alt="Teste" src={image} />
