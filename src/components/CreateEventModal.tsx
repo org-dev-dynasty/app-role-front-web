@@ -10,10 +10,17 @@ import { z } from 'zod'
 import { ImageInputFile } from './ImageInputFile'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { ageCategories, categories, districts, features, musicTypes, packageTypeArray, status } from "../assets/options"
+import {
+  ageCategories,
+  categories,
+  districts,
+  features,
+  musicTypes,
+  packageTypeArray,
+  status
+} from '../assets/options'
 
 export function CreateEventModal() {
-
   let { instId } = useParams()
 
   const navigate = useNavigate()
@@ -28,17 +35,19 @@ export function CreateEventModal() {
   const [musicType, setMusicType] = useState<string[]>()
   const [ticketUrl, setTicketUrl] = useState<string>()
   const [eventStatus, setEventStatus] = useState<string>('ACTIVE')
-  const [currentDistrict, setCurrentDistrict] = useState<string>(districts[0].districtId)
+  const [currentDistrict, setCurrentDistrict] = useState<string>(
+    districts[0].districtId
+  )
 
   const [selectedMusics, setSelectedMusics] = useState<string[]>([''])
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([''])
   const [selectedPackages, setSelectedPackages] = useState<string[]>([''])
 
-
   const [eventImage, setEventImage] = useState<File>()
   const [bannerImage, setBannerImage] = useState<File>()
 
-  const { createEvent, uploadEventImage, uploadEventBanner  } = useContext(EventContext)
+  const { createEvent, uploadEventImage, uploadEventBanner } =
+    useContext(EventContext)
 
   async function createEventRequest() {
     try {
@@ -51,13 +60,10 @@ export function CreateEventModal() {
         category: z.string(),
         ageRange: z.string(),
         musicType: z.array(z.string()),
-        bannerUrl: z.string().url(),
         districtId: z.string(),
         instituteId: z.string(),
         features: z.array(z.string()),
-        menuLink: z.string(),
-        eventPhotoLink: z.string(),
-        galeryLink: z.array(z.string()),
+        menuLink: z.string().optional(),
         packageType: z.array(z.string()),
         ticketUrl: z.string().optional(),
         eventStatus: z.string()
@@ -72,33 +78,29 @@ export function CreateEventModal() {
         category: category,
         ageRange: age,
         musicType: selectedMusics,
-        bannerUrl: 'https://via.placeholder.com/300',
         districtId: currentDistrict,
         instituteId: instId,
         features: selectedFeatures,
-        menuLink: 'https://www.example.com.br/menu',
-        eventPhotoLink: 'https://via.placeholder.com/300',
-        galeryLink: ['https://www.example.com.br/galeria'],
         packageType: selectedPackages,
         ticketUrl: ticketUrl,
         eventStatus: eventStatus
       }
 
       type CreateEvent = {
-        message: string,
+        message: string
         id: string
       }
 
-      const resp: CreateEvent = await createEvent(eventBodySchema.parse(eventBody)) as CreateEvent
-      
-      
+      const resp: CreateEvent = (await createEvent(
+        eventBodySchema.parse(eventBody)
+      )) as CreateEvent
+
       console.log(resp, resp.id)
 
       await uploadEventImageReq(resp.id, eventImage)
       await uploadEventBannerReq(resp.id, bannerImage)
 
-      navigate(`/role/${resp.id}`)
-
+      // navigate(`/role/${resp.id}`)
 
       //reload page
       // window.location.reload()
@@ -112,14 +114,14 @@ export function CreateEventModal() {
   }
 
   async function uploadEventImageReq(id: string, image: File | undefined) {
-    if(!image || !id) return;
+    if (!image || !id) return
 
     const formData = new FormData()
     const imgType = image.type
 
-    formData.append("eventId", id)
-    formData.append("typePhoto", imgType) 
-    formData.append("eventPhoto", image)
+    formData.append('eventId', id)
+    formData.append('typePhoto', imgType)
+    formData.append('eventPhoto', image)
 
     const resp = await uploadEventImage(formData)
 
@@ -127,35 +129,29 @@ export function CreateEventModal() {
   }
 
   async function uploadEventBannerReq(id: string, image: File | undefined) {
-    if(!image || !id) return;
+    if (!image || !id) return
 
     const formData = new FormData()
     const imgType = image.type
 
-    formData.append("eventId", id)
-    formData.append("typePhoto", imgType) 
-    formData.append("eventPhoto", image)
+    formData.append('eventId', id)
+    formData.append('typePhoto', imgType)
+    formData.append('eventPhoto', image)
 
     const resp = await uploadEventBanner(formData)
     console.log('Banner enviado:', resp)
   }
 
   const handleChange = (selected: MultiValue<OptionsType>) => {
-
     setSelectedMusics(selected.map(option => option.value))
-
   }
 
   const handleFeaturesSelectChange = (selected: MultiValue<OptionsType>) => {
-
     setSelectedFeatures(selected.map(option => option.value))
-
   }
 
   const handlePackageTypeSelectChange = (selected: MultiValue<OptionsType>) => {
-
     setSelectedPackages(selected.map(option => option.value))
-
   }
 
   return (
@@ -300,7 +296,10 @@ export function CreateEventModal() {
                 })}
               </select> */}
 
-              <MultiSelectComponent onChange={handleChange} options={musicTypes} />
+              <MultiSelectComponent
+                onChange={handleChange}
+                options={musicTypes}
+              />
             </div>
 
             <div className="flex flex-col gap-1 w-1/3">
@@ -404,12 +403,19 @@ export function CreateEventModal() {
           </fieldset>
 
           <div className="flex gap-4">
-            <div className='w-full'>
-              <ImageInputFile onImageUploaded={e => setEventImage(e)} label='Selecione a imagem do ROLE'/>
+            <div className="w-full">
+              <ImageInputFile
+                onImageUploaded={e => setEventImage(e)}
+                label="Selecione a imagem do ROLE"
+              />
             </div>
 
-            <div className='w-full'>
-              <ImageInputFile onImageUploaded={e => setBannerImage(e)} aspect="video" label='Selecione a imagem do banner' />
+            <div className="w-full">
+              <ImageInputFile
+                onImageUploaded={e => setBannerImage(e)}
+                aspect="video"
+                label="Selecione a imagem do banner"
+              />
             </div>
           </div>
 
