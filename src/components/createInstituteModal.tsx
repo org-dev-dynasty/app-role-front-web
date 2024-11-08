@@ -313,7 +313,6 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
             accept='image/*'
             onChange={(e) => {
               const file = e.target.files?.[0] || null;
-              console.log("Selected logo file:", file); // Verifica o arquivo selecionado
               setLogoPhoto(file);
               setLogoErr("");
             }}

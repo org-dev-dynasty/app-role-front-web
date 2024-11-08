@@ -8,6 +8,7 @@ import { ClipLoader } from "react-spinners";
 import { EventContext } from "../../../context/event_context";
 import { EventType } from "../../../api/repositories/event_repository";
 import { CreateEventModal } from "../../../components/CreateEventModal";
+import { set } from "zod";
 
 interface Institute {
   address: string;
@@ -54,7 +55,7 @@ export default function Institute() {
   const [loading, setLoading] = useState(true); // Estado de carregamento
   const [isUpdateInstituteModalOpen, setIsUpdateInstituteModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [events, setEvents] = useState<EventType[]>([]);
+  const [events, setEvents] = useState<EventType[] | null>([]);
   const navigate = useNavigate();
 
   function formatPartnerType(partnerType: string) {
@@ -82,12 +83,17 @@ export default function Institute() {
   }
 
   const [institute, setInstitute] = useState<Institute | null>(null); // Use null ao invés de um objeto vazio
-  
+
   const fetchEvents = async () => {
     if (institute) {
-      const response = await getEventsByInstituteId(institute.institute_id)
-      console.log(response);
-      setEvents(response.events);
+      try {
+        const response = await getEventsByInstituteId(institute.institute_id)
+        console.log(response);
+        setEvents(response.events);
+      } catch (error: any) {
+        console.log("Erro ao buscar eventos: " + error.message);
+        setEvents(null);
+      }
     }
   }
 
@@ -145,13 +151,13 @@ export default function Institute() {
       <div className="relative h-[100vh] w-[100%] md:w-[70%] flex flex-col py-6 bg-[#2A2A2A] items-center gap-10 px-4">
 
         <div className="flex flex-col md:flex-row items-center w-full gap-4">
-          <div className="rounded-full h-[30rem] md:h-72 w-72 bg-light-purple flex justify-center items-center overflow-hidden">
+          <div className="rounded-full h-[30rem] md:h-72 min-w-72 max-w-72 bg-light-purple flex justify-center items-center overflow-hidden">
             {institute.logo_photo ? (
               <img src={institute.logo_photo} alt="Logo do instituto" className="h-96 w-96 object-cover flex justify-center items-center" />
             ) : (
               <p className="text-white">Sem logo disponível</p>
             )}
-          </div> 
+          </div>
           <div className="flex flex-col h-full pb-14 justify-between flex-grow">
             <div className="flex flex-row w-full justify-between">
               <button className="text-xl bg-light-purple w-32 h-16 rounded-lg hover:bg-violet duration-100 hover:cursor-pointer" onClick={() => navigate("/institutes")}>
@@ -171,8 +177,8 @@ export default function Institute() {
                 />
               </div>
             </div>
-            <div>
-              <h1 className="text-white text-[60px]">{institute.name || "Nome indisponível"}</h1>
+            <div className="w-[80%]">
+              <h1 className="text-white text-[60px] leading-[4.0rem]">{institute.name || "Nome indisponível"}</h1>
               <p className="text-white text-xl">{institute.description || "Sem descrição"}</p>
             </div>
           </div>
@@ -215,10 +221,11 @@ export default function Institute() {
           </div>
         </div>
         <div className="border-t-2 border-white rounded-3xl flex flex-col h-[calc(100vh-7rem)] overflow-y-scroll items-center w-full">
-          {events.length > 0 ? (
+          {events &&
+            events.length > 0 ? (
             events.map((event, eventId) => (
               <div key={eventId} id={eventId}>
-                <EventCard name={event.name} imageUrl={event.bannerUrl} onclick={() => navigate(`/role/${event.eventId}`)}/>
+                <EventCard name={event.name} imageUrl={event.bannerUrl} onclick={() => navigate(`/role/${event.eventId}`)} />
               </div>
             ))
           ) : (

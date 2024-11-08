@@ -54,7 +54,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
   const [phoneError, setPhoneError] = useState("");
   const [address, setAddress] = useState(institute.address || "");
   const [addressError, setAddressError] = useState("");
-  // const [logoPhotoIncoming, setLogoPhotoIncoming] = useState<File | null>(null);
+  const [logoPhoto, setLogoPhoto] = useState<File | null>();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -114,6 +114,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
   //   if (e.target.files) setLogoPhotoIncoming(e.target.files[0]);
   // };
 
+
   const formatPhone = (value: string) => {
     const cleaned = value.replace(/\D/g, '');
     if (cleaned.length > 11) {
@@ -136,6 +137,18 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
     setPhone(formatted);
   };
 
+  const formarFormData = () => {
+    if (logoPhoto?.name) {
+      console.log(logoPhoto.name);
+      const logoType = logoPhoto.type;
+      const formData = new FormData();
+      formData.append("name", instituteName);
+      formData.append("typePhoto", logoType);
+      formData.append("files", logoPhoto);
+    }
+  }
+
+
   const handleUpdateClick = () => {
     if (!validateFields()) return;
     setIsConfirmOpen(true);
@@ -149,6 +162,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
           setIsUpdateInstituteModalOpen={setIsUpdateInstituteModalOpen}
           instituteId={institute.institute_id}
           newInstituteData={getModifiedFields()}
+          formData={formarFormData()}
         />
       )}
       <div className={`fixed inset-0 bg-black/50 backdrop-blur-sm ${isVisible ? "transition-opacity duration-300" : "opacity-0"}`} onClick={() => setIsUpdateInstituteModalOpen(false)} />
@@ -270,7 +284,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
         {phoneError && <p className="text-red-600 text-sm">{phoneError}</p>}
         </fieldset>
 
-        {/* Upload da Logo
+        {/*Upload da Logo*/}
         <fieldset className="mb-4 flex flex-col gap-1 text-white">
           <label className="text-base" htmlFor="logoPhoto">Logo do Instituto (opcional)</label>
           <input
@@ -278,9 +292,12 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
             id="logoPhoto"
             type="file"
             accept="image/*"
-            onChange={handleLogoPhotoChange}
+            onChange={(e) => {
+              const file = e.target.files?.[0] || null;
+              setLogoPhoto(file);
+            }}
           />
-        </fieldset> */}
+        </fieldset> 
 
         {/* Botões */}
         <div className="flex justify-end gap-4 mt-5">
@@ -303,14 +320,17 @@ interface ConfirmUpdateProps {
   setIsUpdateInstituteModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   instituteId: string;
   newInstituteData: Partial<InstituteProps>;
+  formData: FormData;
 }
 
-function ConfirmUpdate({ setIsConfirmOpen, setIsUpdateInstituteModalOpen, newInstituteData }: ConfirmUpdateProps) {
-  const { updateInstituteById } = useContext(InstituteContext);
+function ConfirmUpdate({ setIsConfirmOpen, setIsUpdateInstituteModalOpen, newInstituteData, formData }: ConfirmUpdateProps) {
+  const { updateInstituteById, uploadInstituteImage } = useContext(InstituteContext);
 
-  const handleConfirmClick = () => {
+  const handleConfirmClick = async () => {
     // Update the institute with the new data
     console.log(newInstituteData);
+    const resposta = await uploadInstituteImage(formData);
+    console.log("Logo Upload Response:", resposta);
     const resp = updateInstituteById(newInstituteData);
     console.log(resp);
     setIsUpdateInstituteModalOpen(false);
