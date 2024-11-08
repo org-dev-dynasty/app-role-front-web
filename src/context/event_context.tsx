@@ -38,7 +38,8 @@ const defaultInstitute = {
       category: 'Não informado',
       ticketUrl: 'Não informado',
       rating: 0,
-      reviews: 0
+      reviews: 0,
+      eventStatus: "ACTIVE"
     }
   },
   createEvent: async () => {
