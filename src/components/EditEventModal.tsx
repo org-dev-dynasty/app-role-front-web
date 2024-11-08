@@ -17,17 +17,15 @@ import {
   ageCategories,
   features,
   packageTypeArray,
-  status
+  status,
+  districts,
+  musicTypes
 } from '../assets/options'
 import { ImageInputFile } from './ImageInputFile'
 
 interface MusicType {
   value: string
   label: string
-}
-
-interface ArrayObjectSelectState {
-  selectedMusic: MultiValue<MusicType> | null
 }
 
 export function EditEventModal() {
@@ -47,8 +45,12 @@ export function EditEventModal() {
     const [eventImage, setEventImage] = useState<File>()
   const [bannerImage, setBannerImage] = useState<File>()
 
+  const [instituteId, setInstituteId] = useState<string>()
+
   const [selectedMusics, setSelectedMusics] = useState<string[]>([''])
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([''])
+  const [currentDistrict, setCurrentDistrict] = useState<string>(districts[0].districtId)
+
   const [selectedPackages, setSelectedPackages] = useState<string[]>([''])
 
   const [selectedFeaturesOnSel, setSelectedFeaturesOnSel] =
@@ -82,6 +84,7 @@ export function EditEventModal() {
       setDescription(res.description)
       setAddress(res.address)
       // setDate(res.eventDate)
+      setInstituteId(res.instituteId)
       setPriceAvg(res.price)
       setCategory(res.category)
       setAge(res.ageRange)
@@ -91,6 +94,7 @@ export function EditEventModal() {
       setSelectedMusics(res.musicType)
       setSelectedFeatures(res.features)
       setSelectedPackages(res.packageType)
+      setCurrentDistrict(res.districtId)
 
       console.log(name)
       // setEventStatus(response?.eventStatus)
@@ -134,8 +138,8 @@ export function EditEventModal() {
         ageRange: age,
         musicType: selectedMusics,
         bannerUrl: 'https://via.placeholder.com/300',
-        districtId: 'ZONA-SUL',
-        instituteId: '2f3073ac-3633-4fc7-9cfe-c2084399bbc3',
+        districtId: currentDistrict,
+        instituteId: instituteId,
         features: selectedFeatures,
         menuLink: 'https://www.example.com.br/menu',
         eventPhotoLink: 'https://via.placeholder.com/300',
@@ -164,146 +168,6 @@ export function EditEventModal() {
 
     // setEventStatus(response?.eventStatus)
   }, [])
-
-  const [currentDistrict, setCurrentDistrict] = useState<number>(0)
-
-  function mudou(e: React.ChangeEvent<HTMLSelectElement>) {
-    setCurrentDistrict(parseInt(e.target.value))
-
-    console.log(Distritos[currentDistrict].neighborhoods)
-  }
-
-  const Distritos = [
-    {
-      name: 'Zona Sul',
-      neighborhoods: [
-        'Jabaquara',
-        'Vila Mariana',
-        'Moema',
-        'Itaim Bibi',
-        'Campo Belo',
-        'Brooklin',
-        'Vila Olímpia',
-        'Santo Amaro',
-        'Socorro',
-        'Campo Grande',
-        'Cidade Dutra',
-        'Interlagos',
-        'Capela do Socorro',
-        'Jardim Ângela',
-        'Parelheiros',
-        'Grajaú',
-        'Capão Redondo',
-        'Campo Limpo',
-        'Vila Andrade',
-        'Morumbi',
-        'Jardins',
-        'Paraisópolis'
-      ]
-    },
-
-    {
-      name: 'Zona Norte',
-      neighborhoods: [
-        'Casa Verde',
-        'Limão',
-        'Santana',
-        'Tucuruvi',
-        'Mandaqui',
-        'Vila Guilherme',
-        'Vila Maria',
-        'Vila Medeiros',
-        'Jaçanã',
-        'Tremembé',
-        'Horto Florestal',
-        'Freguesia do Ó',
-        'Pirituba',
-        'Brasilândia',
-        'Perus',
-        'Anhanguera',
-        'Jaraguá',
-        'Cachoeirinha'
-      ]
-    },
-
-    {
-      name: 'Zona Leste',
-      neighborhoods: [
-        'Tatuapé',
-        'Vila Carrão',
-        'Vila Formosa',
-        'Penha',
-        'Vila Matilde',
-        'Itaquera',
-        'São Mateus',
-        'Vila Prudente',
-        'São Lucas',
-        'Sapopemba',
-        'Cidade Tiradentes',
-        'Parque do Carmo',
-        'São Miguel Paulista',
-        'Ermelino Matarazzo',
-        'Vila Jacuí',
-        'Iguatemi',
-        'Jardim Helena',
-        'Cangaíba',
-        'Artur Alvim',
-        'Guaianases',
-        'Lajeado'
-      ]
-    },
-
-    {
-      name: 'Zona Oeste',
-      neighborhoods: [
-        'Pinheiros',
-        'Vila Madalena',
-        'Butantã',
-        'Perdizes',
-        'Barra Funda',
-        'Lapa',
-        'Vila Leopoldina',
-        'Jaguaré',
-        'Rio Pequeno',
-        'Raposo Tavares',
-        'Jardim Bonfiglioli',
-        'Cidade Universitária',
-        'Sumaré',
-        'Pacaembu',
-        'Alto de Pinheiros'
-      ]
-    },
-
-    {
-      name: 'Centro',
-      neighborhoods: [
-        'Sé',
-        'República',
-        'Bela Vista',
-        'Liberdade',
-        'Consolação',
-        'Santa Cecília',
-        'Brás',
-        'Bom Retiro',
-        'Cambuci',
-        'Glicério',
-        'Higienópolis'
-      ]
-    }
-  ]
-
-  const options: MultiValue<OptionsType> = [
-    { value: 'FUNK', label: 'Funk' },
-    { value: 'SERTANEJO', label: 'Sertanejo' },
-    { value: 'TRAP', label: 'Trap' },
-    { value: 'ELETRONICA', label: 'Eletrônica' },
-    { value: 'PAGODE', label: 'Pagode' },
-    { value: 'ROCK', label: 'Rock' },
-    { value: 'RAP', label: 'Rap' },
-    { value: 'REGGAE', label: 'Reggae' },
-    { value: 'FORRO', label: 'Forró' },
-    { value: 'MPB', label: 'MPB' }
-  ]
 
   const handleChange = (selected: MultiValue<OptionsType>) => {
     setSelectedMusic(selected)
@@ -485,7 +349,7 @@ export function EditEventModal() {
 
           <fieldset className="mb-4 flex w-full justify-between flex-row gap-8 text-white">
             <div className="flex gap-4 w-full">
-              <div className="flex flex-col gap-1 w-full">
+            <div className="flex flex-col gap-1 w-full">
                 <label className="text-base text-white" htmlFor="district">
                   Distrito
                 </label>
@@ -493,17 +357,16 @@ export function EditEventModal() {
                   name="district"
                   id="district"
                   className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
-                  onChange={mudou}
+                  onChange={e => setCurrentDistrict(e.target.value)}
                 >
-                  {Distritos.map((types, index) => {
+                  {districts.map((district, index) => {
                     return (
                       <option
-                        value={index}
-                        defaultValue={currentDistrict}
+                        value={districts[index].districtId}
                         key={index}
                         // onChange={() => setCurrentDistrict(1)}
                       >
-                        {Distritos[index].name}
+                        {districts[index].districtName}
                       </option>
                     )
                   })}
@@ -554,7 +417,7 @@ export function EditEventModal() {
               <MultiSelectComponent
                 defaultValue={selectedMusics}
                 onChange={handleChange}
-                options={options}
+                options={musicTypes}
               />
             </div>
           </fieldset>
