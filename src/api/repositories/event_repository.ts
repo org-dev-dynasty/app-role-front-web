@@ -115,7 +115,34 @@ export class EventRepositoryHttp {
     } 
   }
 
+  async uploadImageToEventGallery(data: FormData) {
+    try {
+      const resp = await httpEvent.post(
+        `/upload-galery-event`,
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (resp) {
+        return resp.data;
+      }
+    } catch (error: any) {
+      throw new Error("Erro ao fazer upload da imagem da galeria: " + error.message);
+    }
+  }
 
+  async deleteEventGallery(id: string) {
+    try {
+      const resp = await httpEvent.delete(`/delete-gallery-event?eventId=${id}`)
+
+      return resp.data
+    } catch (error: any) {
+      throw new Error('Erro ao deletar galeria do evento: ' + error.message)
+    }
+  }
 
   async getEventsByInstituteId(id: string) {
     try {
@@ -130,4 +157,7 @@ export class EventRepositoryHttp {
       throw new Error('Erro ao buscar eventos: ' + error.message)
     }
   }
+
+
+  
 }
