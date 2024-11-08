@@ -145,7 +145,7 @@ export default function Institute() {
       <div className="relative h-[100vh] w-[100%] md:w-[70%] flex flex-col py-6 bg-[#2A2A2A] items-center gap-10 px-4">
 
         <div className="flex flex-col md:flex-row items-center w-full gap-4">
-          <div className="rounded-full h-[30rem] md:h-72 w-72 bg-light-purple flex justify-center items-center overflow-hidden">
+          <div className="rounded-full h-[30rem] md:h-72 min-w-72 max-w-72 bg-light-purple flex justify-center items-center overflow-hidden">
             {institute.logo_photo ? (
               <img src={institute.logo_photo} alt="Logo do instituto" className="h-96 w-96 object-cover flex justify-center items-center" />
             ) : (
@@ -171,8 +171,8 @@ export default function Institute() {
                 />
               </div>
             </div>
-            <div>
-              <h1 className="text-white text-[60px]">{institute.name || "Nome indisponível"}</h1>
+            <div className="w-[80%]">
+              <h1 className="text-white text-[60px] leading-[4.0rem]">{institute.name || "Nome indisponível"}</h1>
               <p className="text-white text-xl">{institute.description || "Sem descrição"}</p>
             </div>
           </div>
