@@ -47,6 +47,7 @@ export default function DeleteEventModal() {
 
   function checkEventName(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.value === eventName) {
+
       setCanDeleteEvent(true)
 
       return;

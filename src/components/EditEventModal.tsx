@@ -38,20 +38,24 @@ export function EditEventModal() {
   const [age, setAge] = useState<string>('ADULT')
   const [musicType, setMusicType] = useState<string[]>()
   const [ticketUrl, setTicketUrl] = useState<string>()
-  const [eventStatus, setEventStatus] = useState<string>()
+  const [eventStatus, setEventStatus] = useState<string>("ACTIVE")
   const [selectedMusic, setSelectedMusic] =
     useState<MultiValue<OptionsType> | null>(null)
 
-    const [eventImage, setEventImage] = useState<File>()
+  const [eventImage, setEventImage] = useState<File>()
   const [bannerImage, setBannerImage] = useState<File>()
 
   const [instituteId, setInstituteId] = useState<string>()
 
   const [selectedMusics, setSelectedMusics] = useState<string[]>([''])
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([''])
-  const [currentDistrict, setCurrentDistrict] = useState<string>(districts[0].districtId)
+  const [currentDistrict, setCurrentDistrict] = useState<string>(
+    districts[0].districtId
+  )
 
-  const [selectedPackages, setSelectedPackages] = useState<string[]>([''])
+  const [selectedPackages, setSelectedPackages] = useState<
+    string[] | undefined
+  >([''])
 
   const [selectedFeaturesOnSel, setSelectedFeaturesOnSel] =
     useState<MultiValue<OptionsType> | null>(null)
@@ -59,7 +63,7 @@ export function EditEventModal() {
   const [selectedPackagesOnSel, setSelectedPackagesOnSel] =
     useState<MultiValue<OptionsType> | null>(null)
 
-  const { getEventById, editEventById } = useContext(EventContext)
+  const { getEventById, editEventById, uploadEventBanner, uploadEventImage } = useContext(EventContext)
 
   const [response, setResponse] = useState<EventType>()
 
@@ -95,6 +99,7 @@ export function EditEventModal() {
       setSelectedFeatures(res.features)
       setSelectedPackages(res.packageType)
       setCurrentDistrict(res.districtId)
+      setEventStatus(res.eventStatus)
 
       console.log(name)
       // setEventStatus(response?.eventStatus)
@@ -116,16 +121,13 @@ export function EditEventModal() {
         category: z.string(),
         ageRange: z.string(),
         musicType: z.array(z.string()),
-        bannerUrl: z.string(),
         districtId: z.string(),
         instituteId: z.string(),
         features: z.array(z.string()),
-        menuLink: z.string(),
-        eventPhotoLink: z.string(),
-        galeryLink: z.array(z.string()),
         packageType: z.array(z.string()),
         ticketUrl: z.string(),
-        eventId: z.string()
+        eventId: z.string(),
+        eventStatus: z.string()
       })
 
       const updatedEvent = {
@@ -137,21 +139,18 @@ export function EditEventModal() {
         category: category,
         ageRange: age,
         musicType: selectedMusics,
-        bannerUrl: 'https://via.placeholder.com/300',
         districtId: currentDistrict,
         instituteId: instituteId,
         features: selectedFeatures,
-        menuLink: 'https://www.example.com.br/menu',
-        eventPhotoLink: 'https://via.placeholder.com/300',
-        galeryLink: ['https://www.example.com.br/galeria'],
         packageType: selectedPackages,
         ticketUrl: ticketUrl,
-        eventId: eventId
+        eventId: eventId,
+        eventStatus: eventStatus 
       }
 
       await editEventById(updatedEventSchema.parse(updatedEvent))
 
-      window.location.reload()
+      // window.location.reload()
 
       console.log('evento atualizado:', updatedEvent)
     } catch (error) {
@@ -160,6 +159,50 @@ export function EditEventModal() {
 
       console.log('data:', date)
     }
+  }
+
+  async function uploadEventImageReq(image: File | undefined) {
+    if (!image || !eventId) return
+
+    const formData = new FormData()
+    const imgType = image.type
+
+    formData.append('eventId', eventId)
+    formData.append('typePhoto', imgType)
+    formData.append('eventPhoto', image)
+
+    const resp = await uploadEventImage(formData)
+
+    console.log('Imagem enviada:', resp)
+  }
+
+  async function uploadEventBannerReq(image: File | undefined) {
+    if (!image || !eventId) return
+
+    const formData = new FormData()
+    const imgType = image.type
+
+    formData.append('eventId', eventId)
+    formData.append('typePhoto', imgType)
+    formData.append('eventPhoto', image)
+
+    const resp = await uploadEventBanner(formData)
+    console.log('Banner enviado:', resp)
+  }
+
+  function x(e: File) {
+    console.log(eventImage)
+    setEventImage(e)
+    console.log(eventImage)
+    uploadEventImageReq(eventImage)	
+
+  }
+
+  function y(e: File) {
+    console.log(bannerImage)
+    setBannerImage(e)	
+    console.log(bannerImage)
+    uploadEventBannerReq(bannerImage)
   }
 
   useEffect(() => {
@@ -349,7 +392,7 @@ export function EditEventModal() {
 
           <fieldset className="mb-4 flex w-full justify-between flex-row gap-8 text-white">
             <div className="flex gap-4 w-full">
-            <div className="flex flex-col gap-1 w-full">
+              <div className="flex flex-col gap-1 w-full">
                 <label className="text-base text-white" htmlFor="district">
                   Distrito
                 </label>
@@ -447,7 +490,7 @@ export function EditEventModal() {
           <div className="flex gap-4">
             <div className="w-full">
               <ImageInputFile
-                onImageUploaded={e => setEventImage(e)}
+                onImageUploaded={e => x(e)}
                 defaultValue={response?.eventPhotoLink}
                 label="Selecione a imagem do ROLE"
               />
@@ -455,7 +498,7 @@ export function EditEventModal() {
 
             <div className="w-full">
               <ImageInputFile
-                onImageUploaded={e => setBannerImage(e)}
+                onImageUploaded={e => y(e)}
                 defaultValue={response?.bannerUrl}
                 aspect="video"
                 label="Selecione a imagem do banner"
