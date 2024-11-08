@@ -9,6 +9,9 @@ import dayjs from 'dayjs'
 import { CreateEventModal } from '../../../components/CreateEventModal'
 import { features } from '../../../assets/options'
 import DeleteEventModal from '../../../components/DeleteEventModal'
+import { AddImageToGalleryModal } from '../../../components/AddImageToGalleryModal'
+import { InteractableImage } from '../../../components/InteractableImage'
+import { DeleteGalleryButton } from '../../../components/DeleteGalleryButton'
 
 export default function Role() {
   let { eventId } = useParams()
@@ -83,7 +86,7 @@ export default function Role() {
         <div className="flex p-4 mt-6 w-full">
           <div className="w-80 h-80">
             <img
-              className="object-cover rounded-3xl"
+              className="object-cover rounded-3xl aspect-square"
               src={eventPhotoLink || 'https://via.placeholder.com/300'}
               alt="event img"
             />
@@ -122,7 +125,7 @@ export default function Role() {
               </span>
             </div>
 
-            <div className='flex'>
+            <div className="flex gap-4">
               <EditEventModal />
               <DeleteEventModal />
             </div>
@@ -138,62 +141,93 @@ export default function Role() {
         </div>
 
         <div className="grid grid-cols-4 gap-4 justify-center items-center my-12 text-2xl bg-neutral-900 rounded-2xl p-10">
-            <EventInfoUnit value="address" label="Endereço">
-              {eventAddress}
-            </EventInfoUnit>
+          <EventInfoUnit value="address" label="Endereço">
+            {eventAddress}
+          </EventInfoUnit>
 
-            <EventInfoUnit value="district" label="Distrito">
-              {eventDistrict}
-            </EventInfoUnit>
+          <EventInfoUnit value="district" label="Distrito">
+            {eventDistrict}
+          </EventInfoUnit>
 
-            <EventInfoUnit value="vazio" label="vazio">
-              Vazio
-            </EventInfoUnit>
+          <EventInfoUnit value="vazio" label="vazio">
+            Vazio
+          </EventInfoUnit>
 
-            <EventInfoUnit value="musicType" label="Tipo de música">
-              {eventMusicType}
-            </EventInfoUnit>
+          <EventInfoUnit value="musicType" label="Tipo de música">
+            {eventMusicType}
+          </EventInfoUnit>
 
-            <EventInfoUnit value="ageRange" label="Idade permitida">
-              {eventAge}
-            </EventInfoUnit>
+          <EventInfoUnit value="ageRange" label="Idade permitida">
+            {eventAge}
+          </EventInfoUnit>
 
-            <EventInfoUnit value="musicType" label="Tipo de música">
-              {eventMusicType
-                .map(
-                  word =>
-                    word.toLowerCase().charAt(0).toUpperCase() +
-                    word.slice(1).toLowerCase()
-                )
-                .join(', ')}
-            </EventInfoUnit>
+          <EventInfoUnit value="musicType" label="Tipo de música">
+            {eventMusicType
+              .map(
+                word =>
+                  word.toLowerCase().charAt(0).toUpperCase() +
+                  word.slice(1).toLowerCase()
+              )
+              .join(', ')}
+          </EventInfoUnit>
 
-            <EventInfoUnit value="features" label="Características">
-              {features
-                .filter(feature => eventFeatures.includes(feature.value)) // Filtra os objetos com os valores selecionados
-                .map(feature => feature.label)
-                .join(', ')}
-            </EventInfoUnit>
+          <EventInfoUnit value="features" label="Características">
+            {features
+              .filter(feature => eventFeatures.includes(feature.value)) // Filtra os objetos com os valores selecionados
+              .map(feature => feature.label)
+              .join(', ')}
+          </EventInfoUnit>
 
-            <EventInfoUnit value="ticketUrl" label="Link para ingressos">
-              {eventTicketUrl}
-            </EventInfoUnit>
+          <EventInfoUnit value="ticketUrl" label="Link para ingressos">
+            {eventTicketUrl}
+          </EventInfoUnit>
 
-            <EventInfoUnit value="instituteId" label="ID do instituto">
-              {eventInstituteId}
-            </EventInfoUnit>
+          <EventInfoUnit value="instituteId" label="ID do instituto">
+            {eventInstituteId}
+          </EventInfoUnit>
 
-            <EventInfoUnit value="features" label="Categoria">
-              {eventCategory}
-            </EventInfoUnit>
+          <EventInfoUnit value="features" label="Categoria">
+            {eventCategory}
+          </EventInfoUnit>
 
-            <EventInfoUnit value="ageRange" label="Idade permitida">
-              18+
-            </EventInfoUnit>
+          <EventInfoUnit value="ageRange" label="Idade permitida">
+            18+
+          </EventInfoUnit>
 
-            <EventInfoUnit value="eventStatus" label="Status do evento">
-              🟢 Ativo
-            </EventInfoUnit>
+          <EventInfoUnit value="eventStatus" label="Status do evento">
+            🟢 Ativo
+          </EventInfoUnit>
+        </div>
+
+        <div className="mb-20">
+          <div className="flex gap-4 items-center">
+            <h1 className="text-4xl">Galeria</h1>
+            <AddImageToGalleryModal />
+            <DeleteGalleryButton />
+          </div>
+
+          <div className="grid grid-cols-5 gap-8 mt-8">
+            <InteractableImage
+              alt="Teste"
+              src="https://d2sw4frthbnrzj.cloudfront.net/2c9afd51-c478-4952-a70d-b582f8de0245-Test4Test4image/jpeg"
+            />
+            <InteractableImage
+              alt="Teste"
+              src="https://d2sw4frthbnrzj.cloudfront.net/2c9afd51-c478-4952-a70d-b582f8de0245-Test4Test4image/jpeg"
+            />
+            <InteractableImage
+              alt="Teste"
+              src="https://d2sw4frthbnrzj.cloudfront.net/2c9afd51-c478-4952-a70d-b582f8de0245-Test4Test4image/jpeg"
+            />
+            <InteractableImage
+              alt="Teste"
+              src="https://d2sw4frthbnrzj.cloudfront.net/2c9afd51-c478-4952-a70d-b582f8de0245-Test4Test4image/jpeg"
+            />
+
+            {eventGaleryLink?.map((image, index) => (
+              <InteractableImage key={index} alt="Teste" src={image} />
+            ))}
+          </div>
         </div>
       </div>
     </div>
