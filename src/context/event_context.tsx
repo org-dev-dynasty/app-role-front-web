@@ -13,6 +13,7 @@ type EventContextType = {
   uploadEventBanner: (data: FormData) => Promise<object>
   uploadImageToEventGallery: (data: FormData) => Promise<object>
   deleteEventGallery: (id: string) => Promise<object>
+  getEventsByInstituteId: (id: string) => Promise<EventType[]>
 }
 
 const defaultInstitute = {
@@ -114,6 +115,15 @@ export function EventContextProvider({ children }: PropsWithChildren) {
       return error
     }
   }
+  
+  async function getEventsByInstituteId(id: string) {
+    try {
+      const response = await repo.getEventsByInstituteId(id)
+      return response
+    } catch (error: any) {
+      return error
+    }
+  }
 
   async function uploadEventBanner(data: FormData) {
     try {
@@ -144,7 +154,7 @@ export function EventContextProvider({ children }: PropsWithChildren) {
 
 
   return (
-    <EventContext.Provider value={{ getEventById, editEventById, createEvent, deleteEventById, uploadEventImage, uploadEventBanner, uploadImageToEventGallery, deleteEventGallery }}>
+    <EventContext.Provider value={{ getEventById, editEventById, createEvent, deleteEventById, uploadEventImage, uploadEventBanner, uploadImageToEventGallery, deleteEventGallery, getEventsByInstituteId }}>
       {children}
     </EventContext.Provider>
   )
