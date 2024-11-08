@@ -38,7 +38,7 @@ export const ageCategories = [
   { label: '26-30', value: 'Adult' },
   { label: '31-40', value: 'Mature Adult' },
   { label: '40+', value: 'Senior' },
-  { label: 'TODAS', value: 'All Ages' }
+  { label: 'Todas as idades', value: 'All Ages' }
 ]
 
 export const musicTypes = [
