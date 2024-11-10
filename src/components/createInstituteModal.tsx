@@ -136,15 +136,15 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
       }
 
       const createdInstitute = await createInstitute(data);
-
       console.log("Instituto Criado:", createdInstitute);
+      const instituteId = createdInstitute?.id;
 
       if (createdInstitute) {
         if (logoPhoto?.name) {
           console.log(logoPhoto.name);
           const logoType = logoPhoto.type;
           const formData = new FormData();
-          formData.append("name", instituteName);
+          formData.append("instituteId", instituteId);
           formData.append("typePhoto", logoType);
           formData.append("files", logoPhoto);
           const resp = await uploadInstituteImage(formData);
