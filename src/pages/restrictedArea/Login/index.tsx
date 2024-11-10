@@ -2,6 +2,7 @@ import { SetStateAction, useContext, useState } from "react";
 import { envs } from "../../../utils/envs";
 import { EyeSlash, Eye, User } from "@phosphor-icons/react";
 import { AuthContext } from "../../../context/auth_context";
+import { Navigate, useNavigate } from "react-router-dom";
 
 
 
@@ -11,6 +12,7 @@ export default function Login() {
   const [password, setPassword] = useState<string>()
   const [passwordError, setPasswordError] = useState<string>("")
   const { signIn } = useContext(AuthContext)
+  const navigate = useNavigate()
 
   const handleUsername = (e: { target: { value: SetStateAction<string> } }) => {
     setUsername(e.target.value)
@@ -22,7 +24,7 @@ export default function Login() {
 
   const [isVisible, setIsVisible] = useState(false)
 
-  const handleEntrar = () => {
+  const handleEntrar = async() => {
     if (!username) {
       setUserError("Usuário não pode ser vazio")
     } else {
@@ -36,14 +38,19 @@ export default function Login() {
     }
 
     if (username && password) {
-      console.log("Usuário: ", username)
-      console.log("Senha: ", password)
-      const resp = signIn({ identifier: username, password: password })
-      console.log("Resposta: ", resp)
-      localStorage.setItem('accessToken', resp.accessToken);
-      localStorage.setItem('refreshToken', resp.refreshToken);
-      localStorage.setItem('idToken', resp.idToken);
-    }
+      try { 
+        console.log("Usuário: ", username)
+        console.log("Senha: ", password)
+        const resp = await signIn({"isWeb": true, "identifier": username, "password": password })
+        console.log("Resposta: ", resp)
+        localStorage.setItem('accessToken', resp.accessToken);
+        localStorage.setItem('refreshToken', resp.refreshToken);
+        localStorage.setItem('idToken', resp.idToken);
+        navigate('/institutes')
+      } catch (error: any) {
+        console.error("Erro ao logar: ", error)
+      }
+    } 
   }
 
   return (

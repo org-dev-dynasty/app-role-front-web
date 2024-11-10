@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom'
 import { LandingPage } from './pages/landingPage'
 import Role from './pages/restrictedArea/Event'
 import Institute from './pages/restrictedArea/Institute'
@@ -16,8 +16,8 @@ export function AppRouter() {
         <InstituteContextProvider>
           <BrowserRouter>
             <Routes>
-              <Route Component={Login} path='/login' element={<Login />} />
               <Route Component={LandingPage} path="/" element={<LandingPage />} />
+              <Route Component={Login} path='/login' element={<Login />} />
               <Route Component={Institutions} path="/Institutes" element={<Institutions />} />
               <Route Component={Institute} path="/Institute/:instId" element={<Institute />} />
               <Route path="role">
