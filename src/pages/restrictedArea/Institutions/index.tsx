@@ -31,6 +31,13 @@ export default function Institutions() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        const token = localStorage.getItem("idToken");
+        if (!token) {
+            navigate("/login");
+        }
+    }, [navigate]);
+
+    useEffect(() => {
         fetchInstitutes();
     }, [getAllInstitutes, isCreateInstituteModalOpen]);
 

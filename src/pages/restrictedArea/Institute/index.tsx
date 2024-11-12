@@ -10,6 +10,7 @@ import { EventType } from '../../../api/repositories/event_repository'
 import { CreateEventModal } from '../../../components/CreateEventModal'
 import { set } from 'zod'
 
+
 interface Institute {
   address: string
   description: string
@@ -112,6 +113,13 @@ export default function Institute() {
       }
     }
   }
+
+  useEffect(() => {
+    const token = localStorage.getItem("idToken");
+    if (!token) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
   useEffect(() => {
     setTimeout(() => {

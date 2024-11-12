@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useState } from 'react'
+import { createContext, PropsWithChildren } from 'react'
 import {
   EventRepositoryHttp,
   EventType
