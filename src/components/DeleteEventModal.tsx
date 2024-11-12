@@ -46,7 +46,7 @@ export default function DeleteEventModal() {
   }
 
   function checkEventName(e: React.ChangeEvent<HTMLInputElement>) {
-    if (e.target.value === eventName) {
+    if (e.target.value === eventName?.trimEnd().replace(/[^a-zA-Z0-9 ]/g, '')) {
 
       setCanDeleteEvent(true)
 
@@ -78,7 +78,7 @@ export default function DeleteEventModal() {
           </Dialog.Description>
 
           <div className='mb-8 flex justify-center items-center flex-col gap-2'>
-            <h1 className={`my-2 text-2xl select-none text-center transition font-bold ${canDeleteEvent ? "text-green-500" : "text-red-500"}`}>{eventName}</h1>
+            <h1 className={`my-2 text-2xl select-none text-center transition font-bold ${canDeleteEvent ? "text-green-500" : "text-red-500"}`}>{eventName?.replace(/[^a-zA-Z0-9 ]/g, '')}</h1>
 
             <input className="outline-none bg-grayInputModal px-4 py-2 rounded-sm text-white" onChange={checkEventName} type="text" />
 
