@@ -38,7 +38,7 @@ export function EditEventModal() {
   const [age, setAge] = useState<string>('ADULT')
   const [musicType, setMusicType] = useState<string[]>()
   const [ticketUrl, setTicketUrl] = useState<string>()
-  const [eventStatus, setEventStatus] = useState<string>("ACTIVE")
+  const [eventStatus, setEventStatus] = useState<string>('ACTIVE')
   const [selectedMusic, setSelectedMusic] =
     useState<MultiValue<OptionsType> | null>(null)
 
@@ -63,7 +63,8 @@ export function EditEventModal() {
   const [selectedPackagesOnSel, setSelectedPackagesOnSel] =
     useState<MultiValue<OptionsType> | null>(null)
 
-  const { getEventById, editEventById, uploadEventBanner, uploadEventImage } = useContext(EventContext)
+  const { getEventById, editEventById, uploadEventBanner, uploadEventImage } =
+    useContext(EventContext)
 
   const [response, setResponse] = useState<EventType>()
 
@@ -145,7 +146,7 @@ export function EditEventModal() {
         packageType: selectedPackages,
         ticketUrl: ticketUrl,
         eventId: eventId,
-        eventStatus: eventStatus 
+        eventStatus: eventStatus
       }
 
       await editEventById(updatedEventSchema.parse(updatedEvent))
@@ -169,7 +170,11 @@ export function EditEventModal() {
 
     formData.append('eventId', eventId)
     formData.append('typePhoto', imgType)
-    formData.append('eventPhoto', image)
+    formData.append('file', image)
+
+    for (var pair of formData.entries()) {
+      console.log(pair[0] + ', ' + pair[1])
+    }
 
     const resp = await uploadEventImage(formData)
 
@@ -184,7 +189,7 @@ export function EditEventModal() {
 
     formData.append('eventId', eventId)
     formData.append('typePhoto', imgType)
-    formData.append('eventPhoto', image)
+    formData.append('file', image)
 
     const resp = await uploadEventBanner(formData)
     console.log('Banner enviado:', resp)
@@ -194,13 +199,12 @@ export function EditEventModal() {
     console.log(eventImage)
     setEventImage(e)
     console.log(eventImage)
-    uploadEventImageReq(eventImage)	
-
+    uploadEventImageReq(eventImage)
   }
 
   function y(e: File) {
     console.log(bannerImage)
-    setBannerImage(e)	
+    setBannerImage(e)
     console.log(bannerImage)
     uploadEventBannerReq(bannerImage)
   }

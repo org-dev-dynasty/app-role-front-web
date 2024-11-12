@@ -41,7 +41,7 @@ export function CreateEventModal() {
 
   const [selectedMusics, setSelectedMusics] = useState<string[]>([''])
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([''])
-  const [selectedPackages, setSelectedPackages] = useState<string[]>([''])
+  const [selectedPackages, setSelectedPackages] = useState<string[]>([])
 
   const [eventImage, setEventImage] = useState<File>()
   const [bannerImage, setBannerImage] = useState<File>()
@@ -121,7 +121,7 @@ export function CreateEventModal() {
 
     formData.append('eventId', id)
     formData.append('typePhoto', imgType)
-    formData.append('eventPhoto', image)
+    formData.append('file', image)
 
     const resp = await uploadEventImage(formData)
 
@@ -136,7 +136,8 @@ export function CreateEventModal() {
 
     formData.append('eventId', id)
     formData.append('typePhoto', imgType)
-    formData.append('eventPhoto', image)
+    formData.append('file', image)
+    
 
     const resp = await uploadEventBanner(formData)
     console.log('Banner enviado:', resp)
