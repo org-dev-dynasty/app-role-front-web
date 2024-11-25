@@ -26,6 +26,18 @@ export default function Login() {
 
   const [isVisible, setIsVisible] = useState(false)
 
+  const handleEsqueciSenha = () => {
+    if (!username || username === "") {
+      toast.error("Preencha com o e-mail ou usuário da sua conta", {
+        position: "top-right",
+        autoClose: 5000,
+        theme: "colored",
+      });
+      return
+    }
+    navigate('/verifyCode')
+  }
+
   const handleEntrar = async () => {
     if (!username) {
       setUserError("Usuário não pode ser vazio")
@@ -63,6 +75,7 @@ export default function Login() {
             theme: "colored",
             transition: Bounce,
           });
+          navigate('/institutes')
         }
       } catch (error: any) {
         console.error("Erro ao logar: ", error)
@@ -111,7 +124,10 @@ export default function Login() {
               <input type="password" className="rounded-lg outline-none p-5 h-full w-full bg-transparent text-white" value={password} onChange={(event) => handlePassword(event)} placeholder="Senha" />
               <Eye size={30} className="hover:cursor-pointer text-white" onClick={() => setIsVisible(!isVisible)} />
             </div>}
-          <div className="w-4/5 px-2 justify-between flex mt-1"><p className="text-red-300 text-xs">{passwordError}</p><p className="text-white text-xs hover:underline hover:cursor-pointer">Esqueci minha senha</p></div>
+          <div className="w-4/5 px-2 justify-between flex mt-1">
+            <p className="text-red-300 text-xs">{passwordError}</p>
+            <p className="text-white text-xs hover:underline hover:cursor-pointer" onClick={handleEsqueciSenha}>Esqueci minha senha</p>
+          </div>
           <button className="bg-light-purple rounded-lg text-white h-10 w-4/5 mt-4 shadow-lg hover:bg-violet duration-300" onClick={handleEntrar}>Entrar</button>
         </div>
       </div>

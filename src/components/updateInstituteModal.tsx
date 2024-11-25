@@ -132,7 +132,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target.value;
+    const input = e.target.value.replace(/\D/g, '');
     const formatted = formatPhone(input);
     setPhone(formatted);
   };
@@ -183,7 +183,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
             value={instituteName}
             onChange={handleNameChange}
           />
-        {nameError && <p className="text-red-600 text-sm">{nameError}</p>}
+          {nameError && <p className="text-red-600 text-sm">{nameError}</p>}
         </fieldset>
 
         {/* Descrição */}
@@ -195,7 +195,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
             value={description}
             onChange={handleDescriptionChange}
           />
-        {descError && <p className="text-red-600 text-sm">{descError}</p>}
+          {descError && <p className="text-red-600 text-sm">{descError}</p>}
         </fieldset>
 
         {/* Tipos */}
@@ -263,7 +263,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
                 onChange={handleAddressChange}
                 placeholder="Digite o endereço do instituto"
               />
-            {addressError && <p className="text-red-600 text-sm">{addressError}</p>}
+              {addressError && <p className="text-red-600 text-sm">{addressError}</p>}
             </fieldset>
           </div>
         </div>
@@ -281,7 +281,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
             inputMode="numeric"
             type="tel"
           />
-        {phoneError && <p className="text-red-600 text-sm">{phoneError}</p>}
+          {phoneError && <p className="text-red-600 text-sm">{phoneError}</p>}
         </fieldset>
 
         {/*Upload da Logo*/}
@@ -297,7 +297,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
               setLogoPhoto(file);
             }}
           />
-        </fieldset> 
+        </fieldset>
 
         {/* Botões */}
         <div className="flex justify-end gap-4 mt-5">

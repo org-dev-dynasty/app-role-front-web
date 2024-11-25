@@ -70,7 +70,7 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target.value;
+    const input = e.target.value.replace(/\D/g, '');
     const formatted = formatPhone(input);
     setPhone(formatted);
   };
