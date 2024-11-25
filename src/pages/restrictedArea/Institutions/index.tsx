@@ -32,13 +32,14 @@ export default function Institutions() {
 
     useEffect(() => {
         const token = localStorage.getItem("idToken");
-        if (!token) {
+        if (!token || token === "undefined") {
             navigate("/login");
         }
     }, [navigate]);
 
     useEffect(() => {
         fetchInstitutes();
+        console.log("token:", localStorage.getItem("idToken"));
     }, [getAllInstitutes, isCreateInstituteModalOpen]);
 
     const handleLogout = () => {

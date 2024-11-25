@@ -1,4 +1,6 @@
 import { SetStateAction, useContext, useState } from "react";
+import { ToastContainer, Slide, toast, Bounce } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import { envs } from "../../../utils/envs";
 import { EyeSlash, Eye, User } from "@phosphor-icons/react";
 import { AuthContext } from "../../../context/auth_context";
@@ -24,7 +26,7 @@ export default function Login() {
 
   const [isVisible, setIsVisible] = useState(false)
 
-  const handleEntrar = async() => {
+  const handleEntrar = async () => {
     if (!username) {
       setUserError("Usuário não pode ser vazio")
     } else {
@@ -38,23 +40,56 @@ export default function Login() {
     }
 
     if (username && password) {
-      try { 
+      try {
         console.log("Usuário: ", username)
         console.log("Senha: ", password)
-        const resp = await signIn({"isWeb": true, "identifier": username, "password": password })
+        const resp = await signIn({ "isWeb": true, "identifier": username, "password": password })
         console.log("Resposta: ", resp)
-        localStorage.setItem('accessToken', resp.accessToken);
-        localStorage.setItem('refreshToken', resp.refreshToken);
-        localStorage.setItem('idToken', resp.idToken);
-        navigate('/institutes')
+        if (resp.accessToken) {
+          localStorage.setItem('accessToken', resp.accessToken);
+          localStorage.setItem('refreshToken', resp.refreshToken);
+          localStorage.setItem('idToken', resp.idToken);
+          navigate('/institutes')
+        } else {
+          console.error("Erro no login: ", resp)
+          toast.error(`${resp}`, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Bounce,
+          });
+        }
       } catch (error: any) {
         console.error("Erro ao logar: ", error)
+        toast.error("Erro ao logar. Verifique as credenciais!", {
+          position: "top-right",
+          autoClose: 5000,
+          theme: "colored",
+        });
       }
-    } 
+    }
   }
 
   return (
     <div className="bg-[#2A2A2A] h-[100vh] w-full flex justify-center items-center">
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        limit={4}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <div className="h-2/3 w-[40%] bg-[#363636] rounded-xl py-10 shadow-lg flex items-center flex-col">
         <div className="shadow-lg w-2/3 h-1/5 flex justify-center items-center rounded-lg">
           <img src={`${envs.cloudfrontUrl}/approle_logo_navbar.png`} alt="AppRole Logo" className="h-16" />
@@ -62,7 +97,7 @@ export default function Login() {
         <div className="flex w-full h-full flex-col justify-center items-center ">
           <div className="bg-[#6A6A6A] rounded-lg h-10 w-4/5 shadow-lg flex items-center justify-between pr-5">
             <input type="text" className="rounded-lg outline-none p-5 h-full w-full bg-transparent text-white" value={username} onChange={(event) => handleUsername(event)} placeholder="Usuário" />
-            <User size={30} color="white"/>
+            <User size={30} color="white" />
           </div>
           <div className="w-4/5 px-2 mt-1">
             <p className="text-red-300 text-xs">{userError}</p>
