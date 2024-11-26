@@ -21,14 +21,29 @@ import {
   districts,
   musicTypes
 } from '../assets/options'
-import { ImageInputFile } from './ImageInputFile'
+import { createEventSchema } from '../zodSchemas/createEventSchema'
 
-interface MusicType {
-  value: string
-  label: string
+interface FormErrors {
+  name?: string
+  description?: string
+  address?: string
+  eventDate?: string
+  price?: string
+  category?: string
+  ageRange?: string
+  musicType?: string
+  districtId?: string
+  instituteId?: string
+  features?: string
+  menuLink?: string
+  packageType?: string
+  ticketUrl?: string
+  eventStatus?: string
 }
 
 export function EditEventModal() {
+  const [errors, setErrors] = useState<FormErrors>({})
+
   const [name, setName] = useState<string>()
   const [description, setDescription] = useState<string>()
   const [address, setAddress] = useState<string>()
@@ -88,7 +103,7 @@ export function EditEventModal() {
       console.log('Nome:', name)
       setDescription(res.description)
       setAddress(res.address)
-      // setDate(res.eventDate)
+      setDate(dayjs(res.eventDate).toDate())
       setInstituteId(res.instituteId)
       setPriceAvg(res.price)
       setCategory(res.category)
@@ -102,6 +117,7 @@ export function EditEventModal() {
       setCurrentDistrict(res.districtId)
       setEventStatus(res.eventStatus)
 
+
       console.log(name)
       // setEventStatus(response?.eventStatus)
     } catch (error) {
@@ -109,56 +125,90 @@ export function EditEventModal() {
     }
   }
 
-  async function updateEventByIdRequest() {
+  async function updateEventByIdRequest(
+    e: React.MouseEvent<HTMLButtonElement>
+  ) {
+    if (!eventId) return
+
+    const updatedEventSchema = z.object({
+      name: z.string().min(3),
+      description: z.string(),
+      address: z.string(),
+      eventDate: z.date() /*z.string().datetime()*/,
+      price: z.number(),
+      category: z.string(),
+      ageRange: z.string(),
+      musicType: z.array(z.string()),
+      districtId: z.string(),
+      instituteId: z.string(),
+      features: z.array(z.string()),
+      packageType: z.array(z.string()),
+      ticketUrl: z.string(),
+      eventId: z.string(),
+      eventStatus: z.string()
+    })
+
+    const updatedEvent = {
+      name: name,
+      description: description,
+      address: address,
+      eventDate: date /*date*/,
+      price: priceAvg,
+      category: category,
+      ageRange: age,
+      musicType: selectedMusics,
+      districtId: currentDistrict,
+      instituteId: instituteId,
+      features: selectedFeatures,
+      packageType: selectedPackages,
+      ticketUrl: ticketUrl,
+      eventId: eventId,
+      eventStatus: eventStatus
+    }
+
     try {
-      if (!eventId) return
+      console.log(eventId)
+      await editEventById(createEventSchema.parse(updatedEvent))
 
-      const updatedEventSchema = z.object({
-        name: z.string().min(3),
-        description: z.string(),
-        address: z.string(),
-        eventDate: z.date() /*z.string().datetime()*/,
-        price: z.number(),
-        category: z.string(),
-        ageRange: z.string(),
-        musicType: z.array(z.string()),
-        districtId: z.string(),
-        instituteId: z.string(),
-        features: z.array(z.string()),
-        packageType: z.array(z.string()),
-        ticketUrl: z.string(),
-        eventId: z.string(),
-        eventStatus: z.string()
-      })
+      setErrors({})
+    } catch (error) {
+      e.preventDefault()
+      console.log(date)
 
-      const updatedEvent = {
-        name: name,
-        description: description,
-        address: address,
-        eventDate: date /*date*/,
-        price: priceAvg,
-        category: category,
-        ageRange: age,
-        musicType: selectedMusics,
-        districtId: currentDistrict,
-        instituteId: instituteId,
-        features: selectedFeatures,
-        packageType: selectedPackages,
-        ticketUrl: ticketUrl,
-        eventId: eventId,
-        eventStatus: eventStatus
+
+      if (error instanceof z.ZodError) {
+        const formErrors = error.errors.reduce((acc: FormErrors, curr) => {
+          acc[curr.path[0] as keyof FormErrors] = curr.message
+          return acc
+        }, {})
+        setErrors(formErrors)
       }
 
-      await editEventById(updatedEventSchema.parse(updatedEvent))
+      // try {
+      //   resp = (await createEvent(
+      //     createEventSchema.parse(eventBody)
+      //   )) as CreateEvent
+
+      //   console.log(resp, resp.id)
+
+      //   await uploadEventImageReq(resp.id, eventImage)
+      //   await uploadEventBannerReq(resp.id, bannerImage)
+
+      //   setErrors({})
+      // } catch (error) {
+      //   e.preventDefault()
+      //   if (error instanceof z.ZodError) {
+      //     const formErrors = error.errors.reduce((acc: FormErrors, curr) => {
+      //       acc[curr.path[0] as keyof FormErrors] = curr.message
+      //       return acc
+      //     }, {})
+      //     setErrors(formErrors)
+      //   }
+
+      //   console.log(error)
+      // }
 
       // window.location.reload()
-
-      console.log('evento atualizado:', updatedEvent)
-    } catch (error) {
-      alert('Erro ao editar evento: ')
-      console.log(error)
-
-      console.log('data:', date)
     }
   }
 
@@ -279,6 +329,7 @@ export function EditEventModal() {
               defaultValue={response?.name}
               onChange={e => setName(e.target.value)}
             />
+            {errors.name && <span className="text-red-500">{errors.name}</span>}
           </fieldset>
 
           <fieldset className="mb-4 flex flex-col gap-1 text-white">
@@ -291,6 +342,9 @@ export function EditEventModal() {
               defaultValue={response?.description}
               onChange={e => setDescription(e.target.value)}
             />
+            {errors.description && (
+              <span className="text-red-500">{errors.description}</span>
+            )}
           </fieldset>
 
           <fieldset className="mb-4 flex flex-col gap-1 text-white">
@@ -303,6 +357,9 @@ export function EditEventModal() {
               defaultValue={response?.address}
               onChange={e => setAddress(e.target.value)}
             />
+            {errors.address && (
+              <span className="text-red-500">{errors.address}</span>
+            )}
           </fieldset>
 
           <fieldset className="mb-4 flex flex-col gap-1 text-white">
@@ -333,6 +390,9 @@ export function EditEventModal() {
               //   console.log(e.target.value, date)
               // }}
             />
+            {errors.eventDate && (
+              <span className="text-red-500">{errors.eventDate}</span>
+            )}
           </fieldset>
 
           <fieldset className="mb-4 flex w-full justify-between flex-row gap-8 [&>div]:w-1/3 text-white">
@@ -344,9 +404,12 @@ export function EditEventModal() {
                 emptyIcon={<CurrencyDollar size={32} className="inline" />}
                 initialValue={response?.price}
                 fillIcon={
-                  <CurrencyDollar size={32} className="inline fill-green-700" />
+                  <CurrencyDollar size={32} className="inline fill-violet" />
                 }
               />
+              {errors.price && (
+                <span className="text-red-500">{errors.price}</span>
+              )}
             </div>
 
             <div className="flex flex-col gap-1">
@@ -368,6 +431,9 @@ export function EditEventModal() {
                   )
                 })}
               </select>
+              {errors.category && (
+                <span className="text-red-500">{errors.category}</span>
+              )}
             </div>
 
             <div className="flex flex-col gap-1">
@@ -391,6 +457,9 @@ export function EditEventModal() {
                   )
                 })}
               </select>
+              {errors.ageRange && (
+                <span className="text-red-500">{errors.ageRange}</span>
+              )}
             </div>
           </fieldset>
 
@@ -418,6 +487,9 @@ export function EditEventModal() {
                     )
                   })}
                 </select>
+                {errors.districtId && (
+                  <span className="text-red-500">{errors.districtId}</span>
+                )}
               </div>
             </div>
 
@@ -439,6 +511,9 @@ export function EditEventModal() {
                   )
                 })}
               </select>
+              {errors.eventStatus && (
+                <span className="text-red-500">{errors.eventStatus}</span>
+              )}
             </div>
           </fieldset>
 
@@ -453,6 +528,9 @@ export function EditEventModal() {
               defaultValue={ticketUrl}
               onChange={e => setTicketUrl(e.target.value)}
             />
+            {errors.ticketUrl && (
+              <span className="text-red-500">{errors.ticketUrl}</span>
+            )}
           </fieldset>
 
           <fieldset>
@@ -467,6 +545,10 @@ export function EditEventModal() {
                 options={musicTypes}
               />
             </div>
+
+            {errors.musicType && (
+              <span className="text-red-500">{errors.musicType}</span>
+            )}
           </fieldset>
 
           <fieldset>
@@ -479,6 +561,10 @@ export function EditEventModal() {
                 options={features}
               />
             </div>
+
+            {errors.features && (
+              <span className="text-red-500">{errors.features}</span>
+            )}
           </fieldset>
 
           <fieldset className="mb-4 flex flex-col gap-1 text-white">
@@ -489,26 +575,11 @@ export function EditEventModal() {
               onChange={handlePackageTypeSelectChange}
               options={packageTypeArray}
             />
+
+            {errors.packageType && (
+              <span className="text-red-500">{errors.packageType}</span>
+            )}
           </fieldset>
-
-          <div className="flex gap-4">
-            <div className="w-full">
-              <ImageInputFile
-                onImageUploaded={e => x(e)}
-                defaultValue={response?.eventPhotoLink}
-                label="Selecione a imagem do ROLE"
-              />
-            </div>
-
-            <div className="w-full">
-              <ImageInputFile
-                onImageUploaded={e => y(e)}
-                defaultValue={response?.bannerUrl}
-                aspect="video"
-                label="Selecione a imagem do banner"
-              />
-            </div>
-          </div>
 
           <div className="mt-2 flex justify-end">
             <Dialog.Close asChild>
