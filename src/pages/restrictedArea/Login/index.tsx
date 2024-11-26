@@ -1,10 +1,10 @@
-import { SetStateAction, useContext, useState } from "react";
-import { ToastContainer, Slide, toast, Bounce } from "react-toastify";
+import { useContext, useState } from "react";
+import { ToastContainer, toast, Bounce } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { envs } from "../../../utils/envs";
 import { EyeSlash, Eye, User } from "@phosphor-icons/react";
 import { AuthContext } from "../../../context/auth_context";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -16,11 +16,11 @@ export default function Login() {
   const { signIn } = useContext(AuthContext)
   const navigate = useNavigate()
 
-  const handleUsername = (e: { target: { value: SetStateAction<string> } }) => {
-    setUsername(e.target.value)
-  }
+  const handleUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(e.target.value);
+  };
 
-  const handlePassword = (e: { target: { value: SetStateAction<string> } }) => {
+  const handlePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value)
   }
 
@@ -55,34 +55,29 @@ export default function Login() {
       try {
         console.log("Usuário: ", username)
         console.log("Senha: ", password)
-        const resp = await signIn({ "isWeb": true, "identifier": username, "password": password })
+        const resp = await signIn({"identifier": username, "password": password })
         console.log("Resposta: ", resp)
         if (resp.accessToken) {
           localStorage.setItem('accessToken', resp.accessToken);
           localStorage.setItem('refreshToken', resp.refreshToken);
           localStorage.setItem('idToken', resp.idToken);
           navigate('/institutes')
-        } else {
-          console.error("Erro no login: ", resp)
-          toast.error(`${resp}`, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-            transition: Bounce,
-          });
-          navigate('/institutes')
+        } if (!resp.accessToken) {
+          // Lançar erro manualmente se a resposta não contém accessToken
+          throw new Error(resp.message ? (resp.message).split(":")[0] : 'Erro desconhecido');
         }
       } catch (error: any) {
-        console.error("Erro ao logar: ", error)
-        toast.error("Erro ao logar. Verifique as credenciais!", {
+        console.log("Erro: ", error)
+        toast.error(`${error}`, {
           position: "top-right",
           autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
           theme: "colored",
+          transition: Bounce,
         });
       }
     }

@@ -2,18 +2,29 @@ import { createContext, PropsWithChildren } from "react"
 import { AuthRepositoryHttp } from "../api/repositories/auth_repository"
 
 interface SignInData {
-  isWeb: boolean;
   identifier: string;
   password: string;
 }
 
+interface SignInResponse {
+  accessToken: string;
+  refreshToken: string;
+  idToken: string;
+  message?: string | undefined;
+}
+
 type authContextType = {
-  signIn: (data: SignInData) => Promise<object>
+  signIn: (data: SignInData) => Promise<SignInResponse>
 }
 
 const defaultAuth = {
-  signIn: async (data: SignInData) => {
-    return {}
+  signIn: async (data: SignInData): Promise<SignInResponse> => {
+    return {
+      accessToken: "",
+      refreshToken: "",
+      idToken: "",
+      message: ""
+    }
   }
 }
 

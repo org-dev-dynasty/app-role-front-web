@@ -32,9 +32,9 @@ export default function Institutions() {
 
     useEffect(() => {
         const token = localStorage.getItem("idToken");
-        // if (!token || token === "undefined") {
-        //     navigate("/login");
-        // }
+        if (!token || token === "undefined") {
+            navigate("/login");
+        }
     }, [navigate]);
 
     useEffect(() => {
@@ -58,7 +58,21 @@ export default function Institutions() {
             const response = await getAllInstitutes();
             console.log(response);
             if (response && response.institutes) {
-                setInstitutes([...response.institutes]);
+                const institutesData: Institute[] = response.institutes.map((institute: any) => ({
+                    instituteId: institute.instituteId,
+                    name: institute.name,
+                    description: institute.description,
+                    institute_type: institute.institute_type,
+                    partner_type: institute.partner_type,
+                    phone: institute.phone,
+                    logoPhoto: institute.logoPhoto,
+                    address: institute.address,
+                    price: institute.price,
+                    district_id: institute.district_id,
+                    photos_url: institute.photos_url,
+                    events_id: institute.events_id,
+                }));
+                setInstitutes(institutesData);
             }
         } catch (error) {
             console.error("Erro ao buscar institutos:", error);

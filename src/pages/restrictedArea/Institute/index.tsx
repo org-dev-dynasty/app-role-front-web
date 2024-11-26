@@ -10,18 +10,17 @@ import { EventType } from "../../../api/repositories/event_repository";
 import { CreateEventModal } from "../../../components/CreateEventModal";
 
 interface Institute {
-  address: string;
+  address?: string | undefined;
   description: string;
-  district_id: string;
-  events_id: string[];
+  district_id?: string | undefined;
+  events_id?: string[] | undefined;
   institute_id: string;
   institute_type: string;
-  logo_photo: string;
+  logo_photo?: string | undefined;
   name: string;
-  partner_type: string;
-  phone: string;
-  photos_url: string[];
-  price: number;
+  partner_type?: string | undefined;
+  phone?: string | undefined;
+  price?: number | undefined;
 }
 
 const districts = [
@@ -102,7 +101,7 @@ export default function Institute() {
       const response = await getInstituteById(instId);
       console.log(response);
       if (response) {
-        setInstitute(response);
+        setInstitute(response.institute);
         setLoading(false);
       } else {
         console.log("Instituto não encontrado");
@@ -211,7 +210,7 @@ export default function Institute() {
             </div>
             <div className="bg-[#2a2a2a] p-2 pb-4 rounded-lg flex justify-center items-center flex-col gap-2 shadow-lg">
               <h1 className="h-8 w-1/2 rounded-lg bg-[#444] flex justify-center items-center shadow-md">Tipo de Parceiro:</h1>
-              <h1>{formatPartnerType(institute.partner_type)}</h1>
+              <h1>{formatPartnerType(institute.partner_type || "NO_PARTNER")}</h1>
             </div>
           </div>
         </div>
@@ -229,7 +228,7 @@ export default function Institute() {
             events.length > 0 ? (
             events.map((event, eventId) => (
               <div key={eventId} id={eventId}>
-                <EventCard name={event.name} imageUrl={event.bannerUrl} onclick={() => navigate(`/role/${event.eventId}`)} />
+                <EventCard name={event.name} imageUrl={event.bannerUrl || ''} onclick={() => navigate(`/role/${event.eventId}`)} />
               </div>
             ))
           ) : (
@@ -258,7 +257,13 @@ function ConfirDelete({ setIsDeleteModalOpen, instituteId }: ConfirDeleteProps) 
   const handleDeleteClick = async () => {
     setClicked(true);
     try {
-      await deleteInstituteById(instituteId);
+      // MUDADO PARA CORRIGIR ERROS PARA MONTAR BUILD ANTES ERA SOH
+      // await deleteInstituteById(instituteId || "");
+      if (deleteInstituteById) {
+        await deleteInstituteById(instituteId || "");
+      } else {
+        console.log("deleteInstituteById is undefined");
+      }
       setIsDeleteModalOpen(false);
       navigate("/institutes");
     } catch (error: any) {

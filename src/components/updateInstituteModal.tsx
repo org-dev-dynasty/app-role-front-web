@@ -7,14 +7,17 @@ interface InstituteModalProps {
 }
 
 export interface InstituteProps {
-  institute_id: string;
-  name: string;
+  address?: string | undefined;
   description: string;
+  district_id?: string | undefined;
+  events_id?: string[] | undefined;
+  institute_id: string;
   institute_type: string;
-  partner_type: string;
-  phone: string;
-  address: string;
-  district_id: string;
+  logo_photo?: string | undefined;
+  name: string;
+  partner_type?: string | undefined;
+  phone?: string | undefined;
+  price?: number | undefined;
 }
 
 const districts = [

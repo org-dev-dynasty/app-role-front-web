@@ -52,7 +52,6 @@ export class InstituteRepositoryHttp {
 
   async updateInstituteById(data: any) {
     try {
-      console.log("before Request: ", data);
       const resp = await httpEvent.put(`/update-institute`, data, {
         headers: {
           "Content-Type": "application/json",
