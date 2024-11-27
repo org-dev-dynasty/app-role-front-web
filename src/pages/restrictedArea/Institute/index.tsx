@@ -8,6 +8,7 @@ import { ClipLoader } from "react-spinners";
 import { EventContext } from "../../../context/event_context";
 import { EventType } from "../../../api/repositories/event_repository";
 import { CreateEventModal } from "../../../components/CreateEventModal";
+import { Bounce, toast, ToastContainer } from "react-toastify";
 
 interface Institute {
   address?: string | undefined;
@@ -111,6 +112,25 @@ export default function Institute() {
     }
   };
 
+  const [updatedInstitute, setUpdatedInstitute] = useState(false);
+
+  useEffect(() => {
+    if (updatedInstitute) {
+      toast.success('Instituto atualizado com sucesso', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
+      setUpdatedInstitute(false); // Reseta o estado após exibir o toast
+    }
+  }, [isUpdateInstituteModalOpen]);
+
   useEffect(() => {
     const token = localStorage.getItem("idToken");
     if (!token) {
@@ -150,6 +170,21 @@ export default function Institute() {
           institute={institute}
         />
       )}
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        limit={4}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
+
       {isDeleteModalOpen && <ConfirDelete setIsDeleteModalOpen={setIsDeleteModalOpen} instituteId={instId} />}
 
       <div className="relative h-[100vh] w-[100%] md:w-[70%] flex flex-col py-6 bg-[#2A2A2A] items-center gap-10 px-4">

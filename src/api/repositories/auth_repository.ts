@@ -8,7 +8,7 @@ export class AuthRepositoryHttp {
         return resp.data
       }
     } catch (error: any) {
-      throw new Error('Erro ao logar: ' + error.message)
+      throw new Error('Erro ao logar: ', error.response.data)
     }
   }
 }

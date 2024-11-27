@@ -57,15 +57,17 @@ export default function Login() {
         console.log("Senha: ", password)
         const resp = await signIn({"identifier": username, "password": password })
         console.log("Resposta: ", resp)
-        if (resp.accessToken) {
+        // if (resp.accessToken) {
           localStorage.setItem('accessToken', resp.accessToken);
           localStorage.setItem('refreshToken', resp.refreshToken);
           localStorage.setItem('idToken', resp.idToken);
           navigate('/institutes')
-        } if (!resp.accessToken) {
-          // Lançar erro manualmente se a resposta não contém accessToken
-          throw new Error(resp.message ? (resp.message).split(":")[0] : 'Erro desconhecido');
-        }
+        // } if (!resp.accessToken) {
+        //   // Lançar erro manualmente se a resposta não contém accessToken
+        //   // throw new Error(resp.data ? (resp.message).split(":")[0] : 'Erro desconhecido');
+        //   console.log("Erro message: ", resp.message)
+        //   console.log("Erro request: ", resp.error.response.data)
+        // }
       } catch (error: any) {
         console.log("Erro: ", error)
         toast.error(`${error}`, {
