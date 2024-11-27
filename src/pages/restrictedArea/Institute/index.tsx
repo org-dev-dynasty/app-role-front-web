@@ -86,7 +86,7 @@ export default function Institute() {
     if (institute) {
       try {
         const response = await getEventsByInstituteId(institute.institute_id)
-        console.log(response);
+        console.log("Events:", response);
         setEvents(response.events);
       } catch (error: any) {
         console.log("Erro ao buscar eventos: " + error.message);
@@ -99,10 +99,11 @@ export default function Institute() {
     setLoading(true);
     if (instId) {
       const response = await getInstituteById(instId);
-      console.log(response);
+      console.log("response do institute:", response);
       if (response) {
-        setInstitute(response.institute);
+        setInstitute(response);
         setLoading(false);
+        console.log('instituto:', institute);
       } else {
         console.log("Instituto não encontrado");
         setInstitute(null);
