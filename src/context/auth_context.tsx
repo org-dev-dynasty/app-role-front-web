@@ -13,8 +13,13 @@ interface SignInResponse {
   message?: string | undefined;
 }
 
+interface forgetPasswordData {
+  email: string;
+}
+
 type authContextType = {
   signIn: (data: SignInData) => Promise<SignInResponse>
+  forgotPassword: (data: forgetPasswordData) => Promise<any>
 }
 
 const defaultAuth = {
@@ -23,6 +28,12 @@ const defaultAuth = {
       accessToken: "",
       refreshToken: "",
       idToken: "",
+      message: ""
+    }
+  },
+
+  forgotPassword: async (data: forgetPasswordData): Promise<any> => {
+    return {
       message: ""
     }
   }
@@ -42,8 +53,17 @@ export function AuthContextProvider({ children }: PropsWithChildren) {
     }
   }
 
+  async function forgotPassword(data: forgetPasswordData) {
+    try {
+      const response = await repo.forgotPassword(data)
+      return response
+    } catch (error: any) {
+      return error
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ signIn }}>
+    <AuthContext.Provider value={{ signIn, forgotPassword}}>
       {children}
     </AuthContext.Provider>
   )

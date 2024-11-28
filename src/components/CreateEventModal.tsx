@@ -19,8 +19,13 @@ import {
   packageTypeArray,
   status
 } from '../assets/options'
+import { toast } from 'react-toastify'
 
-export function CreateEventModal() {
+interface CreateEventModalProps {
+  onEventCreated: () => void
+}
+
+export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
   let { instId } = useParams()
 
   const navigate = useNavigate()
@@ -106,6 +111,17 @@ export function CreateEventModal() {
       // window.location.reload()
 
       console.log('evento criado:', eventBody)
+      // toast.success('Evento criado com sucesso!', {
+      //   position: 'top-right',
+      //   autoClose: 5000,
+      //   hideProgressBar: false,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      //   progress: undefined,
+      //   theme: 'colored'
+      // })
+      // onEventCreated()
     } catch (error) {
       alert('Erro ao criar evento')
 
@@ -352,7 +368,7 @@ export function CreateEventModal() {
                       <option
                         value={districts[index].districtId}
                         key={index}
-                        // onChange={() => setCurrentDistrict(1)}
+                      // onChange={() => setCurrentDistrict(1)}
                       >
                         {districts[index].districtName}
                       </option>

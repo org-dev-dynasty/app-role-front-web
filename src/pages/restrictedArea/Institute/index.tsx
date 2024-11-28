@@ -9,6 +9,7 @@ import { EventContext } from "../../../context/event_context";
 import { EventType } from "../../../api/repositories/event_repository";
 import { CreateEventModal } from "../../../components/CreateEventModal";
 import { Bounce, toast, ToastContainer } from "react-toastify";
+import { set } from "zod";
 
 interface Institute {
   address?: string | undefined;
@@ -56,6 +57,7 @@ export default function Institute() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [events, setEvents] = useState<EventType[] | null>([]);
   const navigate = useNavigate();
+  const [refreshEvents, setRefreshEvents] = useState(false);
 
   function formatPartnerType(partnerType: string) {
     switch (partnerType) {
@@ -153,12 +155,12 @@ export default function Institute() {
   }, [instId, getInstituteById, isUpdateInstituteModalOpen]);
 
 
-  // atualiza instituto quando se entra na pagina
+  // atualiza events quando se entra na pagina
   useEffect(() => {
     if (institute) {
       fetchEvents();
     }
-  }, [institute, getEventsByInstituteId, CreateEventModal]);
+  }, [institute, getEventsByInstituteId, refreshEvents]);
 
   if (loading) {
     return (
@@ -169,7 +171,11 @@ export default function Institute() {
   }
 
   if (!institute) {
-    return <p className="text-white">Carregando ou nenhum instituto encontrado</p>; // Mensagem enquanto carrega
+    return (
+      <div className="h-[100vh] w-full flex justify-center items-center bg-[#151515]">
+        <h1 className="text-white text-4xl">Instituto não encontrado</h1>
+      </div>
+    );
   }
 
   const district = districts.find(d => d.id === institute.district_id);
@@ -182,25 +188,8 @@ export default function Institute() {
           institute={institute}
         />
       )}
-
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        limit={4}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
-
       {isDeleteModalOpen && <ConfirDelete setIsDeleteModalOpen={setIsDeleteModalOpen} instituteId={instId} />}
-
       <div className="relative h-[100vh] w-[100%] md:w-[70%] flex flex-col py-6 bg-[#2A2A2A] items-center gap-10 px-4">
-
         <div className="flex flex-col md:flex-row items-center w-full gap-4">
           <div className="rounded-full h-[30rem] md:h-72 min-w-72 max-w-72 bg-light-purple flex justify-center items-center overflow-hidden">
             {institute.logo_photo ? (
@@ -268,7 +257,7 @@ export default function Institute() {
         <div className="flex w-full justify-between items-center px-6">
           <h1 className="text-white text-[48px]">Roles</h1>
           <div className="bg-white w-16 h-16 flex justify-center items-center rounded-xl text-3xl hover:cursor-pointer hover:bg-white-purple">
-            <CreateEventModal />
+            <CreateEventModal onEventCreated={() => setRefreshEvents((prev) => !prev)} />
           </div>
         </div>
         <div className="border-t-2 border-white rounded-3xl flex flex-col h-[calc(100vh-7rem)] overflow-y-scroll items-center w-full">
@@ -304,19 +293,43 @@ function ConfirDelete({ setIsDeleteModalOpen, instituteId }: ConfirDeleteProps) 
 
   const handleDeleteClick = async () => {
     setClicked(true);
-    try {
-      // MUDADO PARA CORRIGIR ERROS PARA MONTAR BUILD ANTES ERA SOH
-      // await deleteInstituteById(instituteId || "");
-      if (deleteInstituteById) {
-        await deleteInstituteById(instituteId || "");
+    if (deleteInstituteById) {
+      const resp = await deleteInstituteById(instituteId || "");
+      if (resp.status === 200) {
+        setClicked(false);
+        setIsDeleteModalOpen(false);
+        navigate("/institutes");
+        toast.success("Instituto deletado com sucesso", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+        });
+        return
       } else {
-        console.log("deleteInstituteById is undefined");
+        toast.error(`${resp}`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+        });
+        return
       }
+      setClicked(false);
       setIsDeleteModalOpen(false);
       navigate("/institutes");
-    } catch (error: any) {
-      console.log("Erro ao deletar instituto: " + error.message);
-      setIsDeleteModalOpen(false);
+    } else {
+      console.error("deleteInstituteById is undefined");
     }
   };
 

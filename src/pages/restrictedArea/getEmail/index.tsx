@@ -27,6 +27,7 @@ export default function GetEmail() {
       setUserError("E-mail inválido")
       return
     }
+    localStorage.setItem('email', email)
     navigate('/verifyCode')
   }
 

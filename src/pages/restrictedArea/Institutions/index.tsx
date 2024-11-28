@@ -113,21 +113,6 @@ export default function Institutions() {
                     onInstituteCreated={() => {setInstituteCreated(true);fetchInstitutes;}}
                 />
             )}
-
-            <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                limit={4}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="colored"
-            />
-
             <div className="md:h-[18vh] h-[20vh] w-full flex flex-col py-6 bg-[#2A2A2A] items-center gap-4 md:gap-6 px-4 md:px-10 border-b-2 border-[#6A6A6A]">
                 <div className="flex h-full items-center w-full justify-between flex-wrap gap-4">
                     <div className="flex h-full mt-4 md:mt-0 flex-col md:flex-row items-center gap-4 w-full md:w-auto">

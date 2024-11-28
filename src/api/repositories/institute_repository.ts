@@ -43,10 +43,11 @@ export class InstituteRepositoryHttp {
         `/delete-institute-by-id?instituteId=${id}`
       );
       if (resp) {
-        return resp.data;
+        return resp.data.message;
       }
     } catch (error: any) {
-      throw new Error("Erro ao deletar instituição: " + error.message);
+      return error.response.data;
+      throw new Error(`Erro ao deletar instituição: ${error}`);
     }
   }
 
