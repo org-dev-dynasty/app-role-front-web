@@ -335,7 +335,12 @@ function ConfirmUpdate({ setIsConfirmOpen, setIsUpdateInstituteModalOpen, newIns
     const resposta = await uploadInstituteImage(formData);
     console.log("Logo Upload Response:", resposta);
     const resp = updateInstituteById(newInstituteData);
-    console.log(resp);
+    console.log("Update Response:", resp);
+    if (resp.status === 400) {
+      console.log("Erro ao atualizar instituto");
+      setIsUpdateInstituteModalOpen(false);
+      return
+    }
     setIsUpdateInstituteModalOpen(false);
     setIsConfirmOpen(false);
   };

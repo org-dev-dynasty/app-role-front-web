@@ -131,6 +131,8 @@ export default function Institute() {
     }
   }, [isUpdateInstituteModalOpen]);
 
+
+  // confere se o token existe
   useEffect(() => {
     const token = localStorage.getItem("idToken");
     if (!token) {
@@ -138,6 +140,8 @@ export default function Institute() {
     }
   }, [navigate]);
 
+
+  // atualiza instituto loading
   useEffect(() => {
     if (!isUpdateInstituteModalOpen) {
       setLoading(true);
@@ -148,11 +152,13 @@ export default function Institute() {
     }
   }, [instId, getInstituteById, isUpdateInstituteModalOpen]);
 
+
+  // atualiza instituto quando se entra na pagina
   useEffect(() => {
     if (institute) {
       fetchEvents();
     }
-  }, [institute, getEventsByInstituteId]);
+  }, [institute, getEventsByInstituteId, CreateEventModal]);
 
   if (loading) {
     return (

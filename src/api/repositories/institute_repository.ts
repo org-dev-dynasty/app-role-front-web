@@ -61,7 +61,8 @@ export class InstituteRepositoryHttp {
         return resp.data;
       }
     } catch (error: any) {
-      throw new Error("Erro ao atualizar instituição: " + error.message);
+      return error.response.data;
+      throw new Error(`Erro ao atualizar instituição: ${error}`);
     }
   }
 

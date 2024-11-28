@@ -3,6 +3,7 @@ import { useState, useContext } from "react"
 import { useNavigate } from "react-router-dom"
 import { envs } from "../../../utils/envs"
 import { toast, ToastContainer } from "react-toastify"
+import { set } from "zod"
 
 export default function GetEmail() {
   const [email, setEmail] = useState<string>()
@@ -19,11 +20,11 @@ export default function GetEmail() {
 
   const handleEntrar = () => {
     if (!email || email === "") {
-      toast.error("Preencha com o e-mail ou usuário da sua conta", {
-        position: "top-right",
-        autoClose: 5000,
-        theme: "colored",
-      });
+      setUserError("Preencha com o e-mail")
+      return
+    }
+    if (email && !email.includes("@")) {
+      setUserError("E-mail inválido")
       return
     }
     navigate('/verifyCode')
@@ -32,19 +33,6 @@ export default function GetEmail() {
 
   return (
     <div className="bg-[#2A2A2A] h-[100vh] w-full flex justify-center items-center">
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        limit={4}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
       <div className="h-2/3 w-[40%] bg-[#363636] rounded-xl py-10 shadow-lg flex items-center flex-col">
         <div className="shadow-lg w-2/3 h-1/5 flex justify-center items-center rounded-lg">
           <img src={`${envs.cloudfrontUrl}/approle_logo_navbar.png`} alt="AppRole Logo" className="h-16" />
