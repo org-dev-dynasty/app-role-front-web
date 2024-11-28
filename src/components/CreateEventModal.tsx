@@ -258,7 +258,7 @@ export function CreateEventModal() {
                 allowFraction={false}
                 emptyIcon={<CurrencyDollar size={32} className="inline" />}
                 fillIcon={
-                  <CurrencyDollar size={32} className="inline fill-green-700" />
+                  <CurrencyDollar size={32} className="inline fill-violet" />
                 }
               />
             </div>

@@ -37,7 +37,7 @@ export default function DeleteEventModal() {
     try {
       await deleteEventById(`${eventId}`)
 
-      navigate('/institutes')
+      // navigate('/institutes')
 
       console.log('Evento deletado com sucesso')
     } catch (error) {

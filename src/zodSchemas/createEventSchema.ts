@@ -49,7 +49,7 @@ export const createEventSchema = z.object({
     .min(1, 'O campo ID da instituição é obrigatório.'),
 
   features: z
-    .array(z.string({ required_error: 'Cada característica é obrigatória.' }))
+    .array(z.string())
     .min(1, 'É necessário incluir pelo menos uma característica.'),
 
   menuLink: z
