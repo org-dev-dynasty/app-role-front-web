@@ -42,7 +42,7 @@ export class IacStack extends cdk.Stack {
         accessControlAllowOrigins: ['*'],
         accessControlAllowMethods: ['GET', 'HEAD'],
         accessControlAllowHeaders: ['*'],
-        accessControlAllowCredentials: true,
+        accessControlAllowCredentials: false,
         accessControlExposeHeaders: ['Access-Control-Allow-Origin'],
         originOverride: true
       }
