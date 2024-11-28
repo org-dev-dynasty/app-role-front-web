@@ -1,8 +1,10 @@
-import { SetStateAction, useContext, useState } from "react";
+import { useContext, useState } from "react";
+import { ToastContainer, toast, Bounce } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import { envs } from "../../../utils/envs";
 import { EyeSlash, Eye, User } from "@phosphor-icons/react";
 import { AuthContext } from "../../../context/auth_context";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -14,17 +16,21 @@ export default function Login() {
   const { signIn } = useContext(AuthContext)
   const navigate = useNavigate()
 
-  const handleUsername = (e: { target: { value: SetStateAction<string> } }) => {
-    setUsername(e.target.value)
-  }
+  const handleUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(e.target.value);
+  };
 
-  const handlePassword = (e: { target: { value: SetStateAction<string> } }) => {
+  const handlePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value)
   }
 
   const [isVisible, setIsVisible] = useState(false)
 
-  const handleEntrar = async() => {
+  const handleEsqueciSenha = () => {
+    navigate('/getEmail')
+  }
+
+  const handleEntrar = async () => {
     if (!username) {
       setUserError("Usuário não pode ser vazio")
     } else {
@@ -38,19 +44,29 @@ export default function Login() {
     }
 
     if (username && password) {
-      try { 
-        console.log("Usuário: ", username)
-        console.log("Senha: ", password)
-        const resp = await signIn({"isWeb": true, "identifier": username, "password": password })
-        console.log("Resposta: ", resp)
-        localStorage.setItem('accessToken', resp.accessToken);
-        localStorage.setItem('refreshToken', resp.refreshToken);
-        localStorage.setItem('idToken', resp.idToken);
-        navigate('/institutes')
-      } catch (error: any) {
-        console.error("Erro ao logar: ", error)
+      console.log("Usuário: ", username)
+      console.log("Senha: ", password)
+      const resp = await signIn({ "identifier": username, "password": password })
+      console.log("Resposta: ", resp)
+      if (resp === "Credenciais inválidas") {
+        toast.error(`${resp}`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+        });
+        return
       }
-    } 
+      localStorage.setItem('accessToken', resp.accessToken);
+      localStorage.setItem('refreshToken', resp.refreshToken);
+      localStorage.setItem('idToken', resp.idToken);
+      navigate('/institutes')
+    }
   }
 
   return (
@@ -62,7 +78,7 @@ export default function Login() {
         <div className="flex w-full h-full flex-col justify-center items-center ">
           <div className="bg-[#6A6A6A] rounded-lg h-10 w-4/5 shadow-lg flex items-center justify-between pr-5">
             <input type="text" className="rounded-lg outline-none p-5 h-full w-full bg-transparent text-white" value={username} onChange={(event) => handleUsername(event)} placeholder="Usuário" />
-            <User size={30} color="white"/>
+            <User size={30} color="white" />
           </div>
           <div className="w-4/5 px-2 mt-1">
             <p className="text-red-300 text-xs">{userError}</p>
@@ -76,7 +92,10 @@ export default function Login() {
               <input type="password" className="rounded-lg outline-none p-5 h-full w-full bg-transparent text-white" value={password} onChange={(event) => handlePassword(event)} placeholder="Senha" />
               <Eye size={30} className="hover:cursor-pointer text-white" onClick={() => setIsVisible(!isVisible)} />
             </div>}
-          <div className="w-4/5 px-2 justify-between flex mt-1"><p className="text-red-300 text-xs">{passwordError}</p><p className="text-white text-xs hover:underline hover:cursor-pointer">Esqueci minha senha</p></div>
+          <div className="w-4/5 px-2 justify-between flex mt-1">
+            <p className="text-red-300 text-xs">{passwordError}</p>
+            <p className="text-white text-xs hover:underline hover:cursor-pointer" onClick={handleEsqueciSenha}>Esqueci minha senha</p>
+          </div>
           <button className="bg-light-purple rounded-lg text-white h-10 w-4/5 mt-4 shadow-lg hover:bg-violet duration-300" onClick={handleEntrar}>Entrar</button>
         </div>
       </div>

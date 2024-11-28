@@ -54,6 +54,10 @@ export default function ResetPasswordCode() {
     }
   }
 
+  const handleVoltar = () => {
+    window.history.back();
+  }
+
   const handleVerifyCode = () => {
     setIsVerified(true);
   }
@@ -105,7 +109,10 @@ export default function ResetPasswordCode() {
             {isPasswordVisible ? <Eye size={32} className="hover:cursor-pointer" onClick={() => setIsPasswordVisible(false)} /> : <EyeSlash size={32} className="hover:cursor-pointer" onClick={() => setIsPasswordVisible(true)} />}
           </div>
           {confirmPasswordErr && <p className="text-red-500 text-md mt-2">{confirmPasswordErr}</p>}
-          <button onClick={handleValidPasswords} className="bg-[#f1f1f1] text-black px-4 py-2 rounded-lg hover:bg-[#525252] shadow-sm shadow-white duration-300 hover:text-white mt-8 mb-8">Confirmar</button>
+          <div className="flex w-[80%] justify-evenly">
+            <button onClick={handleVoltar} className="bg-[#ff5050] text-black px-4 py-2 w-28 rounded-lg hover:bg-[#c25858] shadow-sm shadow-white duration-300 hover:text-white mt-8 mb-8">Voltar</button>
+            <button onClick={handleValidPasswords} className="bg-[#f1f1f1] text-black px-4 py-2 w-28 rounded-lg hover:bg-[#525252] shadow-sm shadow-white duration-300 hover:text-white mt-8 mb-8">Confirmar</button>
+          </div>
         </div>
       </div>
     </div>

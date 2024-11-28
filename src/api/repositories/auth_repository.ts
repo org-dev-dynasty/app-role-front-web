@@ -1,14 +1,33 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { httpAuth } from "../http"
 
 export class AuthRepositoryHttp {
   async login(data: any) {
     try {
-      const resp = await httpAuth.post(`/sign-in?isWeb=${data.isWeb}`, data)
+      const resp = await httpAuth.post(`/sign-in`, data);
       if (resp) {
-        return resp.data
+        return resp.data;
       }
     } catch (error: any) {
-      throw new Error('Erro ao logar: ' + error.message)
+      if (
+        error.response.status === 400 &&
+        error.response.data === "Credenciais inválidas"
+      ) {
+        return error.response.data;
+      }
+
+      throw new Error(
+        `Error AuthRepositoryHttp login: ${error} \n Status: ${error.response.status} \n Data: ${error.response.data}`
+      );
+    }
+  }
+  
+  async forgotPassword(data: string) {
+    try {
+      const response = await httpAuth.post("/forgot-password", data);
+      return response.data;
+    } catch (error: any) {
+      return error.response.data;
     }
   }
 }

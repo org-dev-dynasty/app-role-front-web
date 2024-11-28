@@ -2,18 +2,40 @@ import { createContext, PropsWithChildren } from "react"
 import { AuthRepositoryHttp } from "../api/repositories/auth_repository"
 
 interface SignInData {
-  isWeb: boolean;
   identifier: string;
   password: string;
 }
 
+interface SignInResponse {
+  accessToken: string;
+  refreshToken: string;
+  idToken: string;
+  message?: string | undefined;
+}
+
+interface forgetPasswordData {
+  email: string;
+}
+
 type authContextType = {
-  signIn: (data: SignInData) => Promise<object>
+  signIn: (data: SignInData) => Promise<SignInResponse>
+  forgotPassword: (data: forgetPasswordData) => Promise<any>
 }
 
 const defaultAuth = {
-  signIn: async (data: SignInData) => {
-    return {}
+  signIn: async (data: SignInData): Promise<SignInResponse> => {
+    return {
+      accessToken: "",
+      refreshToken: "",
+      idToken: "",
+      message: ""
+    }
+  },
+
+  forgotPassword: async (data: forgetPasswordData): Promise<any> => {
+    return {
+      message: ""
+    }
   }
 }
 
@@ -31,8 +53,17 @@ export function AuthContextProvider({ children }: PropsWithChildren) {
     }
   }
 
+  async function forgotPassword(data: forgetPasswordData) {
+    try {
+      const response = await repo.forgotPassword(data)
+      return response
+    } catch (error: any) {
+      return error
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ signIn }}>
+    <AuthContext.Provider value={{ signIn, forgotPassword}}>
       {children}
     </AuthContext.Provider>
   )

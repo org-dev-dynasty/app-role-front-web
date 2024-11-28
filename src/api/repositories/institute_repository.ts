@@ -43,16 +43,16 @@ export class InstituteRepositoryHttp {
         `/delete-institute-by-id?instituteId=${id}`
       );
       if (resp) {
-        return resp.data;
+        return resp.data.message;
       }
     } catch (error: any) {
-      throw new Error("Erro ao deletar instituição: " + error.message);
+      return error.response.data;
+      throw new Error(`Erro ao deletar instituição: ${error}`);
     }
   }
 
   async updateInstituteById(data: any) {
     try {
-      console.log("before Request: ", data);
       const resp = await httpEvent.put(`/update-institute`, data, {
         headers: {
           "Content-Type": "application/json",
@@ -62,7 +62,8 @@ export class InstituteRepositoryHttp {
         return resp.data;
       }
     } catch (error: any) {
-      throw new Error("Erro ao atualizar instituição: " + error.message);
+      return error.response.data;
+      throw new Error(`Erro ao atualizar instituição: ${error}`);
     }
   }
 

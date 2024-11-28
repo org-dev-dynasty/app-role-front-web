@@ -9,41 +9,88 @@ interface Institute {
     institute_type: string;
     phone?: string | undefined;
     logo_photo?: string;
+    partner_type?: string | undefined;
     address?: string | undefined;
     price?: number | undefined;
     district_id?: string | undefined;
     events_id?: string[] | undefined;
 }
 
+interface getAllInstitutesResponse {
+    institutes: Institute[]
+}
+
+interface getInstituteByIdResponse {
+    institute: Institute
+}
+
+interface createInstituteResponse {
+    message: string
+}
+
+interface deleteInstituteByIdResponse {
+    message: string
+}
+
+interface updateInstituteByIdResponse {
+    message: string
+}
+
+interface uploadInstituteImageResponse {
+    message: string
+}
+
 type InstituteContextType = {
-    getAllInstitutes: () => Promise<object>
-    getInstituteById: (id: string) => Promise<object>
-    createInstitute?: (data: Institute) => Promise<object>
-    deleteInstituteById?: (id: string) => Promise<object>
-    updateInstituteById?: (data: Partial<InstituteProps>) => Promise<object>
-    uploadInstituteImage?: (data: FormData) => Promise<object>
+    getAllInstitutes: () => Promise<getAllInstitutesResponse>
+    getInstituteById: (id: string) => Promise<getInstituteByIdResponse>
+    createInstitute?: (data: Institute) => Promise<createInstituteResponse>
+    deleteInstituteById?: (id: string) => Promise<deleteInstituteByIdResponse>
+    updateInstituteById?: (data: Partial<InstituteProps>) => Promise<updateInstituteByIdResponse>
+    uploadInstituteImage?: (data: FormData) => Promise<uploadInstituteImageResponse>
 }
 
 
 const defaultInstitute = {
     getAllInstitutes: async () => {
-        return {}
+        return {
+            institutes: []
+        }
     },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     getInstituteById: async (id: string) => {
-        return {}
+        return {
+            institute: {
+                institute_id: "",
+                name: "",
+                description: "",
+                institute_type: "",
+                phone: "",
+                logo_photo: "",
+                address: "",
+                price: 0,
+                district_id: "",
+                events_id: []
+            }
+        }
     },
     createInstitute: async (data: Institute) => {
-        return {}
+        return {
+            message: ""
+        }
     },
     deleteInstituteById: async (id: string) => {
-        return {}
+        return {
+            message: ""
+        }
     },
     updateInstituteById: async (data: InstituteProps) => {
-        return {}
+        return {
+            message: ""
+        }
     },
     uploadInstituteImage: async (data: FormData) => {
-        return {}
+        return {
+            message: ""
+        }
     }
 }
 

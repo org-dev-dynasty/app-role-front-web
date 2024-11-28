@@ -1,29 +1,28 @@
-import { Pen } from '@phosphor-icons/react'
-import EventCard from '../../../components/EventCard'
-import UpdateInstituteModal from '../../../components/updateInstituteModal'
-import { useContext, useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { InstituteContext } from '../../../context/institute_context'
-import { ClipLoader } from 'react-spinners'
-import { EventContext } from '../../../context/event_context'
-import { EventType } from '../../../api/repositories/event_repository'
-import { CreateEventModal } from '../../../components/CreateEventModal'
-import { set } from 'zod'
-
+import { Pen } from "@phosphor-icons/react";
+import EventCard from "../../../components/EventCard";
+import UpdateInstituteModal from "../../../components/updateInstituteModal";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { InstituteContext } from "../../../context/institute_context";
+import { ClipLoader } from "react-spinners";
+import { EventContext } from "../../../context/event_context";
+import { EventType } from "../../../api/repositories/event_repository";
+import { CreateEventModal } from "../../../components/CreateEventModal";
+import { Bounce, toast, ToastContainer } from "react-toastify";
+import { set } from "zod";
 
 interface Institute {
-  address: string
-  description: string
-  district_id: string
-  events_id: string[]
-  institute_id: string
-  institute_type: string
-  logo_photo: string
-  name: string
-  partner_type: string
-  phone: string
-  photos_url: string[]
-  price: number
+  address?: string | undefined;
+  description: string;
+  district_id?: string | undefined;
+  events_id?: string[] | undefined;
+  institute_id: string;
+  institute_type: string;
+  logo_photo?: string | undefined;
+  name: string;
+  partner_type?: string | undefined;
+  phone?: string | undefined;
+  price?: number | undefined;
 }
 
 const districts = [
@@ -50,15 +49,15 @@ const districts = [
 ]
 
 export default function Institute() {
-  const { getEventsByInstituteId } = useContext(EventContext)
-  const { getInstituteById } = useContext(InstituteContext)
-  const { instId } = useParams<{ instId: string }>()
-  const [loading, setLoading] = useState(true) // Estado de carregamento
-  const [isUpdateInstituteModalOpen, setIsUpdateInstituteModalOpen] =
-    useState(false)
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const [events, setEvents] = useState<EventType[] | null>([])
-  const navigate = useNavigate()
+  const { getEventsByInstituteId } = useContext(EventContext);
+  const { getInstituteById } = useContext(InstituteContext);
+  const { instId } = useParams<{ instId: string }>();
+  const [loading, setLoading] = useState(true); // Estado de carregamento
+  const [isUpdateInstituteModalOpen, setIsUpdateInstituteModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [events, setEvents] = useState<EventType[] | null>([]);
+  const navigate = useNavigate();
+  const [refreshEvents, setRefreshEvents] = useState(false);
 
   function formatPartnerType(partnerType: string) {
     switch (partnerType) {
@@ -90,8 +89,8 @@ export default function Institute() {
     if (institute) {
       try {
         const response = await getEventsByInstituteId(institute.institute_id)
-        console.log(response)
-        setEvents(response.events)
+        console.log("Events:", response);
+        setEvents(response.events);
       } catch (error: any) {
         console.log('Erro ao buscar eventos: ' + error.message)
         setEvents(null)
@@ -102,11 +101,12 @@ export default function Institute() {
   const fetchInstitute = async () => {
     setLoading(true)
     if (instId) {
-      const response = await getInstituteById(instId)
-      console.log(response)
+      const response = await getInstituteById(instId);
+      console.log("response do institute:", response);
       if (response) {
-        setInstitute(response)
-        setLoading(false)
+        setInstitute(response);
+        setLoading(false);
+        console.log('instituto:', institute);
       } else {
         console.log('Instituto não encontrado')
         setInstitute(null)
@@ -114,6 +114,27 @@ export default function Institute() {
     }
   }
 
+  const [updatedInstitute, setUpdatedInstitute] = useState(false);
+
+  useEffect(() => {
+    if (updatedInstitute) {
+      toast.success('Instituto atualizado com sucesso', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
+      setUpdatedInstitute(false); // Reseta o estado após exibir o toast
+    }
+  }, [isUpdateInstituteModalOpen]);
+
+
+  // confere se o token existe
   useEffect(() => {
     const token = localStorage.getItem("idToken");
     if (!token) {
@@ -121,17 +142,25 @@ export default function Institute() {
     }
   }, [navigate]);
 
-  useEffect(() => {
-    setTimeout(() => {
-      fetchInstitute()
-    }, 502)
-  }, [instId, getInstituteById, isUpdateInstituteModalOpen])
 
+  // atualiza instituto loading
+  useEffect(() => {
+    if (!isUpdateInstituteModalOpen) {
+      setLoading(true);
+      setTimeout(() => {
+        fetchInstitute();
+        setLoading(false);
+      }, 700);
+    }
+  }, [instId, getInstituteById, isUpdateInstituteModalOpen]);
+
+
+  // atualiza events quando se entra na pagina
   useEffect(() => {
     if (institute) {
       fetchEvents()
     }
-  }, [institute, getEventsByInstituteId])
+  }, [institute, getEventsByInstituteId, refreshEvents]);
 
   if (loading) {
     return (
@@ -143,8 +172,10 @@ export default function Institute() {
 
   if (!institute) {
     return (
-      <p className="text-white">Carregando ou nenhum instituto encontrado</p>
-    ) // Mensagem enquanto carrega
+      <div className="h-[100vh] w-full flex justify-center items-center bg-[#151515]">
+        <h1 className="text-white text-4xl">Instituto não encontrado</h1>
+      </div>
+    );
   }
 
   const district = districts.find(d => d.id === institute.district_id)
@@ -157,13 +188,7 @@ export default function Institute() {
           institute={institute}
         />
       )}
-      {isDeleteModalOpen && (
-        <ConfirDelete
-          setIsDeleteModalOpen={setIsDeleteModalOpen}
-          instituteId={instId}
-        />
-      )}
-
+      {isDeleteModalOpen && <ConfirDelete setIsDeleteModalOpen={setIsDeleteModalOpen} instituteId={instId} />}
       <div className="relative h-[100vh] w-[100%] md:w-[70%] flex flex-col py-6 bg-[#2A2A2A] items-center gap-10 px-4">
         <div className="flex flex-col md:flex-row items-center w-full gap-4">
           <div className="rounded-full h-[30rem] md:h-72 min-w-72 max-w-72 bg-light-purple flex justify-center items-center overflow-hidden">
@@ -245,10 +270,8 @@ export default function Institute() {
               <h1>{formatInstituteType(institute.institute_type)}</h1>
             </div>
             <div className="bg-[#2a2a2a] p-2 pb-4 rounded-lg flex justify-center items-center flex-col gap-2 shadow-lg">
-              <h1 className="h-8 w-1/2 rounded-lg bg-[#444] flex justify-center items-center shadow-md">
-                Tipo de Parceiro:
-              </h1>
-              <h1>{formatPartnerType(institute.partner_type)}</h1>
+              <h1 className="h-8 w-1/2 rounded-lg bg-[#444] flex justify-center items-center shadow-md">Tipo de Parceiro:</h1>
+              <h1>{formatPartnerType(institute.partner_type || "NO_PARTNER")}</h1>
             </div>
           </div>
         </div>
@@ -258,18 +281,14 @@ export default function Institute() {
         <div className="flex w-full justify-between items-center px-6">
           <h1 className="text-white text-[48px]">Roles</h1>
           <div className="bg-white w-16 h-16 flex justify-center items-center rounded-xl text-3xl hover:cursor-pointer hover:bg-white-purple">
-            <CreateEventModal />
+            <CreateEventModal onEventCreated={() => setRefreshEvents((prev) => !prev)} />
           </div>
         </div>
         <div className="border-t-2 border-white rounded-3xl flex flex-col h-[calc(100vh-7rem)] overflow-y-scroll items-center w-full">
           {events && events.length > 0 ? (
             events.map((event, eventId) => (
               <div key={eventId} id={eventId}>
-                <EventCard
-                  name={event.name}
-                  imageUrl={event.bannerUrl}
-                  onclick={() => navigate(`/role/${event.eventId}`)}
-                />
+                <EventCard name={event.name} imageUrl={event.bannerUrl || ''} onclick={() => navigate(`/role/${event.eventId}`)} />
               </div>
             ))
           ) : (
@@ -299,14 +318,44 @@ function ConfirDelete({
   }
 
   const handleDeleteClick = async () => {
-    setClicked(true)
-    try {
-      await deleteInstituteById(instituteId)
-      setIsDeleteModalOpen(false)
-      navigate('/institutes')
-    } catch (error: any) {
-      console.log('Erro ao deletar instituto: ' + error.message)
-      setIsDeleteModalOpen(false)
+    setClicked(true);
+    if (deleteInstituteById) {
+      const resp = await deleteInstituteById(instituteId || "");
+      if (resp.status === 200) {
+        setClicked(false);
+        setIsDeleteModalOpen(false);
+        navigate("/institutes");
+        toast.success("Instituto deletado com sucesso", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+        });
+        return
+      } else {
+        toast.error(`${resp}`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+        });
+        return
+      }
+      setClicked(false);
+      setIsDeleteModalOpen(false);
+      navigate("/institutes");
+    } else {
+      console.error("deleteInstituteById is undefined");
     }
   }
 
