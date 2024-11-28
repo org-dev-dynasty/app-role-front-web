@@ -7,11 +7,19 @@ import { useContext, useEffect, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { CreateEventModal } from '../../../components/CreateEventModal'
-import { categories, districts, features, status } from '../../../assets/options'
+import {
+  ageCategories,
+  categories,
+  districts,
+  features,
+  musicTypes,
+  status
+} from '../../../assets/options'
 import DeleteEventModal from '../../../components/DeleteEventModal'
 import { AddImageToGalleryModal } from '../../../components/AddImageToGalleryModal'
 import { InteractableImage } from '../../../components/InteractableImage'
 import { DeleteGalleryButton } from '../../../components/DeleteGalleryButton'
+import EditEventImagesModal from '../../../components/EditEventImagesModal'
 
 export default function Role() {
   let { eventId } = useParams()
@@ -84,7 +92,7 @@ export default function Role() {
 
   return (
     <div className="bg-[#151515] w-screen text-white">
-      <div className="flex flex-col max-w-[1600px] mx-auto bg-[#151515]">
+      <div className="flex flex-col max-w-[1600px] pt-20 min-[1900px]:pt-0 mx-auto bg-[#151515]">
         <div className="flex p-4 mt-6 w-full">
           <div className="w-80 h-80">
             <img
@@ -104,32 +112,33 @@ export default function Role() {
                   emptyIcon={<CurrencyDollar size={32} className="inline" />}
                   initialValue={eventPrice}
                   fillIcon={
-                    <CurrencyDollar
-                      size={32}
-                      className="inline fill-green-700"
-                    />
+                    <CurrencyDollar size={32} className="inline fill-violet" />
                   }
                   readonly
                   className="relative top-1"
                 />
               </div>
             </div>
-            <h2 className="text-2xl text-[#b3b3b3] max-w-2xl">
+            <h2 className="text-2xl text-[#b3b3b3] max-w-4xl">
               {eventDescription}
             </h2>
 
             <div className="flex text-nowrap flex-col gap-2 text-[#ffffff]">
-              <span className="text-2xl">
-                {new Date(eventDate).toLocaleDateString() ?? 'Não informado'}
-              </span>
-              <span className="text-xl">
-                Inicio as {dayjs(new Date(eventDate)).format('HH:mm')}
-              </span>
+              <h1 className="text-2xl">Data do evento</h1>
+              <div className="flex gap-4 items-center">
+                <span className="text-2xl text-neutral-300">
+                  {new Date(eventDate).toLocaleDateString() ?? 'Não informado'}
+                </span>
+                <span className="text-xl text-neutral-300">
+                  Inicio as {dayjs(new Date(eventDate)).format('HH:mm')}
+                </span>
+              </div>
             </div>
 
             <div className="flex gap-4">
               <EditEventModal />
               <DeleteEventModal />
+              <EditEventImagesModal />
             </div>
 
             <Link
@@ -151,16 +160,14 @@ export default function Role() {
           </EventInfoUnit>
 
           <EventInfoUnit value="ageRange" label="Idade permitida">
-            {eventAge}
+            {ageCategories.find(a => a.value === eventAge)?.label ??
+              'Todas as idades'}
           </EventInfoUnit>
 
           <EventInfoUnit value="musicType" label="Tipo de música">
-            {eventMusicType
-              .map(
-                word =>
-                  word.toLowerCase().charAt(0).toUpperCase() +
-                  word.slice(1).toLowerCase()
-              )
+            {musicTypes
+              .filter(evt => eventMusicType.includes(evt.value)) // Filtra os objetos com os valores selecionados
+              .map(feature => feature.label)
               .join(', ')}
           </EventInfoUnit>
 
@@ -172,7 +179,7 @@ export default function Role() {
           </EventInfoUnit>
 
           <EventInfoUnit value="ticketUrl" label="Link para ingressos">
-            {eventTicketUrl}
+            <span className='text-xs'>{eventTicketUrl}</span>
           </EventInfoUnit>
 
           <EventInfoUnit value="category" label="Categoria">

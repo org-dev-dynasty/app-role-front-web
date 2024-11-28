@@ -10,6 +10,24 @@ import { z } from 'zod'
 import { ImageInputFile } from './ImageInputFile'
 import { useNavigate, useParams } from 'react-router-dom'
 
+interface FormErrors {
+  name?: string
+  description?: string
+  address?: string
+  eventDate?: string
+  price?: string
+  category?: string
+  ageRange?: string
+  musicType?: string
+  districtId?: string
+  instituteId?: string
+  features?: string
+  menuLink?: string
+  packageType?: string
+  ticketUrl?: string
+  eventStatus?: string
+}
+
 import {
   ageCategories,
   categories,
@@ -20,6 +38,7 @@ import {
   status
 } from '../assets/options'
 import { toast } from 'react-toastify'
+import { createEventSchema } from '../zodSchemas/createEventSchema'
 
 interface CreateEventModalProps {
   onEventCreated: () => void
@@ -44,36 +63,20 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
     districts[0].districtId
   )
 
-  const [selectedMusics, setSelectedMusics] = useState<string[]>([''])
-  const [selectedFeatures, setSelectedFeatures] = useState<string[]>([''])
-  const [selectedPackages, setSelectedPackages] = useState<string[]>([''])
+  const [selectedMusics, setSelectedMusics] = useState<string[]>([])
+  const [selectedFeatures, setSelectedFeatures] = useState<string[]>([])
+  const [selectedPackages, setSelectedPackages] = useState<string[]>([])
 
   const [eventImage, setEventImage] = useState<File>()
   const [bannerImage, setBannerImage] = useState<File>()
 
+  const [errors, setErrors] = useState<FormErrors>({})
+
   const { createEvent, uploadEventImage, uploadEventBanner } =
     useContext(EventContext)
 
-  async function createEventRequest() {
+  async function createEventRequest(e: React.MouseEvent<HTMLButtonElement>) {
     try {
-      const eventBodySchema = z.object({
-        name: z.string().min(5).max(100),
-        description: z.string().min(5),
-        address: z.string().max(70),
-        eventDate: z.date(),
-        price: z.number().min(1).max(5),
-        category: z.string(),
-        ageRange: z.string(),
-        musicType: z.array(z.string()),
-        districtId: z.string(),
-        instituteId: z.string(),
-        features: z.array(z.string()),
-        menuLink: z.string().optional(),
-        packageType: z.array(z.string()),
-        ticketUrl: z.string().optional(),
-        eventStatus: z.string()
-      })
-
       const eventBody = {
         name: name,
         description: description,
@@ -96,14 +99,31 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
         id: string
       }
 
-      const resp: CreateEvent = (await createEvent(
-        eventBodySchema.parse(eventBody)
-      )) as CreateEvent
+      let resp: CreateEvent
 
-      console.log(resp, resp.id)
+      try {
+        resp = (await createEvent(
+          createEventSchema.parse(eventBody)
+        )) as CreateEvent
 
-      await uploadEventImageReq(resp.id, eventImage)
-      await uploadEventBannerReq(resp.id, bannerImage)
+        console.log(resp, resp.id)
+
+        await uploadEventImageReq(resp.id, eventImage)
+        await uploadEventBannerReq(resp.id, bannerImage)
+
+        setErrors({})
+      } catch (error) {
+        e.preventDefault()
+        if (error instanceof z.ZodError) {
+          const formErrors = error.errors.reduce((acc: FormErrors, curr) => {
+            acc[curr.path[0] as keyof FormErrors] = curr.message
+            return acc
+          }, {})
+          setErrors(formErrors)
+        }
+
+        console.log(error)
+      }
 
       // navigate(`/role/${resp.id}`)
 
@@ -137,7 +157,7 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
 
     formData.append('eventId', id)
     formData.append('typePhoto', imgType)
-    formData.append('eventPhoto', image)
+    formData.append('file', image)
 
     const resp = await uploadEventImage(formData)
 
@@ -152,7 +172,7 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
 
     formData.append('eventId', id)
     formData.append('typePhoto', imgType)
-    formData.append('eventPhoto', image)
+    formData.append('file', image)
 
     const resp = await uploadEventBanner(formData)
     console.log('Banner enviado:', resp)
@@ -196,6 +216,7 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
               id="roleName"
               onChange={e => setName(e.target.value)}
             />
+            {errors.name && <span className="text-red-500">{errors.name}</span>}
           </fieldset>
 
           <fieldset className="mb-4 flex flex-col gap-1 text-white">
@@ -207,6 +228,9 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
               id="description"
               onChange={e => setDescription(e.target.value)}
             />
+            {errors.description && (
+              <span className="text-red-500">{errors.description}</span>
+            )}
           </fieldset>
 
           <fieldset className="mb-4 flex flex-col gap-1 text-white">
@@ -218,6 +242,9 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
               id="adress"
               onChange={e => setAddress(e.target.value)}
             />
+            {errors.address && (
+              <span className="text-red-500">{errors.address}</span>
+            )}
           </fieldset>
 
           <fieldset className="mb-4 flex flex-col gap-1 text-white">
@@ -233,6 +260,10 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
                 console.log(e.target.value, date)
               }}
             />
+
+            {errors.eventDate && (
+              <span className="text-red-500">{errors.eventDate}</span>
+            )}
           </fieldset>
 
           <fieldset className="mb-4 flex w-full justify-between flex-row gap-8 [&>div]:w-1/3 text-white">
@@ -243,7 +274,7 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
                 allowFraction={false}
                 emptyIcon={<CurrencyDollar size={32} className="inline" />}
                 fillIcon={
-                  <CurrencyDollar size={32} className="inline fill-green-700" />
+                  <CurrencyDollar size={32} className="inline fill-violet" />
                 }
               />
             </div>
@@ -266,6 +297,9 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
                   )
                 })}
               </select>
+              {errors.category && (
+                <span className="text-red-500">{errors.category}</span>
+              )}
             </div>
 
             <div className="flex flex-col gap-1">
@@ -289,6 +323,9 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
                   )
                 })}
               </select>
+              {errors.ageRange && (
+                <span className="text-red-500">{errors.category}</span>
+              )}
             </div>
           </fieldset>
 
@@ -316,6 +353,10 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
                 onChange={handleChange}
                 options={musicTypes}
               />
+
+              {errors.musicType && (
+                <span className="text-red-500">{errors.musicType}</span>
+              )}
             </div>
 
             <div className="flex flex-col gap-1 w-1/3">
@@ -336,6 +377,10 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
                   )
                 })}
               </select>
+
+              {errors.eventStatus && (
+                <span className="text-red-500">{errors.eventStatus}</span>
+              )}
             </div>
           </fieldset>
 
@@ -349,6 +394,9 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
               placeholder="https://www.example.com.br/ingressos/"
               onChange={e => setTicketUrl(e.target.value)}
             />
+            {errors.ticketUrl && (
+              <span className="text-red-500">{errors.ticketUrl}</span>
+            )}
           </fieldset>
 
           <fieldset className="mb-4 flex w-full justify-between flex-row gap-8 text-white">
@@ -375,6 +423,10 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
                     )
                   })}
                 </select>
+
+                {errors.districtId && (
+                  <span className="text-red-500">{errors.districtId}</span>
+                )}
               </div>
 
               <div className="flex flex-col w-full gap-1">
@@ -384,6 +436,9 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
                   onChange={handleFeaturesSelectChange}
                   options={features}
                 />
+                {errors.features && (
+                  <span className="text-red-500">{errors.features}</span>
+                )}
               </div>
             </div>
 
@@ -416,6 +471,10 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
               onChange={handlePackageTypeSelectChange}
               options={packageTypeArray}
             />
+
+            {errors.packageType && (
+              <span className="text-red-500">{errors.packageType}</span>
+            )}
           </fieldset>
 
           <div className="flex gap-4">
@@ -438,7 +497,7 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
           <div className="mt-2 flex justify-end">
             <Dialog.Close asChild>
               <button
-                onClick={createEventRequest}
+                onClick={e => createEventRequest(e)}
                 className="inline-flex h-[35px] items-center justify-center rounded bg-violet px-4 font-medium leading-none text-white  hover:bg-violet focus:shadow-[0_0_0_2px] focus:shadow-purple focus:outline-none"
               >
                 Salvar Role

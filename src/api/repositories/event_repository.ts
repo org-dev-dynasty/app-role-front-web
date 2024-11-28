@@ -138,6 +138,26 @@ export class EventRepositoryHttp {
     }
   }
 
+  async deleteEventImage(id: string) {
+    try {
+      const resp = await httpEvent.delete(`/delete-event-photo?eventId=${id}`);
+
+      return resp.data;
+    } catch (error: any) {
+      throw new Error("Erro ao deletar imagem do evento: " + error.message);
+    }
+  }
+
+  async deleteEventBanner(id: string) {
+    try {
+      const resp = await httpEvent.delete(`/delete-event-banner?eventId=${id}`);
+
+      return resp.data;
+    } catch (error: any) {
+      throw new Error("Erro ao deletar banner do evento: " + error.message);
+    }
+  }
+
   async getEventsByInstituteId(id: string) {
     try {
       const resp = await httpEvent.get<{ events: EventType[] }>(
