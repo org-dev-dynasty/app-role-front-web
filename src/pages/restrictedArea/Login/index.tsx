@@ -52,25 +52,12 @@ export default function Login() {
     }
 
     if (username && password) {
-      try {
-        console.log("Usuário: ", username)
-        console.log("Senha: ", password)
-        const resp = await signIn({"identifier": username, "password": password })
-        console.log("Resposta: ", resp)
-        // if (resp.accessToken) {
-          localStorage.setItem('accessToken', resp.accessToken);
-          localStorage.setItem('refreshToken', resp.refreshToken);
-          localStorage.setItem('idToken', resp.idToken);
-          navigate('/institutes')
-        // } if (!resp.accessToken) {
-        //   // Lançar erro manualmente se a resposta não contém accessToken
-        //   // throw new Error(resp.data ? (resp.message).split(":")[0] : 'Erro desconhecido');
-        //   console.log("Erro message: ", resp.message)
-        //   console.log("Erro request: ", resp.error.response.data)
-        // }
-      } catch (error: any) {
-        console.log("Erro: ", error)
-        toast.error(`${error}`, {
+      console.log("Usuário: ", username)
+      console.log("Senha: ", password)
+      const resp = await signIn({ "identifier": username, "password": password })
+      console.log("Resposta: ", resp)
+      if (resp === "Credenciais inválidas") {
+        toast.error(`${resp}`, {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -81,7 +68,12 @@ export default function Login() {
           theme: "colored",
           transition: Bounce,
         });
+        return
       }
+      localStorage.setItem('accessToken', resp.accessToken);
+      localStorage.setItem('refreshToken', resp.refreshToken);
+      localStorage.setItem('idToken', resp.idToken);
+      navigate('/institutes')
     }
   }
 
