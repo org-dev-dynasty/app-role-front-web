@@ -139,7 +139,13 @@ export default function Institute() {
   }, [navigate]);
 
   useEffect(() => {
-    fetchInstitute();
+    if (!isUpdateInstituteModalOpen) {
+      setLoading(true);
+      setTimeout(() => {
+        fetchInstitute();
+        setLoading(false);
+      }, 700);
+    }
   }, [instId, getInstituteById, isUpdateInstituteModalOpen]);
 
   useEffect(() => {
