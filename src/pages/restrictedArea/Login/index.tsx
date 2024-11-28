@@ -27,15 +27,7 @@ export default function Login() {
   const [isVisible, setIsVisible] = useState(false)
 
   const handleEsqueciSenha = () => {
-    if (!username || username === "") {
-      toast.error("Preencha com o e-mail ou usuário da sua conta", {
-        position: "top-right",
-        autoClose: 5000,
-        theme: "colored",
-      });
-      return
-    }
-    navigate('/verifyCode')
+    navigate('/getEmail')
   }
 
   const handleEntrar = async () => {

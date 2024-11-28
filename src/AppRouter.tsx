@@ -8,6 +8,7 @@ import { EventContextProvider } from './context/event_context'
 import { AuthContextProvider } from './context/auth_context'
 import Login from './pages/restrictedArea/Login'
 import ResetPasswordCode from './pages/restrictedArea/confirmCode'
+import GetEmail from './pages/restrictedArea/getEmail'
 
 export function AppRouter() {
   return (
@@ -23,6 +24,7 @@ export function AppRouter() {
               <Route path="role">
                 <Route path=":eventId" element={<Role />} />
               </Route>
+              <Route Component={GetEmail} path='/getEmail' element={<GetEmail />} />
               <Route Component={ResetPasswordCode} path='/verifyCode' element={<ResetPasswordCode />} />
             </Routes>
           </BrowserRouter>
