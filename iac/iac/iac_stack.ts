@@ -26,6 +26,28 @@ export class IacStack extends cdk.Stack {
       comment: 'OAI for S3 bucket',
     });
 
+    const cachePolicy = new cdk.aws_cloudfront.CachePolicy(this, 'AppRoleFrontCachePolicy', {
+      cachePolicyName: 'AppRoleFrontCachePolicy',
+      comment: 'Cache policy that forwards Origin header',
+      defaultTtl: cdk.Duration.days(1),
+      maxTtl: cdk.Duration.days(365),
+      minTtl: cdk.Duration.seconds(0),
+      headerBehavior: cdk.aws_cloudfront.CacheHeaderBehavior.allowList('Origin'),
+    });
+
+    const responseHeadersPolicy = new cdk.aws_cloudfront.ResponseHeadersPolicy(this, 'AppRoleFrontResponseHeadersPolicy', {
+      responseHeadersPolicyName: 'AppRoleFrontResponseHeadersPolicy',
+      comment: 'Response headers policy for CORS',
+      corsBehavior: {
+        accessControlAllowOrigins: ['*'],
+        accessControlAllowMethods: ['GET', 'HEAD'],
+        accessControlAllowHeaders: ['*'],
+        accessControlAllowCredentials: true,
+        accessControlExposeHeaders: ['Access-Control-Allow-Origin'],
+        originOverride: true
+      }
+    });
+
     const distribution = new Distribution(this, 'AppRoleFrontDistribution', {
       defaultBehavior: {
         origin: new cdk.aws_cloudfront_origins.S3Origin(s3AssetsBucket, {
@@ -34,7 +56,8 @@ export class IacStack extends cdk.Stack {
         allowedMethods: cdk.aws_cloudfront.AllowedMethods.ALLOW_GET_HEAD,
         cachedMethods: cdk.aws_cloudfront.CachedMethods.CACHE_GET_HEAD,
         viewerProtocolPolicy: cdk.aws_cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-        cachePolicy: cdk.aws_cloudfront.CachePolicy.CACHING_OPTIMIZED,
+        cachePolicy: cachePolicy,
+        responseHeadersPolicy: responseHeadersPolicy,
       },
     });
 
