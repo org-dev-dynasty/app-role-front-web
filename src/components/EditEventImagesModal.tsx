@@ -7,7 +7,8 @@ import { EventContext } from '../context/event_context'
 import { ImageInputFile } from './ImageInputFile'
 
 export default function EditEventImagesModal() {
-  const { getEventById, deleteEventById } = useContext(EventContext)
+  const { getEventById, deleteEventById, deleteEventImage, deleteEventBanner } =
+    useContext(EventContext)
 
   const navigate = useNavigate()
 
@@ -25,6 +26,14 @@ export default function EditEventImagesModal() {
 
       console.log(res.bannerUrl)
 
+      if (res.eventPhotoLink) {
+        setIsImageUploaded(true)
+      }
+
+      if (res.bannerUrl) {
+        setIsBannerUploaded(true)
+      }
+
       setEventName(res.name)
     } catch (error) {
       console.log('Erro ao buscar evento por id: ', error)
@@ -37,6 +46,32 @@ export default function EditEventImagesModal() {
 
   const [eventImage, setEventImage] = useState<File>()
   const [bannerImage, setBannerImage] = useState<File>()
+
+  const [isImageUploaded, setIsImageUploaded] = useState(false)
+  const [isBannerUploaded, setIsBannerUploaded] = useState(false)
+
+  function handleRemoveImage() {
+    if (isImageUploaded) {
+      if (!eventId) return
+
+      deleteEventImage(eventId)
+      setIsImageUploaded(false)
+    }
+  }
+
+  async function handleRemoveBanner() {
+    if (isBannerUploaded) {
+      if (!eventId) return
+
+      try {
+        await deleteEventBanner(eventId)
+      } catch (error) {
+        console.log('Erro ao deletar banner: ', error)
+        return
+      }
+      setIsBannerUploaded(false)
+    }
+  }
 
   return (
     <Dialog.Root>
@@ -51,9 +86,8 @@ export default function EditEventImagesModal() {
           <Dialog.Title className="m-0 text-3xl font-medium text-white mb-4">
             Editar imagens do ROLE
           </Dialog.Title>
-          {/* <Dialog.Description className="my-2.5 text-2xl leading-normal text-stone-300 text-center">
-            Tem certeza que deseja deletar este ROLE?
-          </Dialog.Description> */}
+          <Dialog.Description className="my-2.5 text-2xl leading-normal text-stone-300 text-center">
+          </Dialog.Description>
 
           <div className="flex gap-4">
             <div className="w-full flex flex-col gap-2">
@@ -70,8 +104,13 @@ export default function EditEventImagesModal() {
                 />
               </div>
 
-              <button className="px-4 py-2 bg-red-500 rounded-md text-white">
-                Remover imagem
+              <button
+                className={`px-4 py-2 ${
+                  isImageUploaded ? 'bg-red-500' : 'bg-green-500'
+                } rounded-md text-white`}
+                onClick={handleRemoveImage}
+              >
+                {isImageUploaded ? 'Remover imagem' : 'Adicionar Imagem'}
               </button>
             </div>
 
@@ -84,8 +123,13 @@ export default function EditEventImagesModal() {
                 />
               </div>
 
-              <button className="px-4 py-2 w-full bg-red-500 rounded-md text-white">
-                Remover imagem
+              <button
+                className={`px-4 py-2 ${
+                  isBannerUploaded ? 'bg-red-500' : 'bg-green-500'
+                } rounded-md text-white`}
+                onClick={handleRemoveBanner}
+              >
+                {isImageUploaded ? 'Remover imagem' : 'Adicionar Imagem'}
               </button>
             </div>
           </div>
