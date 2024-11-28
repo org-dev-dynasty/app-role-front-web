@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { httpAuth } from "../http"
 
 export class AuthRepositoryHttp {
@@ -8,7 +9,12 @@ export class AuthRepositoryHttp {
         return resp.data
       }
     } catch (error: any) {
-      throw new Error('Erro ao logar: ', error.response.data)
+      if (error.response.status === 400 && error.response.data === 'Credenciais inválidas') {
+        return error.response.data
+      }
+
+      throw new Error(`Error AuthRepositoryHttp login: ${error} \n Status: ${error.response.status} \n Data: ${error.response.data}`)
+      
     }
   }
 }
