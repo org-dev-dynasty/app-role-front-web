@@ -48,8 +48,8 @@ export default function Login() {
       console.log("Senha: ", password)
       const resp = await signIn({ "identifier": username, "password": password })
       console.log("Resposta: ", resp)
-      if (resp === "Credenciais inválidas") {
-        toast.error(`${resp}`, {
+      if (resp.status === 400) {
+        toast.error(`${resp.response.data}`, {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createContext, PropsWithChildren } from "react"
 import { AuthRepositoryHttp } from "../api/repositories/auth_repository"
 
@@ -11,6 +13,8 @@ interface SignInResponse {
   refreshToken: string;
   idToken: string;
   message?: string | undefined;
+  status?: number | undefined;
+  response?: any;
 }
 
 interface forgotPasswordData {
@@ -56,7 +60,7 @@ type authContextType = {
 }
 
 const defaultAuth = {
-  signIn: async (data: SignInData): Promise<SignInResponse> => {
+  signIn: async (_data: SignInData): Promise<SignInResponse> => {
     return {
       accessToken: "",
       refreshToken: "",
@@ -65,25 +69,25 @@ const defaultAuth = {
     }
   },
 
-  forgotPassword: async (data: forgotPasswordData): Promise<forgetPasswordResponse> => {
+  forgotPassword: async (_data: forgotPasswordData): Promise<forgetPasswordResponse> => {
     return {
       message: ""
     }
   },
 
-  confirmCode: async (data: confirmCodeData): Promise<confirmCodeResponse> => {
+  confirmCode: async (_data: confirmCodeData): Promise<confirmCodeResponse> => {
     return {
       message: ""
     }
   },
 
-  resendCode: async (data: resendCodeData): Promise<resendCodeResponse> => {
+  resendCode: async (_data: resendCodeData): Promise<resendCodeResponse> => {
     return {
       message: ""
     }
   },
 
-  confirmForgotPassword: async (data: confirmForgotPasswordData): Promise<confirmForgotPasswordResponse> => {
+  confirmForgotPassword: async (_data: confirmForgotPasswordData): Promise<confirmForgotPasswordResponse> => {
     return {
       message: ""
     }

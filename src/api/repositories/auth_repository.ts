@@ -10,10 +10,10 @@ export class AuthRepositoryHttp {
       }
     } catch (error: any) {
       if (
-        error.response.status === 400 &&
+        error.status === 400 &&
         error.response.data === "Credenciais inválidas"
       ) {
-        return error.response.data;
+        return error;
       }
 
       throw new Error(
@@ -22,7 +22,7 @@ export class AuthRepositoryHttp {
     }
   }
 
-  async forgotPassword(data: string) {
+  async forgotPassword(data: any) {
     try {
       const response = await httpAuth.post("/forgot-password", data);
       return response.data;
@@ -31,7 +31,7 @@ export class AuthRepositoryHttp {
     }
   }
 
-  async confirmCode(data: string) {
+  async confirmCode(data: any) {
     try {
       const response = await httpAuth.post("confirm-code", data);
       return response.data;
@@ -40,7 +40,7 @@ export class AuthRepositoryHttp {
     }
   }
 
-  async resendCode(data: string) {
+  async resendCode(data: any) {
     try {
       const response = await httpAuth.post("/resend-code", data);
       return response.data;
@@ -50,7 +50,7 @@ export class AuthRepositoryHttp {
     }
   }
 
-  async confirmForgotPassword(data: string) {
+  async confirmForgotPassword(data: any) {
     try {
       const response = await httpAuth.post(`/confirm-forgot-password`, data);
       return response.data;

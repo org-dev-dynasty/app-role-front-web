@@ -11,17 +11,17 @@ import { CreateEventModal } from "../../../components/CreateEventModal";
 import { Bounce, toast } from "react-toastify";
 
 interface Institute {
-  address?: string | undefined;
+  institute_id: string;
+  name: string;
   description: string;
+  institute_type: string;
+  phone?: string | undefined;
+  logo_photo?: string;
+  partner_type?: string | undefined;
+  address?: string | undefined;
+  price?: number | undefined;
   district_id?: string | undefined;
   events_id?: string[] | undefined;
-  institute_id: string;
-  institute_type: string;
-  logo_photo?: string | undefined;
-  name: string;
-  partner_type?: string | undefined;
-  phone?: string | undefined;
-  price?: number | undefined;
 }
 
 const districts = [
@@ -287,7 +287,7 @@ export default function Institute() {
         <div className="border-t-2 border-white rounded-3xl flex flex-col h-[calc(100vh-7rem)] overflow-y-scroll items-center w-full">
           {events && events.length > 0 ? (
             events.map((event, eventId) => (
-              <div key={eventId} id={eventId}>
+              <div key={eventId}>
                 <EventCard name={event.name} imageUrl={event.bannerUrl || ''} onclick={() => navigate(`/role/${event.eventId}`)} />
               </div>
             ))

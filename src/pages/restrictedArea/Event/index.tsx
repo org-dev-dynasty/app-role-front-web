@@ -1,15 +1,14 @@
-import { CaretLeft, CurrencyDollar, Eye } from '@phosphor-icons/react'
+import { CaretLeft, CurrencyDollar } from '@phosphor-icons/react'
 import { Rating } from 'react-simple-star-rating'
 import { EventInfoUnit } from '../../../components/EventInfoUnit'
 import { EditEventModal } from '../../../components/EditEventModal'
 import { EventContext } from '../../../context/event_context'
 import { useContext, useEffect, useState } from 'react'
-import { Link, Navigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import dayjs from 'dayjs'
-import { CreateEventModal } from '../../../components/CreateEventModal'
 import {
   ageCategories,
-  categories,
+  categories, 
   districts,
   features,
   musicTypes,

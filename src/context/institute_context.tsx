@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createContext, PropsWithChildren } from "react"
 import { InstituteRepositoryHttp } from "../api/repositories/institute_repository"
 import { InstituteProps } from "../components/updateInstituteModal";
@@ -21,7 +22,17 @@ interface getAllInstitutesResponse {
 }
 
 interface getInstituteByIdResponse {
-    institute: Institute
+    institute_id: string;
+    name: string;
+    description: string;
+    institute_type: string;
+    phone?: string | undefined;
+    logo_photo?: string;
+    partner_type?: string | undefined;
+    address?: string | undefined;
+    price?: number | undefined;
+    district_id?: string | undefined;
+    events_id?: string[] | undefined;
 }
 
 interface createInstituteResponse {
@@ -29,24 +40,27 @@ interface createInstituteResponse {
 }
 
 interface deleteInstituteByIdResponse {
-    message: string
+    message: string,
+    status?: number
 }
 
 interface updateInstituteByIdResponse {
-    message: string
+    message: string,
+    status?: number
 }
 
 interface uploadInstituteImageResponse {
-    message: string
+    message: string,
+    status?: number
 }
 
 type InstituteContextType = {
     getAllInstitutes: () => Promise<getAllInstitutesResponse>
     getInstituteById: (id: string) => Promise<getInstituteByIdResponse>
-    createInstitute?: (data: Institute) => Promise<createInstituteResponse>
-    deleteInstituteById?: (id: string) => Promise<deleteInstituteByIdResponse>
-    updateInstituteById?: (data: Partial<InstituteProps>) => Promise<updateInstituteByIdResponse>
-    uploadInstituteImage?: (data: FormData) => Promise<uploadInstituteImageResponse>
+    createInstitute: (data: Institute) => Promise<createInstituteResponse>
+    deleteInstituteById: (id: string) => Promise<deleteInstituteByIdResponse>
+    updateInstituteById: (data: Partial<InstituteProps>) => Promise<updateInstituteByIdResponse>
+    uploadInstituteImage: (data: FormData) => Promise<uploadInstituteImageResponse>
 }
 
 
@@ -56,7 +70,7 @@ const defaultInstitute = {
             institutes: []
         }
     },
-    getInstituteById: async (id: string) => {
+    getInstituteById: async (_id: string) => {
         return {
             institute: {
                 institute_id: "",
@@ -72,22 +86,22 @@ const defaultInstitute = {
             }
         }
     },
-    createInstitute: async (data: Institute) => {
+    createInstitute: async (_data: Institute) => {
         return {
             message: ""
         }
     },
-    deleteInstituteById: async (id: string) => {
+    deleteInstituteById: async (_id: string) => {
         return {
             message: ""
         }
     },
-    updateInstituteById: async (data: InstituteProps) => {
+    updateInstituteById: async (_data: InstituteProps) => {
         return {
             message: ""
         }
     },
-    uploadInstituteImage: async (data: FormData) => {
+    uploadInstituteImage: async (_data: FormData) => {
         return {
             message: ""
         }
