@@ -139,7 +139,8 @@ export default function ResetPasswordCode() {
           {confirmPasswordErr && <p className="text-red-500 text-md mt-2">{confirmPasswordErr}</p>}
           <div className="flex w-[80%] justify-evenly">
             <button onClick={handleVoltar} className="bg-[#ff5050] text-black px-4 py-2 w-28 rounded-lg hover:bg-[#c25858] shadow-sm shadow-white duration-300 hover:text-white mt-8 mb-8">Voltar</button>
-            <button onClick={handleValidPasswords} className="bg-[#f1f1f1] text-black px-4 py-2 w-28 rounded-lg hover:bg-[#525252] shadow-sm shadow-white duration-300 hover:text-white mt-8 mb-8">Confirmar</button>
+            {!isVerified ? <button onClick={handleValidPasswords} className="bg-[#616161] text-black px-4 py-2 w-28 rounded-lg shadow-sm shadow-white duration-300 mt-8 mb-8">Confirmar</button> :
+              <button onClick={handleValidPasswords} className="bg-[#f1f1f1] text-black px-4 py-2 w-28 rounded-lg hover:bg-[#525252] shadow-sm shadow-white duration-300 hover:text-white mt-8 mb-8">Confirmar</button>}
           </div>
         </div>
       </div>

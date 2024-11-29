@@ -43,6 +43,15 @@ export default function GetEmail() {
       });
       return
     }
+    toast.success(`${response.message}`, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined
+    });
     localStorage.setItem('email', email)
     navigate('/verifyCode')
   }
