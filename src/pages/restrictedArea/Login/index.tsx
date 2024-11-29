@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { ToastContainer, toast, Bounce } from "react-toastify";
+import { toast, Bounce } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { envs } from "../../../utils/envs";
 import { EyeSlash, Eye, User } from "@phosphor-icons/react";

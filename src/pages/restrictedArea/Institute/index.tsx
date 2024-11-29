@@ -8,8 +8,7 @@ import { ClipLoader } from "react-spinners";
 import { EventContext } from "../../../context/event_context";
 import { EventType } from "../../../api/repositories/event_repository";
 import { CreateEventModal } from "../../../components/CreateEventModal";
-import { Bounce, toast, ToastContainer } from "react-toastify";
-import { set } from "zod";
+import { Bounce, toast } from "react-toastify";
 
 interface Institute {
   address?: string | undefined;

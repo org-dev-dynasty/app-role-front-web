@@ -6,7 +6,7 @@ import { InstituteContext } from "../../../context/institute_context";
 import CreateInstituteModal from "../../../components/createInstituteModal";
 import { useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
-import { Bounce, toast, ToastContainer } from "react-toastify";
+import { Bounce, toast } from "react-toastify";
 
 interface Institute {
     instituteId: string;

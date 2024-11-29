@@ -2,8 +2,7 @@ import { EnvelopeSimple } from "@phosphor-icons/react"
 import { useState, useContext } from "react"
 import { useNavigate } from "react-router-dom"
 import { envs } from "../../../utils/envs"
-import { toast, ToastContainer } from "react-toastify"
-import { set } from "zod"
+import { toast } from "react-toastify"
 import { AuthContext } from "../../../context/auth_context"
 
 export default function GetEmail() {
