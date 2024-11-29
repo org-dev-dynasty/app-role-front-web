@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { InstituteContext } from '../context/institute_context';
+import { toast } from 'react-toastify';
 
 interface InstituteModalProps {
   setIsUpdateInstituteModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -148,6 +149,7 @@ export default function UpdateInstituteModal({ setIsUpdateInstituteModalOpen, in
       formData.append("name", instituteName);
       formData.append("typePhoto", logoType);
       formData.append("files", logoPhoto);
+      return formData;
     }
   }
 
@@ -323,7 +325,7 @@ interface ConfirmUpdateProps {
   setIsUpdateInstituteModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   instituteId: string;
   newInstituteData: Partial<InstituteProps>;
-  formData: FormData;
+  formData?: FormData;
 }
 
 function ConfirmUpdate({ setIsConfirmOpen, setIsUpdateInstituteModalOpen, newInstituteData, formData }: ConfirmUpdateProps) {
@@ -332,15 +334,45 @@ function ConfirmUpdate({ setIsConfirmOpen, setIsUpdateInstituteModalOpen, newIns
   const handleConfirmClick = async () => {
     // Update the institute with the new data
     console.log(newInstituteData);
+    if (formData === undefined) {
+      const resp = await updateInstituteById(newInstituteData);
+      console.log("Update Response:", resp);
+      if (resp.status === 400) {
+        console.log("Erro ao atualizar instituto");
+        setIsUpdateInstituteModalOpen(false);
+        return
+      }
+      toast.success("Instituto atualizado com sucesso!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+      setIsUpdateInstituteModalOpen(false);
+      setIsConfirmOpen(false);
+      return;
+    }
     const resposta = await uploadInstituteImage(formData);
     console.log("Logo Upload Response:", resposta);
-    const resp = updateInstituteById(newInstituteData);
+    const resp = await updateInstituteById(newInstituteData);
     console.log("Update Response:", resp);
     if (resp.status === 400) {
       console.log("Erro ao atualizar instituto");
       setIsUpdateInstituteModalOpen(false);
       return
     }
+    toast.success("Instituto atualizado com sucesso!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined
+    });
     setIsUpdateInstituteModalOpen(false);
     setIsConfirmOpen(false);
   };

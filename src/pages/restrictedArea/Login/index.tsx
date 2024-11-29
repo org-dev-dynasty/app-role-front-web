@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { ToastContainer, toast, Bounce } from "react-toastify";
+import { toast, Bounce } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { envs } from "../../../utils/envs";
 import { EyeSlash, Eye, User } from "@phosphor-icons/react";
@@ -48,8 +48,8 @@ export default function Login() {
       console.log("Senha: ", password)
       const resp = await signIn({ "identifier": username, "password": password })
       console.log("Resposta: ", resp)
-      if (resp === "Credenciais inválidas") {
-        toast.error(`${resp}`, {
+      if (resp.status === 400) {
+        toast.error(`${resp.response.data}`, {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,

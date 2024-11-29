@@ -1,8 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createContext, PropsWithChildren } from 'react'
 import {
   EventRepositoryHttp,
   EventType
 } from '../api/repositories/event_repository'
+
+interface getEventsByInstituteIdResponse {
+  events: EventType[]
+}
 
 type EventContextType = {
   getEventById: (id: string) => Promise<EventType>
@@ -13,7 +19,7 @@ type EventContextType = {
   uploadEventBanner: (data: FormData) => Promise<object>
   uploadImageToEventGallery: (data: FormData) => Promise<object>
   deleteEventGallery: (id: string) => Promise<object>
-  getEventsByInstituteId: (id: string) => Promise<object>
+  getEventsByInstituteId: (id: string) => Promise<getEventsByInstituteIdResponse>
   deleteEventBanner: (id: string) => Promise<object>
   deleteEventImage: (id: string) => Promise<object>
 }
@@ -57,7 +63,7 @@ const defaultInstitute = {
     return {}
   },
   getEventsByInstituteId: async () => {
-    return {}
+    return { events: [] }
   },
   uploadEventBanner: async () => {
     return {}

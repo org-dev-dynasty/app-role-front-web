@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createContext, PropsWithChildren } from "react"
 import { AuthRepositoryHttp } from "../api/repositories/auth_repository"
 
@@ -11,19 +13,54 @@ interface SignInResponse {
   refreshToken: string;
   idToken: string;
   message?: string | undefined;
+  status?: number | undefined;
+  response?: any;
 }
 
-interface forgetPasswordData {
+interface forgotPasswordData {
+  email: string;
+}
+
+interface forgetPasswordResponse {
+  message: string;
+}
+
+interface confirmCodeData {
+  code: string;
+  email: string;
+}
+
+interface confirmCodeResponse {
+  message: string;
+}
+
+interface resendCodeData {
+  email: string;
+}
+
+interface resendCodeResponse {
+  message: string;
+}
+
+interface confirmForgotPasswordResponse {
+  message: string;
+}
+
+interface confirmForgotPasswordData {
+  newPassword: string;
   email: string;
 }
 
 type authContextType = {
   signIn: (data: SignInData) => Promise<SignInResponse>
-  forgotPassword: (data: forgetPasswordData) => Promise<any>
+  forgotPassword: (data: forgotPasswordData) => Promise<forgetPasswordResponse>
+  confirmCode: (data: confirmCodeData) => Promise<confirmCodeResponse>
+  resendCode: (data: resendCodeData) => Promise<resendCodeResponse>
+  confirmForgotPassword: (data: confirmForgotPasswordData) => Promise<confirmForgotPasswordResponse>
 }
 
 const defaultAuth = {
-  signIn: async (data: SignInData): Promise<SignInResponse> => {
+  signIn: async (_data: SignInData): Promise<SignInResponse> => {
     return {
       accessToken: "",
       refreshToken: "",
@@ -32,7 +69,25 @@ const defaultAuth = {
     }
   },
 
-  forgotPassword: async (data: forgetPasswordData): Promise<any> => {
+  forgotPassword: async (_data: forgotPasswordData): Promise<forgetPasswordResponse> => {
+    return {
+      message: ""
+    }
+  },
+
+  confirmCode: async (_data: confirmCodeData): Promise<confirmCodeResponse> => {
+    return {
+      message: ""
+    }
+  },
+
+  resendCode: async (_data: resendCodeData): Promise<resendCodeResponse> => {
+    return {
+      message: ""
+    }
+  },
+
+  confirmForgotPassword: async (_data: confirmForgotPasswordData): Promise<confirmForgotPasswordResponse> => {
     return {
       message: ""
     }
@@ -53,7 +108,7 @@ export function AuthContextProvider({ children }: PropsWithChildren) {
     }
   }
 
-  async function forgotPassword(data: forgetPasswordData) {
+  async function forgotPassword(data: forgotPasswordData) {
     try {
       const response = await repo.forgotPassword(data)
       return response
@@ -62,8 +117,35 @@ export function AuthContextProvider({ children }: PropsWithChildren) {
     }
   }
 
+  async function confirmCode(data: confirmCodeData) {
+    try {
+      const response = await repo.confirmCode(data)
+      return response
+    } catch (error: any) {
+      return error
+    }
+  }
+
+  async function resendCode(data: resendCodeData) {
+    try {
+      const response = await repo.resendCode(data)
+      return response
+    } catch (error: any) {
+      return error
+    }
+  }
+
+  async function confirmForgotPassword(data: confirmForgotPasswordData) {
+    try {
+      const response = await repo.confirmForgotPassword(data)
+      return response
+    } catch (error: any) {
+      return error
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ signIn, forgotPassword}}>
+    <AuthContext.Provider value={{ signIn, forgotPassword, confirmCode, resendCode, confirmForgotPassword}}>
       {children}
     </AuthContext.Provider>
   )

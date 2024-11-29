@@ -8,21 +8,20 @@ import { ClipLoader } from "react-spinners";
 import { EventContext } from "../../../context/event_context";
 import { EventType } from "../../../api/repositories/event_repository";
 import { CreateEventModal } from "../../../components/CreateEventModal";
-import { Bounce, toast, ToastContainer } from "react-toastify";
-import { set } from "zod";
+import { Bounce, toast } from "react-toastify";
 
 interface Institute {
-  address?: string | undefined;
+  institute_id: string;
+  name: string;
   description: string;
+  institute_type: string;
+  phone?: string | undefined;
+  logo_photo?: string;
+  partner_type?: string | undefined;
+  address?: string | undefined;
+  price?: number | undefined;
   district_id?: string | undefined;
   events_id?: string[] | undefined;
-  institute_id: string;
-  institute_type: string;
-  logo_photo?: string | undefined;
-  name: string;
-  partner_type?: string | undefined;
-  phone?: string | undefined;
-  price?: number | undefined;
 }
 
 const districts = [
@@ -173,9 +172,10 @@ export default function Institute() {
   if (!institute) {
     return (
       <div className="h-[100vh] w-full flex justify-center items-center bg-[#151515]">
-        <h1 className="text-white text-4xl">Instituto não encontrado</h1>
+        <h1 className="text-white">Só um momento...</h1>
+        <ClipLoader color="#fff" loading={loading} size={150} />
       </div>
-    );
+    )
   }
 
   const district = districts.find(d => d.id === institute.district_id)
@@ -287,7 +287,7 @@ export default function Institute() {
         <div className="border-t-2 border-white rounded-3xl flex flex-col h-[calc(100vh-7rem)] overflow-y-scroll items-center w-full">
           {events && events.length > 0 ? (
             events.map((event, eventId) => (
-              <div key={eventId} id={eventId}>
+              <div key={eventId}>
                 <EventCard name={event.name} imageUrl={event.bannerUrl || ''} onclick={() => navigate(`/role/${event.eventId}`)} />
               </div>
             ))

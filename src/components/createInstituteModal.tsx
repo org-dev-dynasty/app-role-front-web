@@ -129,7 +129,7 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
         setIsCreating(false); // Libera o botão para ser clicado novamente
         return;
       }
-      if (logoPhoto?.size > 900000) {
+      if (logoPhoto && logoPhoto?.size > 900000) {
         setLogoErr("Imagem muito grande");
         setIsCreating(false);
         return;
@@ -144,11 +144,13 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
           console.log(logoPhoto.name);
           const logoType = logoPhoto.type;
           const formData = new FormData();
-          formData.append("instituteId", instituteId);
-          formData.append("typePhoto", logoType);
-          formData.append("files", logoPhoto);
-          const resp = await uploadInstituteImage(formData);
-          console.log("Logo Upload Response:", resp);
+          if (instituteId) {
+            formData.append("instituteId", instituteId);
+            formData.append("typePhoto", logoType);
+            formData.append("files", logoPhoto);
+            const resp = await uploadInstituteImage(formData);
+            console.log("Logo Upload Response:", resp);
+          }
         }
 
         if (onInstituteCreated) {

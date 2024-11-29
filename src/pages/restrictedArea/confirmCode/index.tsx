@@ -1,5 +1,7 @@
 import { Check, Eye, EyeSlash, X } from "@phosphor-icons/react"
-import React, { useEffect, useRef, useState } from "react"
+import React, { useContext, useEffect, useRef, useState } from "react"
+import { AuthContext } from "../../../context/auth_context"
+import { useNavigate } from "react-router-dom"
 
 export default function ResetPasswordCode() {
   const inputRefs = useRef<Array<HTMLInputElement | null>>([])
@@ -11,6 +13,9 @@ export default function ResetPasswordCode() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [passwordErr, setPasswordErr] = useState('')
   const [confirmPasswordErr, setConfirmPasswordErr] = useState('')
+  const { confirmCode, confirmForgotPassword, resendCode } = useContext(AuthContext)
+  const email = localStorage.getItem('email')
+  const navigate = useNavigate()
 
   const handleOnChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -41,7 +46,7 @@ export default function ResetPasswordCode() {
     }
   };
 
-  const handleValidPasswords = () => {
+  const handleValidPasswords = async () => {
     if (password.length < 8) {
       setPasswordErr("A senha deve ter no mínimo 8 caracteres");
     }
@@ -52,14 +57,37 @@ export default function ResetPasswordCode() {
       setConfirmPasswordErr("As senhas não coincidem");
       setPasswordErr("As senhas não coincidem");
     }
+    if (email && password) {
+      const response = await confirmForgotPassword({ email: email, newPassword: password })
+      console.log(`ConfirmForgotPassword response: ${response}`)
+      if (response.message === "Redefinição de senha realizada com sucesso!") {
+        navigate('/login')
+      }
+    }
   }
 
   const handleVoltar = () => {
     window.history.back();
   }
 
-  const handleVerifyCode = () => {
-    setIsVerified(true);
+  const handleResendCode = async () => {
+    if (email) {
+      const response = await resendCode({ email: email })
+      console.log(`ResendCode response: ${response}`)
+    }
+  }
+
+  const handleVerifyCode = async () => {
+    const code = otp.join('');
+    if (email && code) {
+      const resp = await confirmCode({ code: code, email: email })
+      console.log(`ConfirmCode response: ${resp}`)
+      if (resp.message === "Código validado com sucesso!") {
+        setIsVerified(true)
+      } else {
+        setIsVerified(false)
+      }
+    }
   }
 
   useEffect(() => {
@@ -94,7 +122,7 @@ export default function ResetPasswordCode() {
             ))}
           </div>
           <div className="flex w-full mt-4 justify-evenly">
-            <button className="bg-[#f1f1f1] text-black px-4 py-2 rounded-lg hover:bg-[#525252] shadow-sm shadow-white duration-300 hover:text-white">Reenviar</button>
+            <button className="bg-[#f1f1f1] text-black px-4 py-2 rounded-lg hover:bg-[#525252] shadow-sm shadow-white duration-300 hover:text-white" onClick={handleResendCode}>Reenviar</button>
             <button className="bg-[#f1f1f1] text-black px-4 py-2 rounded-lg hover:bg-[#525252] shadow-sm shadow-white duration-300 hover:text-white" onClick={handleVerifyCode}>Confirmar</button>
           </div>
           <h1 className="text-white text-xl mt-12">Coloque a nova senha</h1>
@@ -111,7 +139,8 @@ export default function ResetPasswordCode() {
           {confirmPasswordErr && <p className="text-red-500 text-md mt-2">{confirmPasswordErr}</p>}
           <div className="flex w-[80%] justify-evenly">
             <button onClick={handleVoltar} className="bg-[#ff5050] text-black px-4 py-2 w-28 rounded-lg hover:bg-[#c25858] shadow-sm shadow-white duration-300 hover:text-white mt-8 mb-8">Voltar</button>
-            <button onClick={handleValidPasswords} className="bg-[#f1f1f1] text-black px-4 py-2 w-28 rounded-lg hover:bg-[#525252] shadow-sm shadow-white duration-300 hover:text-white mt-8 mb-8">Confirmar</button>
+            {!isVerified ? <button onClick={handleValidPasswords} className="bg-[#616161] text-black px-4 py-2 w-28 rounded-lg shadow-sm shadow-white duration-300 mt-8 mb-8">Confirmar</button> :
+              <button onClick={handleValidPasswords} className="bg-[#f1f1f1] text-black px-4 py-2 w-28 rounded-lg hover:bg-[#525252] shadow-sm shadow-white duration-300 hover:text-white mt-8 mb-8">Confirmar</button>}
           </div>
         </div>
       </div>
