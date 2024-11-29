@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { InstituteContext } from '../context/institute_context';
+import { toast } from 'react-toastify';
 
 interface InstituteModalProps {
   setIsUpdateInstituteModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -341,6 +342,15 @@ function ConfirmUpdate({ setIsConfirmOpen, setIsUpdateInstituteModalOpen, newIns
       setIsUpdateInstituteModalOpen(false);
       return
     }
+    toast.success("Instituto atualizado com sucesso!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined
+    });
     setIsUpdateInstituteModalOpen(false);
     setIsConfirmOpen(false);
   };

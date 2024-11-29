@@ -173,9 +173,10 @@ export default function Institute() {
   if (!institute) {
     return (
       <div className="h-[100vh] w-full flex justify-center items-center bg-[#151515]">
-        <h1 className="text-white text-4xl">Instituto não encontrado</h1>
+        <h1 className="text-white">Só um momento...</h1>
+        <ClipLoader color="#fff" loading={loading} size={150} />
       </div>
-    );
+    )
   }
 
   const district = districts.find(d => d.id === institute.district_id)
