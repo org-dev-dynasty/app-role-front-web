@@ -4,7 +4,7 @@ import { InstituteRepositoryHttp } from "../api/repositories/institute_repositor
 import { InstituteProps } from "../components/updateInstituteModal";
 
 interface Institute {
-    institute_id: string;
+    institute_id?: string;
     name: string;
     description: string;
     institute_type: string;
@@ -37,6 +37,7 @@ interface getInstituteByIdResponse {
 
 interface createInstituteResponse {
     message: string
+    id?: string
 }
 
 interface deleteInstituteByIdResponse {

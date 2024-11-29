@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import Select, {
-  ClearIndicatorProps,
   CSSObjectWithLabel,
   MultiValue,
   GroupBase,

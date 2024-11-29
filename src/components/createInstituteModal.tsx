@@ -129,7 +129,7 @@ export default function Institute({ setIsCreateInstituteModalOpen, onInstituteCr
         setIsCreating(false); // Libera o botão para ser clicado novamente
         return;
       }
-      if (logoPhoto?.size > 900000) {
+      if (logoPhoto && logoPhoto?.size > 900000) {
         setLogoErr("Imagem muito grande");
         setIsCreating(false);
         return;

@@ -411,7 +411,7 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
                   className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
                   onChange={e => setCurrentDistrict(e.target.value)}
                 >
-                  {districts.map((district, index) => {
+                  {districts.map((_district, index) => {
                     return (
                       <option
                         value={districts[index].districtId}
