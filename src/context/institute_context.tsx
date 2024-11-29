@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { createContext, PropsWithChildren } from "react"
 import { InstituteRepositoryHttp } from "../api/repositories/institute_repository"
@@ -73,18 +74,16 @@ const defaultInstitute = {
     },
     getInstituteById: async (_id: string) => {
         return {
-            institute: {
-                institute_id: "",
-                name: "",
-                description: "",
-                institute_type: "",
-                phone: "",
-                logo_photo: "",
-                address: "",
-                price: 0,
-                district_id: "",
-                events_id: []
-            }
+            institute_id: "",
+            name: "",
+            description: "",
+            institute_type: "",
+            phone: "",
+            logo_photo: "",
+            address: "",
+            price: 0,
+            district_id: "",
+            events_id: []
         }
     },
     createInstitute: async (_data: Institute) => {
@@ -97,7 +96,7 @@ const defaultInstitute = {
             message: ""
         }
     },
-    updateInstituteById: async (_data: InstituteProps) => {
+    updateInstituteById: async (_data: Partial<InstituteProps>) => {
         return {
             message: ""
         }
@@ -150,7 +149,7 @@ export function InstituteContextProvider({ children }: PropsWithChildren) {
         }
     }
 
-    async function updateInstituteById(data: InstituteProps) {
+    async function updateInstituteById(data: Partial<InstituteProps>) {
         try {
             const response = await repo.updateInstituteById(data)
             return response
