@@ -21,10 +21,38 @@ export class AuthRepositoryHttp {
       );
     }
   }
-  
+
   async forgotPassword(data: string) {
     try {
       const response = await httpAuth.post("/forgot-password", data);
+      return response.data;
+    } catch (error: any) {
+      return error.response.data;
+    }
+  }
+
+  async confirmCode(data: string) {
+    try {
+      const response = await httpAuth.post("confirm-code", data);
+      return response.data;
+    } catch (error: any) {
+      return error.response.data;
+    }
+  }
+
+  async resendCode(data: string) {
+    try {
+      const response = await httpAuth.post("/resend-code", data);
+      return response.data;
+    } catch (error: any) {
+      console.log("ERRO ", error.response.data);
+      return error.response.data;
+    }
+  }
+
+  async confirmForgotPassword(data: string) {
+    try {
+      const response = await httpAuth.post(`/confirm-forgot-password`, data);
       return response.data;
     } catch (error: any) {
       return error.response.data;

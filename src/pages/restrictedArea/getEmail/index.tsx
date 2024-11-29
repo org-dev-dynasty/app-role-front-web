@@ -4,11 +4,13 @@ import { useNavigate } from "react-router-dom"
 import { envs } from "../../../utils/envs"
 import { toast, ToastContainer } from "react-toastify"
 import { set } from "zod"
+import { AuthContext } from "../../../context/auth_context"
 
 export default function GetEmail() {
   const [email, setEmail] = useState<string>()
   const [userError, setUserError] = useState<string>("")
   const navigate = useNavigate()
+  const { forgotPassword } = useContext(AuthContext)
 
   const handleEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value)
@@ -18,13 +20,27 @@ export default function GetEmail() {
     navigate('/login')
   }
 
-  const handleEntrar = () => {
+  const handleEntrar = async () => {
     if (!email || email === "") {
       setUserError("Preencha com o e-mail")
       return
     }
     if (email && !email.includes("@")) {
       setUserError("E-mail inválido")
+      return
+    }
+    const response = await forgotPassword({ email: email })
+    console.log(`ForgotPassword response: ${response}`)
+    if (response.message !== "Uma mensagem de recuperação foi enviada para o seu e-mail") {
+      toast.error(`${response}`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
       return
     }
     localStorage.setItem('email', email)
