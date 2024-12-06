@@ -10,6 +10,7 @@ import Login from './pages/restrictedArea/Login'
 import ResetPasswordCode from './pages/restrictedArea/confirmCode'
 import GetEmail from './pages/restrictedArea/getEmail'
 import { ToastContainer } from 'react-toastify'
+import { FAQ } from './pages/faq'
 
 export function AppRouter() {
   return (
@@ -40,6 +41,7 @@ export function AppRouter() {
               </Route>
               <Route Component={GetEmail} path='/getEmail' element={<GetEmail />} />
               <Route Component={ResetPasswordCode} path='/verifyCode' element={<ResetPasswordCode />} />
+              <Route Component={FAQ} path='/faq' element={<FAQ/>} />
             </Routes>
           </BrowserRouter>
         </InstituteContextProvider>
