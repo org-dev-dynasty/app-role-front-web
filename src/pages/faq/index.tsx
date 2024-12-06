@@ -51,11 +51,11 @@ export function FAQ() {
 
       {/* Conteúdo FAQ centralizado */}
       <div className="w-full max-w-[800px] p-5">
-        <h1 className="text-3xl font-bold text-center text-white mb-6">FAQ</h1>
+        <h1 className="text-4xl font-bold text-center text-white mb-6">FAQ</h1>
         {faqData.map((item, index) => (
           <div
             key={index}
-            className="border-b border-gray-300 mb-4 rounded-md overflow-hidden hover:bg-light-purple"
+            className="border-b border-gray-300 gap-2 mb-4 rounded-md overflow-hidden hover:bg-light-purple"
           >
             <button
               onClick={() => toggleAccordion(index)}
