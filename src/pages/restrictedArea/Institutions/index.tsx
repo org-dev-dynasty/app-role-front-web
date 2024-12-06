@@ -34,7 +34,7 @@ export default function Institutions() {
     useEffect(() => {
         const token = localStorage.getItem("idToken");
         if (!token || token === "undefined") {
-            navigate("/login");
+            // navigate("/login");
         }
     }, [navigate]);
 
