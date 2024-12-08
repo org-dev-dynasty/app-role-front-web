@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Pen } from "@phosphor-icons/react";
 import EventCard from "../../../components/EventCard";
 import UpdateInstituteModal from "../../../components/updateInstituteModal";
@@ -56,7 +57,7 @@ export default function Institute() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [events, setEvents] = useState<EventType[] | null>([]);
   const navigate = useNavigate();
-  const [refreshEvents, setRefreshEvents] = useState(false);
+  const [ isCreatingEvent, setIsCreatingEvent ] = useState(false);
 
   function formatPartnerType(partnerType: string) {
     switch (partnerType) {
@@ -159,7 +160,19 @@ export default function Institute() {
     if (institute) {
       fetchEvents()
     }
-  }, [institute, getEventsByInstituteId, refreshEvents]);
+  }, [institute, getEventsByInstituteId]);
+
+  function refreshEvents() {
+    setTimeout(() => {
+      fetchInstitute()
+      fetchEvents()
+      console.log('Instituto e eventos atualizados')
+    }, 2000)
+  }
+
+  function toggleIsCreatingEvent() {
+    setIsCreatingEvent(!isCreatingEvent);
+  }
 
   if (loading) {
     return (
@@ -281,7 +294,7 @@ export default function Institute() {
         <div className="flex w-full justify-between items-center px-6">
           <h1 className="text-white text-[48px]">Roles</h1>
           <div className="bg-white w-16 h-16 flex justify-center items-center rounded-xl text-3xl hover:cursor-pointer hover:bg-white-purple">
-            <CreateEventModal onEventCreated={() => setRefreshEvents((prev) => !prev)} />
+            <CreateEventModal onEventCreated={() => refreshEvents()} isCreatingEvent={() => toggleCreatingEvent()} />
           </div>
         </div>
         <div className="border-t-2 border-white rounded-3xl flex flex-col h-[calc(100vh-7rem)] overflow-y-scroll items-center w-full">

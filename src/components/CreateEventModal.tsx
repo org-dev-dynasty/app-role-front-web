@@ -42,9 +42,10 @@ import { createEventSchema } from '../zodSchemas/createEventSchema'
 
 interface CreateEventModalProps {
   onEventCreated: () => void
+  isCreatingEvent: () => void
 }
 
-export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
+export function CreateEventModal({ onEventCreated, isCreatingEvent }: CreateEventModalProps) {
   let { instId } = useParams()
 
   const navigate = useNavigate()
@@ -102,6 +103,7 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
       let resp: CreateEvent
 
       try {
+        isCreatingEvent()
         resp = (await createEvent(
           createEventSchema.parse(eventBody)
         )) as CreateEvent
@@ -112,6 +114,18 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
         await uploadEventBannerReq(resp.id, bannerImage)
 
         setErrors({})
+        toast.success('Evento criado com sucesso!', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'colored'
+        })
+        onEventCreated()
+        console.log('onEventCreated ativado')
       } catch (error) {
         e.preventDefault()
         if (error instanceof z.ZodError) {
@@ -123,6 +137,8 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
         }
 
         console.log(error)
+      } finally {
+        isCreatingEvent()
       }
 
       // navigate(`/role/${resp.id}`)
@@ -505,15 +521,4 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
             </Dialog.Close>
           </div>
           <Dialog.Close asChild>
-            <button
-              className="absolute right-4 top-4 inline-flex appearance-none items-center justify-center rounded-full text-violet focus:shadow-[0_0_0_2px] focus:shadow-violet focus:outline-none"
-              aria-label="Close"
-            >
-              <X size={32} weight="bold" />
-            </button>
-          </Dialog.Close>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
-  )
-}
+      
