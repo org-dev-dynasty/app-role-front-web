@@ -10,7 +10,7 @@ import Select from 'react-select'
 import { MultiSelect } from 'react-multi-select-component'
 import { MultiSelectComponent, OptionsType } from './MultiSelect'
 import { EventInfoUnit } from './EventInfoUnit'
-import { z } from 'zod'
+import { string, z } from 'zod'
 import dayjs from 'dayjs'
 import {
   categories,
@@ -52,7 +52,7 @@ export function EditEventModal() {
   const [category, setCategory] = useState<string>('BALADA')
   const [age, setAge] = useState<string>('ADULT')
   const [musicType, setMusicType] = useState<string[]>()
-  const [ticketUrl, setTicketUrl] = useState<string>()
+  const [ticketUrl, setTicketUrl] = useState<string | null>()
   const [eventStatus, setEventStatus] = useState<string>('ACTIVE')
   const [selectedMusic, setSelectedMusic] =
     useState<MultiValue<OptionsType> | null>(null)
@@ -117,6 +117,12 @@ export function EditEventModal() {
       setCurrentDistrict(res.districtId)
       setEventStatus(res.eventStatus)
 
+      if (ticketUrl) {
+        if (ticketUrl.length < 1) {
+          setTicketUrl(null)
+        }
+      }
+
 
       console.log(name)
       // setEventStatus(response?.eventStatus)
@@ -134,7 +140,7 @@ export function EditEventModal() {
       name: z.string().min(3),
       description: z.string(),
       address: z.string(),
-      eventDate: z.date() /*z.string().datetime()*/,
+      eventDate: z.date(),/*z.string().datetime()*/
       price: z.number(),
       category: z.string(),
       ageRange: z.string(),
@@ -168,7 +174,10 @@ export function EditEventModal() {
 
     try {
       console.log(eventId)
+      
       await editEventById(createEventSchema.parse(updatedEvent))
+
+      console.log("Updated Event Object:", updatedEvent)
 
       setErrors({})
     } catch (error) {
@@ -385,10 +394,10 @@ export function EditEventModal() {
               defaultValue={convertToDateTimeLocalString(
                 new Date(response?.eventDate ?? new Date())
               )}
-              // onChange={e => {
-              //   setDate(new Date(e.target.value).toISOString())
-              //   console.log(e.target.value, date)
-              // }}
+              onChange={e => {
+                setDate(new Date(e.target.value))
+                console.log(e.target.value, date)
+              }}
             />
             {errors.eventDate && (
               <span className="text-red-500">{errors.eventDate}</span>
@@ -525,7 +534,7 @@ export function EditEventModal() {
               className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
               id="ticketLink"
               placeholder="https://www.example.com.br/ingressos/"
-              defaultValue={ticketUrl}
+              defaultValue={ticketUrl ? ticketUrl : undefined}
               onChange={e => setTicketUrl(e.target.value)}
             />
             {errors.ticketUrl && (

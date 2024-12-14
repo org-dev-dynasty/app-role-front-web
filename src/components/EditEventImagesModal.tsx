@@ -50,11 +50,18 @@ export default function EditEventImagesModal() {
   const [isImageUploaded, setIsImageUploaded] = useState(false)
   const [isBannerUploaded, setIsBannerUploaded] = useState(false)
 
-  function handleRemoveImage() {
+  async function handleRemoveImage() {
     if (isImageUploaded) {
       if (!eventId) return
 
-      deleteEventImage(eventId)
+      
+      try {
+        await deleteEventImage(eventId) 
+      } catch (error) {
+        console.log('Erro ao deletar imagem: ', error)
+        return
+      }
+
       setIsImageUploaded(false)
     }
   }

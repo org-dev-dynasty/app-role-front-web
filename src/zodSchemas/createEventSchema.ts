@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import { z } from 'zod'
 
 export const createEventSchema = z.object({
@@ -13,8 +14,7 @@ export const createEventSchema = z.object({
 
   address: z
     .string({ required_error: 'O campo endereço é obrigatório.' })
-    .min(1, 'O campo endereço é obrigatório.')
-    .max(70, 'O endereço pode ter no máximo 70 caracteres.'),
+    .min(1, 'O campo endereço é obrigatório.'),
 
   eventDate: z
     .date({ required_error: 'A data do evento é obrigatória.' })
@@ -57,16 +57,18 @@ export const createEventSchema = z.object({
     .url('O link do menu deve ser uma URL válida.')
     .optional(),
 
-  packageType: z
-    .array(z.string())
-    .optional(),
+  packageType: z.array(z.string()).optional(),
 
   ticketUrl: z
-    .string({ required_error: 'O link do ingresso é obrigatório.' })
-    .url('O link do ingresso deve ser uma URL válida.')
-    .optional(),
+    .string()
+    .optional()
+    .refine((val) => val === undefined || val === "" || z.string().url().safeParse(val).success, {
+      message: 'O link do ingresso deve ser uma URL válida.',
+    }),
 
   eventStatus: z
     .string({ required_error: 'O campo status do evento é obrigatório.' })
-    .min(1, 'O campo status do evento é obrigatório.')
+    .min(1, 'O campo status do evento é obrigatório.'),
+
+  eventId: z.string().optional()
 })

@@ -33,12 +33,12 @@ export const packageTypeArray = [
 ]
 
 export const ageCategories = [
-  { label: '18-20', value: 'Adolescent' },
-  { label: '21-25', value: 'Young Adult' },
-  { label: '26-30', value: 'Adult' },
-  { label: '31-40', value: 'Mature Adult' },
-  { label: '40+', value: 'Senior' },
-  { label: 'Todas as idades', value: 'All Ages' }
+  { label: '18-20', value: '18-20' },
+  { label: '21-25', value: '21-25' },
+  { label: '26-30', value: '26-30' },
+  { label: '31-40', value: '31-40' },
+  { label: '40+', value: '40+' },
+  { label: 'Todas as idades', value: 'Todas' }
 ]
 
 export const musicTypes = [

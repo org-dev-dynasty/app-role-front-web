@@ -39,6 +39,9 @@ import {
 } from '../assets/options'
 import { toast } from 'react-toastify'
 import { createEventSchema } from '../zodSchemas/createEventSchema'
+import GoogleMapsAutocomplete, {
+  AddressAutocompleteProps
+} from './GoogleMapsAutocomplete'
 
 interface CreateEventModalProps {
   onEventCreated: () => void
@@ -62,6 +65,8 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
   const [currentDistrict, setCurrentDistrict] = useState<string>(
     districts[0].districtId
   )
+
+  const [addressNumber, setAddressNumber] = useState<string>('')
 
   const [selectedMusics, setSelectedMusics] = useState<string[]>([])
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([])
@@ -190,6 +195,19 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
     setSelectedPackages(selected.map(option => option.value))
   }
 
+  function handleSetAddress(
+    address: string,
+    zip: string,
+    latitude: string,
+    longitude: string,
+    city: string,
+    neighborhood: string
+  ) {
+    setAddress(
+      `${address},${addressNumber ? `${addressNumber}` : "without_number"},${neighborhood},${city},${zip},${latitude},${longitude}`
+    )
+  }
+
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
@@ -233,18 +251,36 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
             )}
           </fieldset>
 
-          <fieldset className="mb-4 flex flex-col gap-1 text-white">
-            <label className="text-base text-white" htmlFor="adress">
-              Endereço
-            </label>
-            <input
+          <fieldset className="mb-4 flex gap-1 text-white">
+            <div className="flex-col gap-1 w-full">
+              <label className="text-base text-white" htmlFor="adress">
+                Endereço
+              </label>
+              <div>
+              <GoogleMapsAutocomplete onAddressSelect={handleSetAddress} />
+              </div>
+
+              {/* <input
               className="h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet"
               id="adress"
               onChange={e => setAddress(e.target.value)}
             />
             {errors.address && (
               <span className="text-red-500">{errors.address}</span>
-            )}
+            )} */}
+            </div>
+
+            <div className="flex-col gap-1">
+              <label className="text-base text-white" htmlFor="date">
+                Número
+              </label>
+
+              <input
+                className='h-10 px-2 bg-grayInputModal outline-none rounded-md focus:ring-2 ring-violet'
+                onChange={e => setAddressNumber(e.target.value)}
+                type="text"
+              />
+            </div>
           </fieldset>
 
           <fieldset className="mb-4 flex flex-col gap-1 text-white">
@@ -416,7 +452,7 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
                       <option
                         value={districts[index].districtId}
                         key={index}
-                      // onChange={() => setCurrentDistrict(1)}
+                        // onChange={() => setCurrentDistrict(1)}
                       >
                         {districts[index].districtName}
                       </option>
