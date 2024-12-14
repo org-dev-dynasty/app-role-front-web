@@ -45,9 +45,10 @@ import GoogleMapsAutocomplete, {
 
 interface CreateEventModalProps {
   onEventCreated: () => void
+  isCreatingEvent: () => void
 }
 
-export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
+export function CreateEventModal({ onEventCreated, isCreatingEvent }: CreateEventModalProps) {
   let { instId } = useParams()
 
   const navigate = useNavigate()
@@ -107,6 +108,7 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
       let resp: CreateEvent
 
       try {
+        isCreatingEvent()
         resp = (await createEvent(
           createEventSchema.parse(eventBody)
         )) as CreateEvent
@@ -117,6 +119,18 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
         await uploadEventBannerReq(resp.id, bannerImage)
 
         setErrors({})
+        toast.success('Evento criado com sucesso!', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'colored'
+        })
+        onEventCreated()
+        console.log('onEventCreated ativado')
       } catch (error) {
         e.preventDefault()
         if (error instanceof z.ZodError) {
@@ -128,6 +142,8 @@ export function CreateEventModal({ onEventCreated }: CreateEventModalProps) {
         }
 
         console.log(error)
+      } finally {
+        isCreatingEvent()
       }
 
       // navigate(`/role/${resp.id}`)
