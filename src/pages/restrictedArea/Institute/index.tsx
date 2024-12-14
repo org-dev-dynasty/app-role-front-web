@@ -281,7 +281,7 @@ export default function Institute() {
         <div className="flex w-full justify-between items-center px-6">
           <h1 className="text-white text-[48px]">Roles</h1>
           <div className="bg-white w-16 h-16 flex justify-center items-center rounded-xl text-3xl hover:cursor-pointer hover:bg-white-purple">
-            <CreateEventModal onEventCreated={() => setRefreshEvents((prev) => !prev)} />
+            <CreateEventModal onEventCreated={() => setRefreshEvents((prev) => !prev)} isCreatingEvent={() => console.log("Criando instituto")} />
           </div>
         </div>
         <div className="border-t-2 border-white rounded-3xl flex flex-col h-[calc(100vh-7rem)] overflow-y-scroll items-center w-full">
