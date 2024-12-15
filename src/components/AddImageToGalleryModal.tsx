@@ -1,14 +1,12 @@
 import * as Dialog from '@radix-ui/react-dialog'
-import { X, CurrencyDollar } from '@phosphor-icons/react'
-import { Rating } from 'react-simple-star-rating'
-import { MultiSelectComponent } from './MultiSelect'
+import { X } from '@phosphor-icons/react'
 import { ImageInputFile } from './ImageInputFile'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useContext, useState } from 'react'
 import { EventContext } from '../context/event_context'
 
 export function AddImageToGalleryModal() {
-  let { eventId } = useParams()
+  const { eventId } = useParams()
   const { uploadImageToEventGallery } = useContext(EventContext)
 
   const [image, setImage] = useState<File>()

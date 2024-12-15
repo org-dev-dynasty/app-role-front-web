@@ -1,14 +1,13 @@
 import * as Dialog from '@radix-ui/react-dialog'
-import { X, CurrencyDollar, Image, Pencil } from '@phosphor-icons/react'
+import { X, CurrencyDollar } from '@phosphor-icons/react'
 import { Rating } from 'react-simple-star-rating'
-import { useContext, useEffect, useRef, useState } from 'react'
-import { EventType } from '../api/repositories/event_repository'
+import { useContext, useState } from 'react'
 import { EventContext } from '../context/event_context'
 import { MultiValue } from 'react-select'
 import { MultiSelectComponent, OptionsType } from './MultiSelect'
 import { z } from 'zod'
 import { ImageInputFile } from './ImageInputFile'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 interface FormErrors {
   name?: string
@@ -39,9 +38,7 @@ import {
 } from '../assets/options'
 import { toast } from 'react-toastify'
 import { createEventSchema } from '../zodSchemas/createEventSchema'
-import GoogleMapsAutocomplete, {
-  AddressAutocompleteProps
-} from './GoogleMapsAutocomplete'
+import GoogleMapsAutocomplete from './GoogleMapsAutocomplete'
 
 interface CreateEventModalProps {
   onEventCreated: () => void
@@ -49,9 +46,8 @@ interface CreateEventModalProps {
 }
 
 export function CreateEventModal({ onEventCreated, isCreatingEvent }: CreateEventModalProps) {
-  let { instId } = useParams()
+  const { instId } = useParams()
 
-  const navigate = useNavigate()
 
   const [name, setName] = useState<string>()
   const [description, setDescription] = useState<string>()
@@ -60,7 +56,6 @@ export function CreateEventModal({ onEventCreated, isCreatingEvent }: CreateEven
   const [priceAvg, setPriceAvg] = useState<number>(1)
   const [category, setCategory] = useState<string>('BALADA')
   const [age, setAge] = useState<string>('ADULT')
-  const [musicType, setMusicType] = useState<string[]>()
   const [ticketUrl, setTicketUrl] = useState<string>()
   const [eventStatus, setEventStatus] = useState<string>('ACTIVE')
   const [currentDistrict, setCurrentDistrict] = useState<string>(

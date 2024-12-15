@@ -1,21 +1,11 @@
 import { FileImage, FileVideo } from '@phosphor-icons/react'
 import {
   ChangeEvent,
-  FormEvent,
   useEffect,
   useMemo,
-  useRef,
   useState
 } from 'react'
 
-type Status = 'waiting' | 'converting' | 'uploading' | 'generating' | 'success'
-
-const statusMessages = {
-  converting: 'Convertendo...',
-  generating: 'Transcrevendo...',
-  uploading: 'Carregando...',
-  success: 'Sucesso!'
-}
 
 interface VideoInputFormProps {
   onImageUploaded: (image: File) => void
@@ -26,8 +16,6 @@ interface VideoInputFormProps {
 
 export function ImageInputFile(props: VideoInputFormProps) {
   const [imageFile, setImageFile] = useState<File | null>(null)
-  const promptInputRef = useRef<HTMLTextAreaElement>(null)
-  const [status, setStatus] = useState<Status>('waiting')
 
   const handleFileSelected = (event: ChangeEvent<HTMLInputElement>) => {
     const { files } = event.currentTarget

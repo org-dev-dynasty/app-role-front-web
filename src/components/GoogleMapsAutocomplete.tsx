@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useLoadScript } from '@react-google-maps/api'
 
 export interface AddressAutocompleteProps {
@@ -37,7 +37,6 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
       autocomplete.addListener('place_changed', () => {
         const place = autocomplete.getPlace()
         if (place && place.formatted_address) {
-          const address = place.formatted_address
 
           const streetComponent = place.address_components?.find((component) =>
             component.types.includes('route')

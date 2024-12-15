@@ -1,22 +1,17 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
 import { Image, X } from '@phosphor-icons/react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { EventType } from '../api/repositories/event_repository'
 import { EventContext } from '../context/event_context'
-import { ImageInputFile } from './ImageInputFile'
 
 export default function EditEventImagesModal() {
-  const { getEventById, deleteEventById, deleteEventImage, deleteEventBanner } =
+  const { getEventById, deleteEventImage, deleteEventBanner } =
     useContext(EventContext)
-
-  const navigate = useNavigate()
 
   const [response, setResponse] = useState<EventType>()
 
-  const [eventName, setEventName] = useState<string>()
-
-  let { eventId } = useParams()
+  const { eventId } = useParams()
 
   async function getEventByIdRequest() {
     try {
@@ -33,8 +28,6 @@ export default function EditEventImagesModal() {
       if (res.bannerUrl) {
         setIsBannerUploaded(true)
       }
-
-      setEventName(res.name)
     } catch (error) {
       console.log('Erro ao buscar evento por id: ', error)
     }
@@ -43,9 +36,6 @@ export default function EditEventImagesModal() {
   useEffect(() => {
     getEventByIdRequest()
   }, [])
-
-  const [eventImage, setEventImage] = useState<File>()
-  const [bannerImage, setBannerImage] = useState<File>()
 
   const [isImageUploaded, setIsImageUploaded] = useState(false)
   const [isBannerUploaded, setIsBannerUploaded] = useState(false)

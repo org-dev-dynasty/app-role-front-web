@@ -21,7 +21,7 @@ import { DeleteGalleryButton } from '../../../components/DeleteGalleryButton'
 import EditEventImagesModal from '../../../components/EditEventImagesModal'
 
 export default function Role() {
-  let { eventId } = useParams()
+  const { eventId } = useParams()
 
   const { getEventById } = useContext(EventContext)
 
@@ -35,13 +35,10 @@ export default function Role() {
   const [eventInstituteId, setEventInstituteId] = useState<string>()
   const [eventFeatures, setEventFeatures] = useState<string[]>([])
   const [eventMusicType, setEventMusicType] = useState<string[]>([])
-  const [eventMenuLink, setEventMenuLink] = useState<string>()
   const [eventPhotoLink, setEventPhotoLink] = useState<string>()
   const [eventGaleryLink, setEventGaleryLink] = useState<string[]>()
-  const [eventPackageType, setEventPackageType] = useState<string[]>()
   const [eventCategory, setEventCategory] = useState<string>()
   const [eventTicketUrl, setEventTicketUrl] = useState<string>()
-  const [eventRating, setEventRating] = useState<number>()
   const [eventStatus, setEventStatus] = useState<string>()
 
   async function getEventByIdRequest() {
@@ -73,10 +70,8 @@ export default function Role() {
       setEventInstituteId(response.instituteId)
       setEventFeatures(response.features)
       setEventMusicType(response.musicType)
-      setEventMenuLink(response.menuLink)
       setEventPhotoLink(response.eventPhotoLink)
       setEventGaleryLink(response.galeryLink)
-      setEventPackageType(response.packageType)
       setEventAge(response.ageRange)
       setEventTicketUrl(response.ticketUrl)
       setEventStatus(response.eventStatus)

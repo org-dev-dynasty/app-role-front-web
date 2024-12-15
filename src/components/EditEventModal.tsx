@@ -1,16 +1,13 @@
 import * as Dialog from '@radix-ui/react-dialog'
-import { X, CurrencyDollar, Image, Pencil } from '@phosphor-icons/react'
+import { X, CurrencyDollar, Pencil } from '@phosphor-icons/react'
 import { Rating } from 'react-simple-star-rating'
 import React, { useContext, useEffect, useState } from 'react'
 import { EventType } from '../api/repositories/event_repository'
 import { EventContext } from '../context/event_context'
-import { Navigate, redirect, useParams } from 'react-router-dom'
-import { GroupBase, MultiValue } from 'react-select'
-import Select from 'react-select'
-import { MultiSelect } from 'react-multi-select-component'
+import { useParams } from 'react-router-dom'
+import { MultiValue } from 'react-select'
 import { MultiSelectComponent, OptionsType } from './MultiSelect'
-import { EventInfoUnit } from './EventInfoUnit'
-import { string, z } from 'zod'
+import { z } from 'zod'
 import dayjs from 'dayjs'
 import {
   categories,
@@ -51,14 +48,8 @@ export function EditEventModal() {
   const [priceAvg, setPriceAvg] = useState<number>()
   const [category, setCategory] = useState<string>('BALADA')
   const [age, setAge] = useState<string>('ADULT')
-  const [musicType, setMusicType] = useState<string[]>()
   const [ticketUrl, setTicketUrl] = useState<string | null>()
   const [eventStatus, setEventStatus] = useState<string>('ACTIVE')
-  const [selectedMusic, setSelectedMusic] =
-    useState<MultiValue<OptionsType> | null>(null)
-
-  const [eventImage, setEventImage] = useState<File>()
-  const [bannerImage, setBannerImage] = useState<File>()
 
   const [instituteId, setInstituteId] = useState<string>()
 
@@ -72,18 +63,15 @@ export function EditEventModal() {
     string[] | undefined
   >([''])
 
-  const [selectedFeaturesOnSel, setSelectedFeaturesOnSel] =
-    useState<MultiValue<OptionsType> | null>(null)
-
   const [selectedPackagesOnSel, setSelectedPackagesOnSel] =
     useState<MultiValue<OptionsType> | null>(null)
 
-  const { getEventById, editEventById, uploadEventBanner, uploadEventImage } =
+  const { getEventById, editEventById } =
     useContext(EventContext)
 
   const [response, setResponse] = useState<EventType>()
 
-  let { eventId } = useParams()
+  const { eventId } = useParams()
 
   async function getEventByIdRequest() {
     try {
@@ -108,7 +96,6 @@ export function EditEventModal() {
       setPriceAvg(res.price)
       setCategory(res.category)
       setAge(res.ageRange)
-      setMusicType(res.musicType)
       setPriceAvg(res.price)
       setTicketUrl(res.ticketUrl)
       setSelectedMusics(res.musicType)
@@ -135,24 +122,6 @@ export function EditEventModal() {
     e: React.MouseEvent<HTMLButtonElement>
   ) {
     if (!eventId) return
-
-    const updatedEventSchema = z.object({
-      name: z.string().min(3),
-      description: z.string(),
-      address: z.string(),
-      eventDate: z.date(),/*z.string().datetime()*/
-      price: z.number(),
-      category: z.string(),
-      ageRange: z.string(),
-      musicType: z.array(z.string()),
-      districtId: z.string(),
-      instituteId: z.string(),
-      features: z.array(z.string()),
-      packageType: z.array(z.string()),
-      ticketUrl: z.string(),
-      eventId: z.string(),
-      eventStatus: z.string()
-    })
 
     const updatedEvent = {
       name: name,
@@ -221,52 +190,9 @@ export function EditEventModal() {
     }
   }
 
-  async function uploadEventImageReq(image: File | undefined) {
-    if (!image || !eventId) return
 
-    const formData = new FormData()
-    const imgType = image.type
 
-    formData.append('eventId', eventId)
-    formData.append('typePhoto', imgType)
-    formData.append('file', image)
 
-    for (var pair of formData.entries()) {
-      console.log(pair[0] + ', ' + pair[1])
-    }
-
-    const resp = await uploadEventImage(formData)
-
-    console.log('Imagem enviada:', resp)
-  }
-
-  async function uploadEventBannerReq(image: File | undefined) {
-    if (!image || !eventId) return
-
-    const formData = new FormData()
-    const imgType = image.type
-
-    formData.append('eventId', eventId)
-    formData.append('typePhoto', imgType)
-    formData.append('file', image)
-
-    const resp = await uploadEventBanner(formData)
-    console.log('Banner enviado:', resp)
-  }
-
-  function x(e: File) {
-    console.log(eventImage)
-    setEventImage(e)
-    console.log(eventImage)
-    uploadEventImageReq(eventImage)
-  }
-
-  function y(e: File) {
-    console.log(bannerImage)
-    setBannerImage(e)
-    console.log(bannerImage)
-    uploadEventBannerReq(bannerImage)
-  }
 
   useEffect(() => {
     console.log('Chamando useEffect getEvent:')
@@ -276,18 +202,12 @@ export function EditEventModal() {
   }, [])
 
   const handleChange = (selected: MultiValue<OptionsType>) => {
-    setSelectedMusic(selected)
-
     setSelectedMusics(selected.map(option => option.value))
-
     console.log(selectedMusics)
   }
 
   const handleFeaturesSelectChange = (selected: MultiValue<OptionsType>) => {
-    setSelectedFeaturesOnSel(selected)
-
     setSelectedFeatures(selected.map(option => option.value))
-
     console.log(selectedFeatures)
   }
 
@@ -484,7 +404,7 @@ export function EditEventModal() {
                   className="bg-grayInputModal outline-none hover:cursor-pointer p-2 rounded-lg"
                   onChange={e => setCurrentDistrict(e.target.value)}
                 >
-                  {districts.map((district, index) => {
+                  {districts.map((_district, index) => {
                     return (
                       <option
                         value={districts[index].districtId}
