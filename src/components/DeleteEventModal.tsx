@@ -1,22 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
 import { X } from '@phosphor-icons/react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { EventType } from '../api/repositories/event_repository'
 import { EventContext } from '../context/event_context'
 
 export default function DeleteEventModal() {
   const { getEventById, deleteEventById } = useContext(EventContext)
 
-  const navigate = useNavigate()
-
-  const [response, setResponse] = useState<EventType>()
-
   const [eventName, setEventName] = useState<string>()
 
   const [canDeleteEvent, setCanDeleteEvent] = useState(false)
 
-  let { eventId } = useParams()
+  const { eventId } = useParams()
 
   async function getEventByIdRequest() {
     try {
@@ -32,7 +28,7 @@ export default function DeleteEventModal() {
     if(!canDeleteEvent) {
       e.preventDefault()
       return
-    };
+    }
 
     try {
       await deleteEventById(`${eventId}`)
