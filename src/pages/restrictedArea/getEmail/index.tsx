@@ -3,7 +3,7 @@ import { useState, useContext } from "react"
 import { useNavigate } from "react-router-dom"
 import { envs } from "../../../utils/envs"
 import { toast } from "react-toastify"
-import { AuthContext } from "../../../context/auth_context"
+import { AuthContext } from "../../../context/auth"
 
 export default function GetEmail() {
   const [email, setEmail] = useState<string>()

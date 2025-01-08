@@ -1,51 +1,63 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { LandingPage } from './pages/landingPage'
-import Role from './pages/restrictedArea/Event'
-import Institute from './pages/restrictedArea/Institute'
-import Institutions from './pages/restrictedArea/Institutions'
-import { InstituteContextProvider } from './context/institute_context'
-import { EventContextProvider } from './context/event_context'
-import { AuthContextProvider } from './context/auth_context'
-import Login from './pages/restrictedArea/Login'
-import ResetPasswordCode from './pages/restrictedArea/confirmCode'
-import GetEmail from './pages/restrictedArea/getEmail'
-import { ToastContainer } from 'react-toastify'
-import { FAQ } from './pages/faq'
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
+import { LandingPage } from './pages/landingPage';
+// import Role from './pages/restrictedArea/Event';
+// import Institute from './pages/restrictedArea/Institute';
+// import Institutions from './pages/restrictedArea/Institutions';
+import { LoginPage } from './pages/login';
+// import ResetPasswordCode from './pages/restrictedArea/confirmCode';
+// import GetEmail from './pages/restrictedArea/getEmail';
+// import { FAQ } from './pages/faq';
+
+// import { InstituteContextProvider } from './context/institute_context';
+// import { EventContextProvider } from './context/event_context';
+import { AuthContextProvider } from './context/auth';
+
+import { ToastContainer } from 'react-toastify';
+import { PrivateLayout } from './layouts/PrivateLayout';
+import { AdminPage } from './pages/admin';
+
+export const ROUTES = {
+  HOME: '/',
+  ADMIN: '/admin',
+  LOGIN: '/login',
+} as const;
 
 export function AppRouter() {
   return (
-    <AuthContextProvider>
-      <EventContextProvider>
-        <InstituteContextProvider>
-          <BrowserRouter>
-            <ToastContainer
-              position="top-right"
-              autoClose={5000}
-              limit={4}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="colored"
-            />
-            <Routes>
-              <Route Component={LandingPage} path="/" element={<LandingPage />} />
-              <Route Component={Login} path='/login' element={<Login />} />
-              <Route Component={Institutions} path="/Institutes" element={<Institutions />} />
-              <Route Component={Institute} path="/Institute/:instId" element={<Institute />} />
-              <Route path="role">
-                <Route path=":eventId" element={<Role />} />
-              </Route>
-              <Route Component={GetEmail} path='/getEmail' element={<GetEmail />} />
-              <Route Component={ResetPasswordCode} path='/verifyCode' element={<ResetPasswordCode />} />
-              <Route Component={FAQ} path='/faq' element={<FAQ/>} />
-            </Routes>
-          </BrowserRouter>
-        </InstituteContextProvider>
-      </EventContextProvider>
-    </AuthContextProvider>
-  )
+    <>
+      <ToastContainer
+        autoClose={5000}
+        limit={4}
+        closeOnClick
+        draggable
+        pauseOnHover
+        theme='colored'
+      />
+      <AuthContextProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path='/'>
+              <Route index element={<LandingPage />} />
+              {/* <Route path='faq' element={<FAQ />} /> */}
+              <Route path='login' element={<LoginPage />} />
+
+              {/* <Route path='institutes/:instId' element={<Institutions />} /> */}
+              {/* <Route path='institute/:instId' element={<Institute />} /> */}
+              {/* <Route path='role/:eventId' element={<Role />} /> */}
+              {/* <Route path='getEmail' element={<GetEmail />} /> */}
+              {/* <Route path='verifyCode' element={<ResetPasswordCode />} /> */}
+            </Route>
+
+            {/* private routes */}
+            <Route path='/admin/' element={<PrivateLayout />}>
+              <Route index element={<AdminPage />} />
+              <Route path='institute/:id' />
+              <Route path='event/:id' />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </AuthContextProvider>
+    </>
+  );
 }

@@ -1,6 +1,6 @@
 import { Check, Eye, EyeSlash, X } from "@phosphor-icons/react"
 import React, { useContext, useEffect, useRef, useState } from "react"
-import { AuthContext } from "../../../context/auth_context"
+import { AuthContext } from "../../../context/auth"
 import { useNavigate } from "react-router-dom"
 
 export default function ResetPasswordCode() {

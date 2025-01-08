@@ -1,4 +1,4 @@
-import { httpEvent } from "../http";
+import { httpRoles } from '../http';
 
 export interface EventType {
   eventId?: string; // ou number, dependendo de como você deseja armazenar
@@ -24,150 +24,147 @@ export interface EventType {
 }
 
 export class EventRepositoryHttp {
-  async createEvent(eventData: EventType) {
-    try {
-      console.log("eventData", eventData.name);
-
-      const resp = await httpEvent.post("/create-event", eventData);
-
-      console.log("resp", resp);
-
-      if (resp) {
-        return resp.data;
-      }
-    } catch (error: any ) {
-      throw new Error("Erro ao criar evento: " + error.message);
-    }
+  getAllEvents() {
+    return httpRoles.get<{ events: EventType[] }>(`/get-all-events`);
   }
 
-  async getEventById(id: string) {
-    try {
-      const resp = await httpEvent.get<{ event: Event }>(
-        `/get-event-by-id?eventId=${id}`
-      );
+  // async createEvent(eventData: EventType) {
+  //   try {
+  //     console.log('eventData', eventData.name);
 
-      if (resp) {
-        return resp.data;
-      }
-    } catch (error: any) {
-      throw new Error("Erro ao buscar evento: " + error.message);
-    }
-  }
+  //     const resp = await httpEvent.post('/create-event', eventData);
 
-  async editEventById(event: EventType) {
-    try {
-      const resp = await httpEvent.put(
-        `/update-event?eventId=${event.eventId}`,
-        event
-      );
+  //     console.log('resp', resp);
 
-      return resp.data as EventType;
-    } catch (error: any) {
-      throw new Error("Erro ao editar evento: " + error.message);
-    }
-  }
+  //     if (resp) {
+  //       return resp.data;
+  //     }
+  //   } catch (error: any) {
+  //     throw new Error('Erro ao criar evento: ' + error.message);
+  //   }
+  // }
 
-  async deleteEventById(id: string) {
-    try {
-      const resp = await httpEvent.delete(`/delete-event-by-id?eventId=${id}`);
+  // async getEventById(id: string) {
+  //   try {
+  //     const resp = await httpEvent.get<{ event: Event }>(
+  //       `/get-event-by-id?eventId=${id}`
+  //     );
 
-      return resp.data;
-    } catch (error: any) {
-      throw new Error("Erro ao deletar evento: " + error.message);
-    }
-  }
+  //     if (resp) {
+  //       return resp.data;
+  //     }
+  //   } catch (error: any) {
+  //     throw new Error('Erro ao buscar evento: ' + error.message);
+  //   }
+  // }
 
-  async uploadEventImage(data: FormData) {
-    try {
-      const resp = await httpEvent.post(`/upload-event-photo`, data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      if (resp) {
-        return resp.data;
-      }
-    } catch (error: any) {
-      throw new Error("Erro ao fazer upload da imagem: " + error.message);
-    }
-  }
+  // async editEventById(event: EventType) {
+  //   try {
+  //     const resp = await httpEvent.put(
+  //       `/update-event?eventId=${event.eventId}`,
+  //       event
+  //     );
 
-  async uploadEventBanner(data: FormData) {
-    try {
-      const resp = await httpEvent.post(`/upload-event-banner`, data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      if (resp) {
-        return resp.data;
-      }
-    } catch (error: any) {
-      throw new Error(
-        "Erro ao fazer upload da imagem do banner: " + error.message
-      );
-    }
-  }
+  //     return resp.data as EventType;
+  //   } catch (error: any) {
+  //     throw new Error('Erro ao editar evento: ' + error.message);
+  //   }
+  // }
 
-  async uploadImageToEventGallery(data: FormData) {
-    try {
-      const resp = await httpEvent.post(`/upload-galery-event`, data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      if (resp) {
-        return resp.data;
-      }
-    } catch (error: any) {
-      throw new Error(
-        "Erro ao fazer upload da imagem da galeria: " + error.message
-      );
-    }
-  }
+  // async deleteEventById(id: string) {
+  //   try {
+  //     const resp = await httpEvent.delete(`/delete-event-by-id?eventId=${id}`);
 
-  async deleteEventGallery(id: string) {
-    try {
-      const resp = await httpEvent.delete(
-        `/delete-gallery-event?eventId=${id}`
-      );
+  //     return resp.data;
+  //   } catch (error: any) {
+  //     throw new Error('Erro ao deletar evento: ' + error.message);
+  //   }
+  // }
 
-      return resp.data;
-    } catch (error: any) {
-      throw new Error("Erro ao deletar galeria do evento: " + error.message);
-    }
-  }
+  // async uploadEventImage(data: FormData) {
+  //   try {
+  //     const resp = await httpEvent.post(`/upload-event-photo`, data, {
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data',
+  //       },
+  //     });
+  //     if (resp) {
+  //       return resp.data;
+  //     }
+  //   } catch (error: any) {
+  //     throw new Error('Erro ao fazer upload da imagem: ' + error.message);
+  //   }
+  // }
 
-  async deleteEventImage(id: string) {
-    try {
-      const resp = await httpEvent.delete(`/delete-event-photo?eventId=${id}`);
+  // async uploadEventBanner(data: FormData) {
+  //   try {
+  //     const resp = await httpEvent.post(`/upload-event-banner`, data, {
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data',
+  //       },
+  //     });
+  //     if (resp) {
+  //       return resp.data;
+  //     }
+  //   } catch (error: any) {
+  //     throw new Error(
+  //       'Erro ao fazer upload da imagem do banner: ' + error.message
+  //     );
+  //   }
+  // }
 
-      return resp.data;
-    } catch (error: any) {
-      throw new Error("Erro ao deletar imagem do evento: " + error.message);
-    }
-  }
+  // async uploadImageToEventGallery(data: FormData) {
+  //   try {
+  //     const resp = await httpEvent.post(`/upload-galery-event`, data, {
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data',
+  //       },
+  //     });
+  //     if (resp) {
+  //       return resp.data;
+  //     }
+  //   } catch (error: any) {
+  //     throw new Error(
+  //       'Erro ao fazer upload da imagem da galeria: ' + error.message
+  //     );
+  //   }
+  // }
 
-  async deleteEventBanner(id: string) {
-    try {
-      const resp = await httpEvent.delete(`/delete-event-banner?eventId=${id}`);
+  // async deleteEventGallery(id: string) {
+  //   try {
+  //     const resp = await httpEvent.delete(
+  //       `/delete-gallery-event?eventId=${id}`
+  //     );
 
-      return resp.data;
-    } catch (error: any) {
-      throw new Error("Erro ao deletar banner do evento: " + error.message);
-    }
-  }
+  //     return resp.data;
+  //   } catch (error: any) {
+  //     throw new Error('Erro ao deletar galeria do evento: ' + error.message);
+  //   }
+  // }
 
-  async getEventsByInstituteId(id: string) {
-    try {
-      const resp = await httpEvent.get<{ events: EventType[] }>(
-        `/get-all-events-by-filter?instituteId=${id}`
-      );
-      if (resp) {
-        return resp.data;
-      }
-    } catch (error: any) {
-      throw new Error("Erro ao buscar eventos: " + error.message);
-    }
+  // async deleteEventImage(id: string) {
+  //   try {
+  //     const resp = await httpEvent.delete(`/delete-event-photo?eventId=${id}`);
+
+  //     return resp.data;
+  //   } catch (error: any) {
+  //     throw new Error('Erro ao deletar imagem do evento: ' + error.message);
+  //   }
+  // }
+
+  // async deleteEventBanner(id: string) {
+  //   try {
+  //     const resp = await httpEvent.delete(`/delete-event-banner?eventId=${id}`);
+
+  //     return resp.data;
+  //   } catch (error: any) {
+  //     throw new Error('Erro ao deletar banner do evento: ' + error.message);
+  //   }
+  // }
+
+  getEventsByInstituteId(id: string) {
+    return httpEvent.get<{ events: EventType[] }>(
+      `/get-all-events-by-filter?instituteId=${id}`
+    );
   }
 }

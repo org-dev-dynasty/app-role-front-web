@@ -1,84 +1,32 @@
-import { httpEvent } from "../http";
+import { GetAllInstitutesResponse } from '@/context/instituteApi/types';
+import { httpEvent } from '../http';
 
 export class InstituteRepositoryHttp {
-  async getAllInstitutes() {
-    try {
-      const resp = await httpEvent.get("/get-all-institutes");
-      if (resp) {
-        return resp.data;
-      }
-    } catch (error: any) {
-      throw new Error("Erro ao buscar instituições: " + error.message);
-    }
+  getAllInstitutes() {
+    return httpEvent.get<GetAllInstitutesResponse>('/get-all-institutes');
   }
 
-  async getInstituteById(id: string) {
-    try {
-      const resp = await httpEvent.get(
-        `/get-institute-by-id?instituteId=${id}`
-      );
-      // console.log(resp);
-      if (resp) {
-        return resp.data;
-      }
-    } catch (error: any) {
-      throw new Error("Erro ao buscar instituição: " + error.message);
-    }
+  getInstituteById(id: string) {
+    return httpEvent.get(`/get-institute-by-id?instituteId=${id}`);
   }
 
-  async createInstitute(data: any) {
-    try {
-      const resp = await httpEvent.post("/create-institute", data);
-      if (resp) {
-        return resp.data;
-      }
-    } catch (error: any) {
-      throw new Error("Erro ao criar instituição: " + error.message);
-    }
+  createInstitute(data: any) {
+    return httpEvent.post('/create-institute', data);
   }
 
-  async deleteInstituteById(id: string) {
-    try {
-      const resp = await httpEvent.delete(
-        `/delete-institute-by-id?instituteId=${id}`
-      );
-      if (resp) {
-        return resp.data.message;
-      }
-    } catch (error: any) {
-      return error.response.data;
-      throw new Error(`Erro ao deletar instituição: ${error}`);
-    }
+  deleteInstituteById(id: string) {
+    return httpEvent.delete(`/delete-institute-by-id?instituteId=${id}`);
   }
 
-  async updateInstituteById(data: any) {
-    try {
-      const resp = await httpEvent.put(`/update-institute`, data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (resp) {
-        return resp.data;
-      }
-    } catch (error: any) {
-      return error.response.data;
-      throw new Error(`Erro ao atualizar instituição: ${error}`);
-    }
+  updateInstituteById(data: any) {
+    return httpEvent.put(`/update-institute`, data);
   }
 
-  async uploadInstituteImage(data: FormData) {
-    try {
-      const resp = await httpEvent.post(`/upload-institute-photo`, data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      if (resp) {
-        return resp.data;
-      }
-    } catch (error: any) {
-      throw new Error("Erro ao fazer upload da imagem: " + error.message);
-    }
+  uploadInstituteImage(data: FormData) {
+    return httpEvent.post(`/upload-institute-photo`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   }
 }

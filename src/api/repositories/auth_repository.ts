@@ -1,61 +1,39 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { httpAuth } from "../http"
+import {
+  type ConfirmCodeData,
+  type ConfirmCodeResponse,
+  type ConfirmForgotPasswordData,
+  type ConfirmForgotPasswordResponse,
+  type ForgetPasswordResponse,
+  type ForgotPasswordData,
+  type ResendCodeData,
+  type ResendCodeResponse,
+  type SignInData,
+  type SignInResponse,
+} from '../../context/auth/types';
+import { httpAuth } from '../http';
 
 export class AuthRepositoryHttp {
-  async login(data: any) {
-    try {
-      const resp = await httpAuth.post(`/sign-in`, data);
-      if (resp) {
-        return resp.data;
-      }
-    } catch (error: any) {
-      if (
-        error.status === 400 &&
-        error.response.data === "Credenciais inválidas"
-      ) {
-        return error;
-      }
-
-      throw new Error(
-        `Error AuthRepositoryHttp login: ${error} \n Status: ${error.response.status} \n Data: ${error.response.data}`
-      );
-    }
+  login(data: SignInData) {
+    return httpAuth.post<SignInResponse>(`/sign-in`, data);
   }
 
-  async forgotPassword(data: any) {
-    try {
-      const response = await httpAuth.post("/forgot-password", data);
-      return response.data;
-    } catch (error: any) {
-      return error.response.data;
-    }
+  forgotPassword(data: ForgotPasswordData) {
+    return httpAuth.post<ForgetPasswordResponse>('/forgot-password', data);
   }
 
-  async confirmCode(data: any) {
-    try {
-      const response = await httpAuth.post("confirm-code", data);
-      return response.data;
-    } catch (error: any) {
-      return error.response.data;
-    }
+  confirmCode(data: ConfirmCodeData) {
+    return httpAuth.post<ConfirmCodeResponse>('/confirm-code', data);
   }
 
-  async resendCode(data: any) {
-    try {
-      const response = await httpAuth.post("/resend-code", data);
-      return response.data;
-    } catch (error: any) {
-      console.log("ERRO ", error.response.data);
-      return error.response.data;
-    }
+  resendCode(data: ResendCodeData) {
+    return httpAuth.post<ResendCodeResponse>('/resend-code', data);
   }
 
-  async confirmForgotPassword(data: any) {
-    try {
-      const response = await httpAuth.post(`/confirm-forgot-password`, data);
-      return response.data;
-    } catch (error: any) {
-      return error.response.data;
-    }
+  confirmForgotPassword(data: ConfirmForgotPasswordData) {
+    return httpAuth.post<ConfirmForgotPasswordResponse>(
+      `/confirm-forgot-password`,
+      data
+    );
   }
 }

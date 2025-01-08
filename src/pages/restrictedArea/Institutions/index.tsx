@@ -78,7 +78,10 @@ export default function Institutions() {
             const response = await getAllInstitutes();
             console.log(response);
             if (response && response.institutes) {
-                const institutesData: Institute[] = response.institutes.map((institute: any) => ({
+
+                console.log(response.institutes);
+
+                const institutesData: Institute[] = response.institutes.map((institute) => ({
                     instituteId: institute.instituteId,
                     name: institute.name,
                     description: institute.description,

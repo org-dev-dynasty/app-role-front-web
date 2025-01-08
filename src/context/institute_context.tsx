@@ -18,11 +18,11 @@ interface Institute {
     events_id?: string[] | undefined;
 }
 
-interface getAllInstitutesResponse {
+interface GetAllInstitutesResponse {
     institutes: Institute[]
 }
 
-interface getInstituteByIdResponse {
+interface GetInstituteByIdResponse {
     institute_id: string;
     name: string;
     description: string;
@@ -36,33 +36,33 @@ interface getInstituteByIdResponse {
     events_id?: string[] | undefined;
 }
 
-interface createInstituteResponse {
+interface CreateInstituteResponse {
     message: string
     id?: string
 }
 
-interface deleteInstituteByIdResponse {
+interface DeleteInstituteByIdResponse {
     message: string,
     status?: number
 }
 
-interface updateInstituteByIdResponse {
+interface UpdateInstituteByIdResponse {
     message: string,
     status?: number
 }
 
-interface uploadInstituteImageResponse {
+interface UploadInstituteImageResponse {
     message: string,
     status?: number
 }
 
 type InstituteContextType = {
-    getAllInstitutes: () => Promise<getAllInstitutesResponse>
-    getInstituteById: (id: string) => Promise<getInstituteByIdResponse>
-    createInstitute: (data: Institute) => Promise<createInstituteResponse>
-    deleteInstituteById: (id: string) => Promise<deleteInstituteByIdResponse>
-    updateInstituteById: (data: Partial<InstituteProps>) => Promise<updateInstituteByIdResponse>
-    uploadInstituteImage: (data: FormData) => Promise<uploadInstituteImageResponse>
+    getAllInstitutes: () => Promise<GetAllInstitutesResponse>
+    getInstituteById: (id: string) => Promise<GetInstituteByIdResponse>
+    createInstitute: (data: Institute) => Promise<CreateInstituteResponse>
+    deleteInstituteById: (id: string) => Promise<DeleteInstituteByIdResponse>
+    updateInstituteById: (data: Partial<InstituteProps>) => Promise<UpdateInstituteByIdResponse>
+    uploadInstituteImage: (data: FormData) => Promise<UploadInstituteImageResponse>
 }
 
 
