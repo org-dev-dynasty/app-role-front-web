@@ -11,7 +11,7 @@ import {
   type ResendCodeParams,
   type SignUpParams,
   type VerifyEmailParams,
-} from '@/api/repositories/authRepository/types';
+} from '@/api/services/authService/types';
 
 import { type AuthStore } from './types';
 
@@ -71,7 +71,7 @@ export const forgotPassword =
     store.forgotPassword.setLoading(true);
     store.forgotPassword.setError(undefined);
     store.forgotPassword.setCurrentEmail(forgotPasswordParams.email);
-    
+
     try {
       const { data } = await authService.forgotPassword(forgotPasswordParams);
 
