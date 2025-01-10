@@ -2,10 +2,10 @@ import { ROUTES } from '@/AppRouter';
 import { useAuth } from '@/hooks/useAuth';
 import { Navigate, Outlet } from 'react-router-dom';
 
-export const PrivateLayout = () => {
+export const AuthLayout = () => {
   const {
     user: { logged },
   } = useAuth();
-  if (!logged) return <Navigate to={ROUTES.LOGIN} />;
+  if (logged) return <Navigate to={ROUTES.ADMIN} />;
   return <Outlet />;
 };

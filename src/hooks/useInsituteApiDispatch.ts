@@ -1,4 +1,4 @@
-import { InstituteApiStore } from '@/context/instituteApi/types';
+import { InstituteApiStore } from '@/context/institute/types';
 import { useInstituteApi } from './useInstituteApi';
 
 export function useInstituteApiDispatch() {

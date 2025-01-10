@@ -1,29 +1,13 @@
+import { useSimpleRequestNode } from '@/hooks/useCreateRequestNode';
 import { useState } from 'react';
 
-const useSignInState = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string>();
-
-  return {
-    loading,
-    setLoading,
-    error,
-    setError,
-  };
-};
-
 const useForgotPasswordState = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState();
-  const [currentCode, setCurrentCode] = useState();
+  const [currentEmail, setCurrentEmail] = useState<string>();
 
   return {
-    loading,
-    setLoading,
-    error,
-    setError,
-    currentCode,
-    setCurrentCode,
+    currentEmail,
+    setCurrentEmail,
+    ...useSimpleRequestNode(),
   };
 };
 
@@ -45,8 +29,12 @@ const useUserState = () => {
 
 export const useAuthStore = () => {
   return {
-    signIn: useSignInState(),
+    signIn: useSimpleRequestNode(),
+    signUp: useSimpleRequestNode(),
     forgotPassword: useForgotPasswordState(),
     user: useUserState(),
+    verifyEmail: useSimpleRequestNode(),
+    resendCode: useSimpleRequestNode(),
+    confirmForgotPassword: useSimpleRequestNode(),
   };
 };

@@ -1,3 +1,6 @@
+import { UserRole } from '@/constants/userRole';
+import { UserStatus } from '@/constants/userStatus';
+
 export interface MessageResponse {
   message: string;
 }
@@ -10,18 +13,7 @@ export interface Review {
   review: string;
   name: string;
   photoUrl: string;
-  reviewedAt?: Date;
-}
-
-export interface Location {
-  latitude: number;
-  longitude: number;
-  address: string;
-  number: number;
-  neighborhood: string;
-  city: string;
-  state: string;
-  cep: string;
+  reviewedAt?: string;
 }
 
 export interface FollowingProps {
@@ -144,12 +136,12 @@ export type EventCategory =
 export interface Institute {
   institute_id?: string;
   name: string;
-  logo_photo?: string;
   description: string;
   institute_type: InstituteType;
   partner_type: InstitutePartner;
-  phone?: string;
   location: Location;
+  logo_photo?: string;
+  phone?: string;
   price?: number;
   photos_url?: string[];
   events_id?: string[];
@@ -184,54 +176,15 @@ export type InstitutePartner =
 /* #region USER */
 
 export interface User {
-  user_id?: string;
-  name: string;
-  nickname: string;
-  username: string;
+  userId: string;
   email: string;
-  acceptedTerms: boolean;
+  username: string;
+  name: string;
+  role: UserRole;
+  userStatus: UserStatus;
+  enabled: boolean;
   emailVerified: boolean;
-  dateBirth?: Date;
-  gender?: UserGender;
-  cpf?: string;
-  confirmationCode?: string;
-  biography?: string;
-  roleType?: UserRole;
-  phoneNumber?: string;
-  password?: string;
-  createdAt?: Date;
-  linkInstagram?: string;
-  linkTiktok?: string;
-  bgPhoto?: string;
-  profilePhoto?: string;
-  privacy?: UserPrivacy;
-  following?: FollowingProps[];
-  favorites?: FavoriteProps[];
 }
-
-export const USER_GENDER = {
-  MALE: 'Masculino',
-  FEMALE: 'Feminino',
-  OTHER: 'Outro',
-} as const;
-
-export type UserGender = (typeof USER_GENDER)[keyof typeof USER_GENDER];
-
-export const USER_ROLE = {
-  OWNER: 'OWNER',
-  ORGANIZER: 'ORGANIZER',
-  MODERATOR: 'MODERATOR',
-  COMMON: 'COMMON',
-} as const;
-
-export type UserRole = (typeof USER_ROLE)[keyof typeof USER_ROLE];
-
-export const USER_PRIVACY = {
-  PUBLIC: 'PUBLIC',
-  PRIVATE: 'PRIVATE',
-} as const;
-
-export type UserPrivacy = (typeof USER_PRIVACY)[keyof typeof USER_PRIVACY];
 
 /* #endregion */
 
@@ -341,4 +294,72 @@ export interface CreateEventRequestData
   ticketUrl?: string;
 }
 
+export interface CreateInstituteRequestData
+  extends Location,
+    Pick<
+      Institute,
+      'name' | 'description' | 'institute_type' | 'partner_type' | 'phone'
+    > {}
+
+export interface CreateReviewRequestData extends Review {}
+
 /* #endregion */
+
+/* #region AUTH RESPONSES */
+export interface SignUpResponse extends MessageResponse {
+  userId: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
+export interface SignInResponse {
+  accessToken: string;
+  idToken: string;
+  refreshToken: string;
+}
+
+export interface GetProfile {
+  userId: string;
+  nickname: string;
+  biography?: string;
+  username: string;
+  profilePhoto?: string;
+  privacy: string;
+  backgroundPhoto?: string;
+  linkTiktok?: string;
+  linkInstagram?: string;
+  following: number;
+  followers: number;
+  isFriend?: boolean;
+  isFollowing?: boolean;
+  email?: string;
+}
+
+export interface ResendCodeResponse extends MessageResponse {}
+
+/* #endregion */
+
+// user_id?: string;
+//   name: string;
+//   nickname: string;
+//   username: string;
+//   email: string;
+//   acceptedTerms: boolean;
+//   emailVerified: boolean;
+//   dateBirth?: Date;
+//   gender?: UserGender;
+//   cpf?: string;
+//   confirmationCode?: string;
+//   biography?: string;
+//   roleType?: UserRole;
+//   phoneNumber?: string;
+//   password?: string;
+//   createdAt?: Date;
+//   linkInstagram?: string;
+//   linkTiktok?: string;
+//   bgPhoto?: string;
+//   profilePhoto?: string;
+//   privacy?: UserPrivacy;
+//   following?: FollowingProps[];
+//   favorites?: FavoriteProps[];

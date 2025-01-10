@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from '../ui/select';
 import ImageInput from '../input/Image';
-import { Institute } from '@/context/instituteApi/types';
+import { Institute } from '@/context/institute/types';
 import { addressValidation } from '@/utils/validations';
 import AddressInput from '../input/Address';
 import { Separator } from '../ui/separator';

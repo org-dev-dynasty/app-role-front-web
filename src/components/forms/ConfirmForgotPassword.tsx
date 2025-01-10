@@ -20,26 +20,36 @@ import PasswordInput from '../input/Password';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@/AppRouter';
 
-const formSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-});
+const formSchema = z
+  .object({
+    code: z.string(),
+    password: z.string(),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'As senhas não coincidem',
+    path: ['confirmPassword'],
+  });
 
-export type SignInFormData = z.infer<typeof formSchema>;
+export type ConfirmForgotPasswordFormData = z.infer<typeof formSchema>;
 
-interface SinInFormProps {
-  onSuccess?: (data: SignInFormData) => void;
+interface ConfirmForgotPasswordFormProps {
+  onSuccess?: (data: ConfirmForgotPasswordFormData) => void;
   error?: string;
   loading?: boolean;
 }
 
-export function SignInForm({ onSuccess, loading, error }: SinInFormProps) {
+export function ConfirmForgotPasswordForm({
+  onSuccess,
+  loading,
+  error,
+}: ConfirmForgotPasswordFormProps) {
   const navigate = useNavigate();
-
-  const form = useForm<SignInFormData>({
+  const form = useForm<ConfirmForgotPasswordFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: '',
+      code: '',
+      confirmPassword: '',
       password: '',
     },
   });
@@ -48,7 +58,7 @@ export function SignInForm({ onSuccess, loading, error }: SinInFormProps) {
     onSuccess?.(values);
   }
 
-  function handleForgotPassword() {
+  function handleBack() {
     navigate(ROUTES.FORGOT_PASSWORD);
   }
 
@@ -65,6 +75,7 @@ export function SignInForm({ onSuccess, loading, error }: SinInFormProps) {
                   className='w-full h-full object-contain'
                 />
               </div>
+              <h2 className='text-center'>Nova senha</h2>
 
               {error && (
                 <div className='w-full flex justify-center'>
@@ -75,15 +86,18 @@ export function SignInForm({ onSuccess, loading, error }: SinInFormProps) {
           </CardTitle>
         </CardHeader>
         <CardContent>
+          <p className='text-center'>
+            Foi enviado um e-mail com o código de recuperação
+          </p>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
             <FormField
               control={form.control}
-              name='email'
+              name='code'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>E-mail</FormLabel>
+                  <FormLabel>Código</FormLabel>
                   <FormControl>
-                    <Input placeholder='E-mail' {...field} />
+                    <Input placeholder='Código' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -95,25 +109,41 @@ export function SignInForm({ onSuccess, loading, error }: SinInFormProps) {
               name='password'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Nova senha</FormLabel>
                   <FormControl>
-                    <PasswordInput placeholder='Password' {...field} />
+                    <PasswordInput placeholder='Senha' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type='submit' className='w-full'>
-              {loading ? 'Carregando' : 'Login'}
+
+            <FormField
+              control={form.control}
+              name='confirmPassword'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirmar nova senha</FormLabel>
+                  <FormControl>
+                    <PasswordInput placeholder='Senha' {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button type='submit' className='w-full' disabled={loading}>
+              {loading ? 'Carregando' : 'Recuperar senha'}
             </Button>
 
             <Button
-              variant='ghost'
+              variant='outline'
               type='submit'
               className='w-full'
-              onClick={handleForgotPassword}
+              onClick={handleBack}
+              disabled={loading}
             >
-              Recuperar senha
+              Voltar
             </Button>
           </form>
         </CardContent>

@@ -1,4 +1,4 @@
-import { Location } from '@/context/instituteApi/types';
+import { Location } from '@/context/institute/types';
 import { envs } from '@/utils/envs';
 import { StandaloneSearchBox, useLoadScript } from '@react-google-maps/api';
 import { useRef } from 'react';

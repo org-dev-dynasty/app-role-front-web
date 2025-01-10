@@ -16,31 +16,31 @@ import {
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { IMAGES } from '@/constants/image';
-import PasswordInput from '../input/Password';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@/AppRouter';
 
 const formSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(6),
 });
 
-export type SignInFormData = z.infer<typeof formSchema>;
+export type ForgotPasswordFormData = z.infer<typeof formSchema>;
 
-interface SinInFormProps {
-  onSuccess?: (data: SignInFormData) => void;
+interface ForgotPasswordFormProps {
+  onSuccess?: (data: ForgotPasswordFormData) => void;
   error?: string;
   loading?: boolean;
 }
 
-export function SignInForm({ onSuccess, loading, error }: SinInFormProps) {
+export function ForgotPasswordForm({
+  onSuccess,
+  loading,
+  error,
+}: ForgotPasswordFormProps) {
   const navigate = useNavigate();
-
-  const form = useForm<SignInFormData>({
+  const form = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: '',
-      password: '',
     },
   });
 
@@ -48,8 +48,8 @@ export function SignInForm({ onSuccess, loading, error }: SinInFormProps) {
     onSuccess?.(values);
   }
 
-  function handleForgotPassword() {
-    navigate(ROUTES.FORGOT_PASSWORD);
+  function handleBack() {
+    navigate(ROUTES.LOGIN);
   }
 
   return (
@@ -65,7 +65,7 @@ export function SignInForm({ onSuccess, loading, error }: SinInFormProps) {
                   className='w-full h-full object-contain'
                 />
               </div>
-
+              <h2 className='text-center'>Recuperar senha</h2>
               {error && (
                 <div className='w-full flex justify-center'>
                   <span className='text-sm text-destructive'>{error}</span>
@@ -75,6 +75,9 @@ export function SignInForm({ onSuccess, loading, error }: SinInFormProps) {
           </CardTitle>
         </CardHeader>
         <CardContent>
+          <p className='text-center'>
+            Informe o e-mail cadastrado para receber o link de recuperação
+          </p>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
             <FormField
               control={form.control}
@@ -83,37 +86,25 @@ export function SignInForm({ onSuccess, loading, error }: SinInFormProps) {
                 <FormItem>
                   <FormLabel>E-mail</FormLabel>
                   <FormControl>
-                    <Input placeholder='E-mail' {...field} />
+                    <Input type='email' placeholder='E-mail' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <FormField
-              control={form.control}
-              name='password'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <PasswordInput placeholder='Password' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type='submit' className='w-full'>
-              {loading ? 'Carregando' : 'Login'}
+            <Button type='submit' className='w-full' disabled={loading}>
+              {loading ? 'Carregando' : 'Enviar código de recuperação'}
             </Button>
 
             <Button
-              variant='ghost'
+              variant='outline'
               type='submit'
               className='w-full'
-              onClick={handleForgotPassword}
+              disabled={loading}
+              onClick={handleBack}
             >
-              Recuperar senha
+              voltar
             </Button>
           </form>
         </CardContent>

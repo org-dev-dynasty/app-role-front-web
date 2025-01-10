@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { instituteApiContext } from '@/context/instituteApi/context';
+import { instituteApiContext } from '@/context/institute/context';
 
 export const useInstituteApi = () => {
   const context = useContext(instituteApiContext);

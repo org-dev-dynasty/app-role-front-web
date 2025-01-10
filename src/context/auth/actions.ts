@@ -1,87 +1,152 @@
-import { AxiosError } from 'axios';
-import { AuthRepositoryHttp } from '../../api/repositories/auth_repository';
-import {
-  AuthStore,
-  // ConfirmCodeData,
-  // ForgotPasswordData,
-  SignInData,
-} from './types';
+import { type AxiosError } from 'axios';
+
 import { STORAGE_KEYS } from '@/constants/storageKeys';
 
-const repo = new AuthRepositoryHttp();
+import { AuthService } from '@/api/services/authService';
 
-export const singIn =
-  (signInParams: SignInData) => async (store: AuthStore) => {
-    store.signIn.setLoading(true);
-    store.signIn.setError(undefined);
+import {
+  type SignInParams,
+  type ConfirmForgotPasswordParams,
+  type ForgotPasswordParams,
+  type ResendCodeParams,
+  type SignUpParams,
+  type VerifyEmailParams,
+} from '@/api/repositories/authRepository/types';
 
+import { type AuthStore } from './types';
+
+export const authService = new AuthService();
+
+export const singIn = (params: SignInParams) => async (store: AuthStore) => {
+  store.signIn.setLoading(true);
+  store.signIn.setError(undefined);
+
+  try {
+    const { data } = await authService.signIn(params);
+
+    const tokens = {
+      accessToken: data.accessToken,
+      idToken: data.idToken,
+      refreshToken: data.refreshToken,
+    };
+
+    store.user.setTokens(tokens);
+
+    localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, btoa(JSON.stringify(tokens)));
+
+    store.user.setLogged(true);
+  } catch (error) {
+    const err = error as AxiosError<string>;
+
+    store.signIn.setError(err.response?.data);
+  } finally {
+    store.signIn.setLoading(false);
+  }
+};
+
+export const signUp = (params: SignUpParams) => async (store: AuthStore) => {
+  store.signUp.setLoading(true);
+  store.signUp.setError(undefined);
+
+  try {
+    await authService.signUp(params);
+  } catch (error) {
+    const err = error as AxiosError<string>;
+    store.signUp.setError(err.response?.data);
+  } finally {
+    store.signUp.setLoading(false);
+  }
+};
+
+export const signOut = () => async (store: AuthStore) => {
+  store.user.setTokens(undefined);
+
+  localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+
+  store.user.setLogged(false);
+};
+
+export const forgotPassword =
+  (forgotPasswordParams: ForgotPasswordParams) => async (store: AuthStore) => {
+    store.forgotPassword.setLoading(true);
+    store.forgotPassword.setError(undefined);
+    store.forgotPassword.setCurrentEmail(forgotPasswordParams.email);
+    
     try {
-      const { data } = await repo.login(signInParams);
+      const { data } = await authService.forgotPassword(forgotPasswordParams);
 
-      const tokens = {
-        accessToken: data.accessToken,
-        idToken: data.idToken,
-        refreshToken: data.refreshToken,
-      };
-
-      store.user.setTokens(tokens);
-
-      localStorage.setItem(
-        STORAGE_KEYS.AUTH_TOKEN,
-        btoa(JSON.stringify(tokens))
-      );
-
-      store.user.setLogged(true);
+      return { success: true, message: data.message };
     } catch (error) {
       const err = error as AxiosError<string>;
 
-      store.signIn.setError(err.response?.data);
+      store.forgotPassword.setError(err.response?.data);
+
+      return { success: false, message: err.response?.data };
     } finally {
-      store.signIn.setLoading(false);
+      store.forgotPassword.setLoading(false);
     }
   };
 
-// export const forgotPassword =
-//   (forgotPasswordParams: ForgotPasswordData) => async (store: AuthStore) => {
-//     store.forgotPassword.setLoading(true);
+export const confirmForgotPassword =
+  (params: Omit<ConfirmForgotPasswordParams, 'email'>) =>
+  async (store: AuthStore) => {
+    store.confirmForgotPassword.setLoading(true);
+    store.confirmForgotPassword.setError(undefined);
 
-//     try {
-//       const { data } = await repo.forgotPassword(forgotPasswordParams);
+    try {
+      if (!store.forgotPassword.currentEmail) {
+        return { success: false, message: 'Email not found' };
+      }
 
-//       data.message;
-//     } catch (error) {
-//       const err = error as AxiosError<string>;
+      const { data } = await authService.confirmForgotPassword({
+        ...params,
+        email: store.forgotPassword.currentEmail,
+      });
+      store.forgotPassword.setCurrentEmail(undefined);
 
-//       store.forgotPassword.setError(err.response?.data);
-//     } finally {
-//       store.forgotPassword.setLoading(false);
-//     }
-//   };
+      return { success: true, message: data.message };
+    } catch (error) {
+      const err = error as AxiosError<string>;
+      store.confirmForgotPassword.setError(err.response?.data);
 
-// export const confirmCode =
-//   (data: ConfirmCodeData) => async (store: AuthStore) => {
-//     try {
-//       const response = await repo.confirmCode(data);
-//       return response;
-//     } catch (error) {
-//       return error;
-//     }
-//   };
+      return { success: false, message: err.response?.data };
+    } finally {
+      store.confirmForgotPassword.setLoading(false);
+    }
+  };
 
-// async function resendCode(data: ResendCodeData) {
-//   try {
-//     const response = await repo.resendCode(data);
-//     return response;
-//   } catch (error) {
-//     return error;
-//   }
-// }
+export const verifyEmail =
+  (params: VerifyEmailParams) => async (store: AuthStore) => {
+    store.verifyEmail.setLoading(true);
+    store.verifyEmail.setError(undefined);
 
-// async function confirmForgotPassword(data: ConfirmForgotPasswordData) {
-//   try {
-//     const response = await repo.confirmForgotPassword(data);
-//     return response;
-//   } catch (error) {
-//     return error;
-//   }
-// }
+    try {
+      const { data } = await authService.verifyEmail(params);
+
+      return { success: true, message: data.message };
+    } catch (error) {
+      const err = error as AxiosError<string>;
+      return { success: false, message: err.response?.data };
+    } finally {
+      store.verifyEmail.setLoading(false);
+    }
+  };
+
+export const resendCode =
+  (params: ResendCodeParams) => async (store: AuthStore) => {
+    store.resendCode.setLoading(true);
+    store.resendCode.setError(undefined);
+
+    try {
+      const { data } = await authService.resendCode(params);
+
+      return { success: true, message: data.message };
+    } catch (error) {
+      const err = error as AxiosError<string>;
+      store.resendCode.setError(err.response?.data);
+
+      return { success: false, message: err.response?.data };
+    } finally {
+      store.resendCode.setLoading(false);
+    }
+  };

@@ -23,8 +23,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { getAllInstitutes } from '@/context/instituteApi/actions';
-import { Institute } from '@/context/instituteApi/types';
+import { getAllInstitutes } from '@/context/institute/actions';
+import { Institute } from '@/context/institute/types';
 import { useInstituteApiDispatch } from '@/hooks/useInsituteApiDispatch';
 import { useInstituteApi } from '@/hooks/useInstituteApi';
 import { MoreHorizontal, Plus } from 'lucide-react';
