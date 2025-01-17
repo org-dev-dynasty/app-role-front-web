@@ -4,6 +4,8 @@ import { envs } from "../../utils/envs";
 interface FAQItem {
   question: string;
   answer: string;
+  link?: string;
+  textLink?: string;
 }
 
 const faqData: FAQItem[] = [
@@ -80,12 +82,17 @@ const faqData: FAQItem[] = [
   {
     question: "Minhas informações estão protegidas no ROLE?",
     answer:
-      "Sim! Valorizamos a segurança dos nossos usuários e seguimos todas as práticas recomendadas de proteção de dados.",
+      "Sim! Valorizamos a segurança dos nossos usuários e seguimos todas as práticas recomendadas de proteção de dados. Para mais informações, consulte nosso documento completo em:",
+    link: "https://docs.google.com/document/d/1TNHSuWWGY9T4NlfGxheUs5qvsbju4Rwa/",
+    textLink: 'Política de Privacidade',
+
   },
   {
     question: "Como faço para excluir minha conta?",
     answer:
-      "Vá no seu PERFIL, clique no ícone do canto superior direito e acesse CONTA, clique em EXCLUIR CONTA e siga os passos até sua conta ser excluída.",
+      "Vá no seu PERFIL, clique no ícone do canto superior direito e acesse CONTA, clique em EXCLUIR CONTA e siga os passos até sua conta ser excluída. Além disso, você pode preencher o formulário disponível aqui:",
+    link: "https://forms.gle/V2wWt9GnTixH3PMNA",
+    textLink: 'Formulário de Exclusão de Conta',
   },
 ];
 
@@ -129,7 +136,17 @@ export function FAQ() {
               style={{ overflow: "hidden" }}
             >
               <div className="pb-4">
-                {item.answer}
+                <p>{item.answer}</p>
+                {item.link && (
+                  <a
+                    href={item.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-white underline font-semibold"
+                  >
+                    {item.textLink}
+                  </a>
+                )}
               </div>
             </div>
           </div>
