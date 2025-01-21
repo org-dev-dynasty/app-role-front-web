@@ -3,9 +3,12 @@ import { NavbarItem } from './NavbarItem';
 import { NavbarMenu } from './NavbarMenu';
 import { handleScroll } from '../utils/handle_scroll';
 import { envs } from '../utils/envs';
+import { useNavigate } from 'react-router-dom';
 
 export function Navbar({ onClickMenuResponsible, openMenu, isAnimating, openPopUp }: { onClickMenuResponsible: () => void, openMenu: boolean, isAnimating: boolean, openPopUp: () => void }) {
   const animationMenu = openMenu && !isAnimating ? 'animate-slideInRight' : 'animate-slideOutRight';
+
+  const navigate = useNavigate();
   
   return (
     <div className={`w-screen h-16 ${openMenu ? 'bg-transparent': 'bg-[rgba(29,29,29,0.4)] backdrop-blur rounded-b-2xl'} flex rounded-b-3xl fixed top-0 z-40 font-nunito font-medium text-xl`}>
@@ -14,6 +17,8 @@ export function Navbar({ onClickMenuResponsible, openMenu, isAnimating, openPopU
         <NavbarItem onClick={() => handleScroll('o_app')}>O App</NavbarItem>
         <NavbarItem onClick={() => handleScroll('diferenciais')}>Diferenciais</NavbarItem>
         <NavbarItem onClick={() => handleScroll('organizador')}>Organizador</NavbarItem>
+        <NavbarItem onClick={() => navigate('/faq')}>FAQ</NavbarItem>
+        <NavbarItem onClick={() => navigate('/support')}>Suporte</NavbarItem>
         <NavbarItem className='md:mr-20' onClick={() => handleScroll('contato')}>Contato</NavbarItem>
         <button onClick={openPopUp} className='
         w-[128px] text-xl

@@ -105,6 +105,15 @@ export function FAQ() {
 
   return (
     <main className="bg-[#2A2A2A] min-h-screen flex flex-col items-center justify-center">
+
+      {/* BOTAO DE VOLTAR AO / */}
+      <button
+        className="absolute top-5 left-5 bg-gradient-to-r from-dark-purple via-purple via-70% to-light-purple rounded-[30px] text-white cursor-pointer transform w-28 h-12 hover:scale-110 ease-in-out duration-300 text-xl font-medium"
+        onClick={() => window.history.back()}
+      >
+        Voltar
+      </button>
+
       {/* Imagem centralizada */}
       <img
         src={`${envs.cloudfrontUrl}/approle_logo_navbar.png`}
