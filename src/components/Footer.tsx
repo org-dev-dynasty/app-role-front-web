@@ -33,6 +33,17 @@ export function Footer({ isNavbarOpened, openPopUp, isPopUpOpened }: { isNavbarO
                     © ROLE, Todos os direitos reservados.
                 </p>
                 <p className="font-nunito font-medium text-lg md:text-xl lg:text-xl pt-2 md:pt-4 lg:pt-5">
+                    Para nos contatar envie um email para <a href="mailto:contato@roleapp.com.br" className="text-[#9C4EDC] drop-shadow-purple-mid hover:underline font-semibold">
+                        contato@roleapp.com.br 
+                    </a>
+                </p>
+                 {/* LINK DE POLITICA DE PRIVACIDADE  */}
+                <p className="font-nunito font-medium text-lg md:text-xl lg:text-xl pt-2 md:pt-4 lg:pt-5">
+                    <a href="https://drive.google.com/file/d/1T7uEWzh2m1ggL5lPdu3hZm4UuLPq_ZOC/view?usp=drivesdk" className="text-[#9C4EDC] drop-shadow-purple-mid hover:underline font-semibold">
+                        Política de Privacidade
+                    </a>
+                </p>
+                <p className="font-nunito font-medium text-lg md:text-xl lg:text-xl pt-2 md:pt-4 lg:pt-5">
                     Desenvolvido por DevDynasty
                 </p>
             </div>
