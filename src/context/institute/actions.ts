@@ -1,47 +1,48 @@
-import { InstituteRepositoryHttp } from '@/api/repositories/institute_repository';
-import { Institute, InstituteApiStore } from './types';
-import { AxiosError } from 'axios';
+import { GetAllInstitutesParams, GetInstituteParams } from '@/api/services/instituteService/types'
+import { AxiosError } from 'axios'
+import { InstituteStore } from './types'
 
-const repo = new InstituteRepositoryHttp();
-
-export const getAllInstitutes = () => async (store: InstituteApiStore) => {
-  store.allInstitutes.setLoading(true);
-  store.allInstitutes.setError('');
+export const getInstitute = (params: GetInstituteParams) => async (store: InstituteStore) => {
+  store.institutes.setLoading(true)
+  store.institutes.setError(undefined)
 
   try {
-    const { data } = await repo.getAllInstitutes();
+    const { data } = await store.service.getInstitute(params)
 
-    store.allInstitutes.setData(data.institutes);
+    store.institutes.setSelected(data)
+
+    return { success: true, institute: data }
   } catch (error) {
-    const err = error as AxiosError<string>;
-
-    store.allInstitutes.setError(err.message);
+    const err = error as AxiosError<string>
+    store.institutes.setError(err.response?.data)
+    return { success: false, message: err.response?.data }
   } finally {
-    store.allInstitutes.setLoading(false);
+    store.institutes.setLoading(false)
   }
-};
+}
 
-export const getInstituteById =
-  (id: string) => async (store: InstituteApiStore) => {
-    console.log(store, id);
-  };
+export const getAllInstitutes =
+  (params: GetAllInstitutesParams) => async (store: InstituteStore) => {
+    store.institutes.setLoading(true)
+    store.institutes.setError(undefined)
 
-export const createInstitute =
-  (data: Institute) => async (store: InstituteApiStore) => {
-    console.log(store, data);
-  };
+    try {
+      const { data } = await store.service.getAllInstitutes(params)
 
-export const deleteInstituteById =
-  (id: string) => async (store: InstituteApiStore) => {
-    console.log(store, id);
-  };
+      store.institutes.setData(data.items)
 
-export const updateInstituteById =
-  (data: Partial<InstituteProps>) => async (store: InstituteApiStore) => {
-    console.log(store, data);
-  };
+      return { success: true, institutes: data }
+    } catch (error) {
+      const err = error as AxiosError<string>
+      store.institutes.setError(err.response?.data)
+      return { success: false, message: err.response?.data }
+    } finally {
+      store.institutes.setLoading(false)
+    }
+  }
 
-export const uploadInstituteImage =
-  (data: FormData) => async (store: InstituteApiStore) => {
-    console.log(store, data);
-  };
+export const getAllInstitutesByPartnerType =
+  (partnerType: string) => async (store: InstituteStore) => {
+    store.institutes.setLoading(true)
+    store.institutes.setError(undefined)
+  }

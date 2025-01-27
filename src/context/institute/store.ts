@@ -1,42 +1,27 @@
-import { useState } from 'react';
-import { Institute } from './types';
+import { InstituteService } from '@/api/services/instituteService'
+import { Institute } from '@/api/services/instituteService/types'
+import { useSimpleRequestNode } from '@/hooks/useCreateRequestNode'
+import { useState } from 'react'
 
-const useAllInstituteState = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [data, setData] = useState<Institute[]>([]);
+const useEventStoreState = () => {
+  const [data, setData] = useState<Institute[]>([])
+  const [dataByPartnerType, setDataByPartnerType] = useState<Institute[]>()
+  const [selected, setSelected] = useState<Institute>()
 
   return {
-    loading,
-    setLoading,
-    error,
-    setError,
+    ...useSimpleRequestNode(),
     data,
     setData,
-  };
-};
+    dataByPartnerType,
+    setDataByPartnerType,
+    selected,
+    setSelected
+  }
+}
 
-const useInstituteState = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [selectedInstituteId, setSelectedInstituteId] = useState();
-  const [data, setData] = useState();
-
+export const useInstituteStore = (service: InstituteService) => {
   return {
-    loading,
-    setLoading,
-    error,
-    setError,
-    selectedInstituteId,
-    setSelectedInstituteId,
-    data,
-    setData,
-  };
-};
-
-export const useInstituteStore = () => {
-  return {
-    institute: useInstituteState(),
-    allInstitutes: useAllInstituteState(),
-  };
-};
+    service,
+    institutes: useEventStoreState()
+  }
+}

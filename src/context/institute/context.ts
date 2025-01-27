@@ -1,5 +1,4 @@
-import { createContext } from 'react';
-import { InstituteApiContextType } from './types';
+import { createContext } from 'react'
+import { type InstituteContext } from './types'
 
-export const instituteApiContext =
-  createContext<InstituteApiContextType | null>(null);
+export const instituteContext = createContext<InstituteContext | null>(null)

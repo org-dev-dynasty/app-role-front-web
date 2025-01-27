@@ -1,18 +1,28 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react'
 
-import { instituteApiContext } from './context';
-import { useInstituteStore } from './store';
+import { InstituteService } from '@/api/services/instituteService'
+import axios from 'axios'
+import { authService } from '../auth/actions'
+import { useInstituteStore } from './store'
+import { instituteContext } from './context'
+import { envs } from '@/utils/envs'
 
-export function InstituteApiContextProvider({ children }: PropsWithChildren) {
-  const store = useInstituteStore();
+export function InstituteContextProvider({ children }: PropsWithChildren) {
+  const instance = axios.create({
+    baseURL: envs.api
+  })
+
+  const service = new InstituteService(authService, instance)
+
+  const store = useInstituteStore(service)
 
   return (
-    <instituteApiContext.Provider
+    <instituteContext.Provider
       value={{
-        store,
+        store
       }}
     >
       {children}
-    </instituteApiContext.Provider>
-  );
+    </instituteContext.Provider>
+  )
 }

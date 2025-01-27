@@ -14,31 +14,43 @@ import {
 } from '@/api/services/authService/types';
 
 import { type AuthStore } from './types';
+import { USER_STATUS } from '@/constants/userStatus';
+import { USER_ROLE } from '@/constants/userRole';
 
 export const authService = new AuthService();
 
 export const singIn = (params: SignInParams) => async (store: AuthStore) => {
   store.signIn.setLoading(true);
   store.signIn.setError(undefined);
+
   try {
     const { data } = await authService.signIn(params);
 
-    const tokens = {
-      accessToken: data.accessToken,
-      idToken: data.idToken,
-      refreshToken: data.refreshToken,
-    };
+    store.user.setPassword(params.password);
 
-    store.user.setEmail(params.identifier);
-    store.user.setTokens(tokens);
+    if (data.emailVerified) {
+      const tokens = {
+        accessToken: data.accessToken,
+        idToken: data.idToken,
+        refreshToken: data.refreshToken,
+      };
 
-    localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, btoa(JSON.stringify(tokens)));
+      store.user.setTokens(tokens);
 
+      localStorage.setItem(
+        STORAGE_KEYS.AUTH_TOKEN,
+        btoa(JSON.stringify(tokens))
+      );
+    }
+    store.user.setData(data);
     store.user.setLogged(true);
+
+    return { success: true, user: data };
   } catch (error) {
     const err = error as AxiosError<string>;
 
     store.signIn.setError(err.response?.data);
+    return { success: false, message: err.response?.data };
   } finally {
     store.signIn.setLoading(false);
   }
@@ -49,10 +61,28 @@ export const signUp = (params: SignUpParams) => async (store: AuthStore) => {
   store.signUp.setError(undefined);
 
   try {
-    await authService.signUp(params);
+    const { data } = await authService.signUp(params);
+
+    const user: User = {
+      userId: data.userId,
+      name: data.name,
+      email: data.email,
+      emailVerified: false,
+      enabled: true,
+      role: USER_ROLE.COMMON,
+      username: data.name,
+      userStatus: USER_STATUS.UNCONFIRMED,
+    };
+
+    store.user.setPassword(params.password);
+    store.user.setData(user);
+
+    return { success: true, user };
   } catch (error) {
     const err = error as AxiosError<string>;
     store.signUp.setError(err.response?.data);
+
+    return { success: false, message: err.response?.data };
   } finally {
     store.signUp.setLoading(false);
   }
@@ -60,10 +90,12 @@ export const signUp = (params: SignUpParams) => async (store: AuthStore) => {
 
 export const signOut = () => async (store: AuthStore) => {
   store.user.setTokens(undefined);
-  store.user.setEmail(undefined);
+
   localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
 
   store.user.setLogged(false);
+
+  return { success: true };
 };
 
 export const forgotPassword =
@@ -116,20 +148,21 @@ export const confirmForgotPassword =
   };
 
 export const verifyEmail =
-  (params: Pick<VerifyEmailParams, 'code'>) => async (store: AuthStore) => {
+  (params: VerifyEmailParams) => async (store: AuthStore) => {
     store.verifyEmail.setLoading(true);
     store.verifyEmail.setError(undefined);
 
     try {
-      if (!store.user.email) {
-        store.verifyEmail.setError('Email not found');
-        return { success: false, message: 'Email not found' };
-      }
+      const { data } = await authService.verifyEmail(params);
 
-      const { data } = await authService.verifyEmail({
-        code: params.code,
-        email: store.user.email,
-      });
+      const loginResponse = await singIn({
+        identifier: store.user.data!.email,
+        password: store.user.password!,
+      })(store);
+
+      if (!loginResponse.success) {
+        return { success: false, message: loginResponse.message! };
+      }
 
       return { success: true, message: data.message };
     } catch (error) {
@@ -158,3 +191,23 @@ export const resendCode =
       store.resendCode.setLoading(false);
     }
   };
+
+export const deleteAccount = () => async (store: AuthStore) => {
+  store.deleteAccount.setLoading(true);
+  store.deleteAccount.setError(undefined);
+
+  try {
+    const { data } = await authService.deleteUser();
+
+    await signOut()(store);
+
+    return { success: true, message: data.message };
+  } catch (error) {
+    const err = error as AxiosError<string>;
+    store.deleteAccount.setError(err.response?.data);
+
+    return { success: false, message: err.response?.data };
+  } finally {
+    store.deleteAccount.setLoading(false);
+  }
+};

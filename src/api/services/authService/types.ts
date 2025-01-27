@@ -1,35 +1,31 @@
 /* #region SignIn */
 export interface SignInParams {
-  identifier: string;
-  password: string;
+  identifier: string
+  password: string
 }
 
-export interface SignInResponse {
-  accessToken: string;
-  idToken: string;
-  refreshToken: string;
-}
+export type SignInResponse = User
 /* #endregion */
 
 /* #region SignUp */
 export interface SignUpParams {
-  name: string;
-  email: string;
-  password: string;
+  name: string
+  email: string
+  password: string
 }
 
 export interface SignUpResponse extends MessageResponse {
-  userId: string;
-  name: string;
-  email: string;
-  role: string;
+  userId: string
+  name: string
+  email: string
+  role: string
 }
 /* #endregion */
 
 /* #region VerifyEmail */
 export interface VerifyEmailParams {
-  email: string;
-  code: string;
+  email: string
+  code: string
 }
 
 export interface VerifyEmailResponse extends MessageResponse {}
@@ -37,7 +33,7 @@ export interface VerifyEmailResponse extends MessageResponse {}
 
 /* #region ForgotPassword */
 export interface ForgotPasswordParams {
-  email: string;
+  email: string
 }
 
 export interface ForgotPasswordResponse extends MessageResponse {}
@@ -45,9 +41,9 @@ export interface ForgotPasswordResponse extends MessageResponse {}
 
 /* #region ConfirmForgotPassword */
 export interface ConfirmForgotPasswordParams {
-  email: string;
-  code: string;
-  newPassword: string;
+  email: string
+  code: string
+  newPassword: string
 }
 
 export interface ConfirmForgotPasswordResponse extends MessageResponse {}
@@ -55,8 +51,10 @@ export interface ConfirmForgotPasswordResponse extends MessageResponse {}
 
 /* #region ResendCode */
 export interface ResendCodeParams {
-  email: string;
+  email: string
 }
 
 export interface ResendCodeResponse extends MessageResponse {}
 /* #endregion */
+
+export interface DeleteUserResponse extends MessageResponse {}
