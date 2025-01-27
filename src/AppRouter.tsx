@@ -28,6 +28,7 @@ export const ROUTES = {
   FORGOT_PASSWORD: '/auth/forgot-password',
   RESET_PASSWORD: '/auth/reset-password',
 } as const;
+import { Support } from './pages/support'
 
 export function AppRouter() {
   return (
@@ -70,6 +71,7 @@ export function AppRouter() {
                 <Route path='institute/:id' />
                 <Route path='event/:id' />
               </Route>
+              <Route Component={Support} path='/support' element={<Support/>} />
             </Routes>
           </BrowserRouter>
         </ProfileContextProvider>

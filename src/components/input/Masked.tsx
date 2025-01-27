@@ -7,7 +7,7 @@ interface MaskedInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 const MaskedInput = forwardRef<HTMLInputElement, MaskedInputProps>(
-  ({ mask, onChange, ...props }, ref) => {
+  ({ mask, onChange, value, ...props }, ref) => {
     const { unmaskValue, maskValue } = useInputMask(mask);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,7 +20,7 @@ const MaskedInput = forwardRef<HTMLInputElement, MaskedInputProps>(
       <Input
         {...props}
         ref={ref}
-        value={maskValue(String(props.value))}
+        value={maskValue(String(value))}
         onChange={handleChange}
       />
     );

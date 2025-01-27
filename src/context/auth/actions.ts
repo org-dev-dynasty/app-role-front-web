@@ -20,7 +20,6 @@ export const authService = new AuthService();
 export const singIn = (params: SignInParams) => async (store: AuthStore) => {
   store.signIn.setLoading(true);
   store.signIn.setError(undefined);
-
   try {
     const { data } = await authService.signIn(params);
 
@@ -30,6 +29,7 @@ export const singIn = (params: SignInParams) => async (store: AuthStore) => {
       refreshToken: data.refreshToken,
     };
 
+    store.user.setEmail(params.identifier);
     store.user.setTokens(tokens);
 
     localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, btoa(JSON.stringify(tokens)));
@@ -60,7 +60,7 @@ export const signUp = (params: SignUpParams) => async (store: AuthStore) => {
 
 export const signOut = () => async (store: AuthStore) => {
   store.user.setTokens(undefined);
-
+  store.user.setEmail(undefined);
   localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
 
   store.user.setLogged(false);
@@ -116,12 +116,20 @@ export const confirmForgotPassword =
   };
 
 export const verifyEmail =
-  (params: VerifyEmailParams) => async (store: AuthStore) => {
+  (params: Pick<VerifyEmailParams, 'code'>) => async (store: AuthStore) => {
     store.verifyEmail.setLoading(true);
     store.verifyEmail.setError(undefined);
 
     try {
-      const { data } = await authService.verifyEmail(params);
+      if (!store.user.email) {
+        store.verifyEmail.setError('Email not found');
+        return { success: false, message: 'Email not found' };
+      }
+
+      const { data } = await authService.verifyEmail({
+        code: params.code,
+        email: store.user.email,
+      });
 
       return { success: true, message: data.message };
     } catch (error) {

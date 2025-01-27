@@ -18,12 +18,15 @@ const useUserState = () => {
     refreshToken: string;
     idToken: string;
   }>();
+  const [email, setEmail] = useState<string>();
 
   return {
     logged,
     setLogged,
     tokens,
     setTokens,
+    email,
+    setEmail,
   };
 };
 
