@@ -105,32 +105,32 @@ export function Contact() {
         }}
       />
       <div className='bg-[#1D1D1D] bg-opacity-40 rounded-[50px] flex flex-nowrap justify-center items-center w-[92%] py-10 shadow-2xl shadow-dark-purple font-nunito'>
-        <div className='flex flex-col w-full  max-xl:hidden '>
+        <div className='flex flex-col w-full  max-xl:hidden'>
           <div className='flex'>
             <div
               id='container_esquerda'
               className='flex flex-col w-8/12 border-r-white border-r-2'
             >
-              <h1 className='text-5xl text-center font-chillax font-medium'>
+              <h1 className='text-5xl text-center font-chillax font-medium text-white'>
                 Fale Conosco
               </h1>
               <div className='flex flex-col mt-[40px] justify-center items-center'>
                 <div className='flex'>
                   <div className='flex flex-col'>
                     <div>
-                      <p className='ml-[68px] mb-[7px] text-2xl font-satoshi'>
+                      <p className='ml-[68px] mb-[7px] text-2xl font-satoshi text-white'>
                         Nome:
                       </p>
                       <input
                         type='text'
-                        className='bg-transparent font-satoshi border-opacity-60 border-2 border-white rounded-[15px] placeholder-[#838383] h-[48px] max-w-74 pl-[14px] ml-[62px]'
+                        className='bg-transparent font-satoshi border-opacity-60 border-2 border-white rounded-[15px] placeholder-[#838383] h-[48px] max-w-74 pl-[14px] ml-[62px] text-white'
                         placeholder='Digite seu nome...'
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                       />
                     </div>
                     <div className='mt-[23px]'>
-                      <p className='ml-[68px] mb-[7px] text-2xl font-satoshi'>
+                      <p className='ml-[68px] mb-[7px] text-2xl font-satoshi text-white'>
                         E-mail:
                       </p>
                       <input
@@ -147,7 +147,7 @@ export function Contact() {
                   </div>
                   <div className='flex items-start'>
                     <div className='flex flex-col'>
-                      <p className='ml-[68px] mb-[7px] text-2xl font-satoshi'>
+                      <p className='ml-[68px] mb-[7px] text-2xl font-satoshi text-white'>
                         Escreva sua mensagem:
                       </p>
                       <textarea
@@ -178,36 +178,42 @@ export function Contact() {
                         }`}
                       ></i>
                     </button>
-                    <p className='text-2xl ml-4 font-satoshi'>Organizador</p>
+                    <p className='text-2xl ml-4 font-satoshi text-white'>
+                      Organizador
+                    </p>
                   </div>
                   <div className='ml-40'>
                     <Button
-                      className={`bg-gradient-to-r from-[#5A189A] to-[#1E0834] w-44 h-9 border-1 rounded-3xl justify-center text-2xl font-bold shadow-2xl shadow-black ml-32 transition-transform duration-200 hover:brightness-75 ${
+                      className={`bg-gradient-to-r from-[#5A189A] to-[#1E0834] w-44 h-9 border-1 rounded-3xl justify-center text-2xl font-bold shadow-2xl shadow-black ml-32 transition-transform duration-200 hover:brightness-75
+                      text-white ${
                         isButtonClicked ? 'transform scale-110' : ''
                       }`}
                       onClick={() => {
                         handleSubmit();
                         handleButtonAnimation();
                       }}
-                      label='Enviar'
-                    ></Button>
+                    >
+                      Enviar
+                    </Button>
                   </div>
                 </div>
               </div>
             </div>
             <div id='container_direita' className='w-4/12'>
-              <h1 className='text-5xl text-center font-chillax font-medium'>
+              <h1 className='text-5xl text-center font-chillax font-medium text-white'>
                 Contato
               </h1>
               <div className='pt-16 px-20 flex flex-col items-center'>
                 <div>
                   <div className='flex gap-3 items-center'>
                     <Phone size={38} />
-                    <p className='text-2xl font-satoshi'>(11) 99403-6227</p>
+                    <p className='text-2xl font-satoshi text-white'>
+                      (11) 99403-6227
+                    </p>
                   </div>
                   <div className='flex gap-3 items-center mt-8'>
                     <Envelope size={38} />
-                    <p className='text-2xl font-satoshi'>
+                    <p className='text-2xl font-satoshi text-white'>
                       contato@roleapp.com.br
                     </p>
                   </div>
@@ -221,12 +227,16 @@ export function Contact() {
             id='container_esquerda'
             className='flex flex-col  border-b-white border-b-2 justify-center items-center'
           >
-            <h1 className='text-5xl text-center font-chillax'>Fale Conosco</h1>
+            <h1 className='text-5xl text-center font-chillax text-white'>
+              Fale Conosco
+            </h1>
             <div className='flex flex-col mt-[40px] justify-center items-center'>
               <div className='flex'>
                 <div className='flex flex-col'>
                   <div>
-                    <p className='mb-[7px] text-2xl font-satoshi'>Nome:</p>
+                    <p className='mb-[7px] text-2xl font-satoshi text-white'>
+                      Nome:
+                    </p>
                     <input
                       type='text'
                       className='bg-transparent font-satoshi border-opacity-60 border-2 border-white rounded-[15px] placeholder-[#838383] h-[48px] max-w-74 pl-[14px]'
@@ -236,7 +246,9 @@ export function Contact() {
                     />
                   </div>
                   <div className='mt-[23px]'>
-                    <p className='mb-[7px] text-2xl font-satoshi'>E-mail:</p>
+                    <p className='mb-[7px] text-2xl font-satoshi text-white'>
+                      E-mail:
+                    </p>
                     <input
                       type='email'
                       value={email}
@@ -251,7 +263,7 @@ export function Contact() {
                 </div>
                 <div className='flex items-start'>
                   <div className='flex flex-col'>
-                    <p className='ml-[68px] mb-[7px] text-2xl font-satoshi'>
+                    <p className='ml-[68px] mb-[7px] text-2xl font-satoshi text-white'>
                       Escreva sua mensagem:
                     </p>
                     <textarea
@@ -276,19 +288,22 @@ export function Contact() {
                   >
                     {checked && <i className='pi pi-check text-white'></i>}
                   </button>
-                  <p className='text-2xl ml-4 font-satoshi'>Organizador</p>
+                  <p className='text-2xl ml-4 font-satoshi text-white'>
+                    Organizador
+                  </p>
                 </div>
                 <div className='ml-40'>
                   <Button
-                    className={`bg-gradient-to-r from-[#5A189A] to-[#1E0834] w-44 h-9 border-1 rounded-3xl justify-center text-2xl font-bold shadow-2xl shadow-black ml-32 transition-transform duration-200 ${
+                    className={`bg-gradient-to-r from-[#5A189A] to-[#1E0834] w-44 h-9 border-1 rounded-3xl justify-center text-2xl font-bold shadow-2xl shadow-black ml-32 transition-transform duration-200 text-white ${
                       isButtonClicked ? 'transform scale-110' : ''
                     }`}
                     onClick={() => {
                       handleSubmit();
                       handleButtonAnimation();
                     }}
-                    label='Enviar'
-                  ></Button>
+                  >
+                    Enviar
+                  </Button>
                 </div>
               </div>
             </div>
@@ -297,16 +312,20 @@ export function Contact() {
             id='container_direita'
             className='justify-center items-center pt-10'
           >
-            <h1 className='text-5xl text-center font-chillax'>Contato</h1>
+            <h1 className='text-5xl text-center font-chillax text-white'>
+              Contato
+            </h1>
             <div className='pt-16 px-20 flex flex-col items-center'>
               <div>
                 <div className='flex gap-3 items-center'>
-                  <Phone size={38} />
-                  <p className='text-2xl font-satoshi'>(11) 99403-6227</p>
+                  <Phone size={38} className='fill-white' />
+                  <p className='text-2xl font-satoshi text-white'>
+                    (11) 99403-6227
+                  </p>
                 </div>
                 <div className='flex gap-3 items-center mt-8'>
-                  <Envelope size={38} />
-                  <p className='text-2xl font-satoshi'>
+                  <Envelope size={38} className='fill-white' />
+                  <p className='text-2xl font-satoshi text-white'>
                     contato@roleapp.com.br
                   </p>
                 </div>
@@ -319,10 +338,14 @@ export function Contact() {
             id='container_esquerda'
             className='flex flex-col border-b-white border-b-2 justify-center items-center w-full '
           >
-            <h1 className='text-5xl text-center font-chillax'>Fale Conosco</h1>
+            <h1 className='text-5xl text-center font-chillax text-white'>
+              Fale Conosco
+            </h1>
             <div className='flex flex-col mt-[40px] justify-center items-center w-full'>
               <div className='flex flex-col w-full'>
-                <p className='mb-[7px] text-2xl font-satoshi'>Nome:</p>
+                <p className='mb-[7px] text-2xl font-satoshi text-white'>
+                  Nome:
+                </p>
                 <input
                   type='text'
                   className='bg-transparent font-satoshi border-opacity-60 border-2 border-white rounded-[15px] placeholder-[#838383] h-[48px] w-full pl-[14px]'
@@ -332,7 +355,9 @@ export function Contact() {
                 />
 
                 <div className='mt-6 w-full'>
-                  <p className='mb-[7px] text-2xl font-satoshi'>E-mail:</p>
+                  <p className='mb-[7px] text-2xl font-satoshi text-white'>
+                    E-mail:
+                  </p>
                   <input
                     type='email'
                     value={email}
@@ -347,7 +372,7 @@ export function Contact() {
               </div>
               <div className='flex w-full'>
                 <div className='flex flex-col w-full mt-6'>
-                  <p className=' mb-[7px] text-2xl font-satoshi'>
+                  <p className=' mb-[7px] text-2xl font-satoshi text-white'>
                     Escreva sua mensagem:
                   </p>
                   <textarea
@@ -371,18 +396,21 @@ export function Contact() {
                   >
                     {checked && <i className='pi pi-check text-white'></i>}
                   </button>
-                  <p className='text-xl pl-3 font-satoshi'>Organizador</p>
+                  <p className='text-xl pl-3 font-satoshi text-white'>
+                    Organizador
+                  </p>
                 </div>
                 <Button
-                  className={`bg-gradient-to-r from-[#5A189A] to-[#1E0834] w-44 h-9 border-1 rounded-3xl justify-center text-2xl font-bold shadow-2xl shadow-black  transition-transform duration-200 ${
+                  className={`bg-gradient-to-r from-[#5A189A] to-[#1E0834] w-44 h-9 border-1 rounded-3xl justify-center text-2xl font-bold shadow-2xl shadow-black  transition-transform duration-200 text-white ${
                     isButtonClicked ? 'transform scale-110' : ''
                   }`}
                   onClick={() => {
                     handleSubmit();
                     handleButtonAnimation();
                   }}
-                  label='Enviar'
-                ></Button>
+                >
+                  Enviar
+                </Button>
               </div>
             </div>
           </div>

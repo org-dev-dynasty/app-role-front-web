@@ -1,49 +1,49 @@
-import { InstitutePartner } from '@/constants/institutePartner'
-import { InstituteType } from '@/constants/instituteType'
+import { InstitutePartner } from '@/constants/institutePartner';
+import { InstituteType } from '@/constants/instituteType';
 
 export interface Institute {
-  instituteId: string
-  name: string
-  logoPhoto: string
-  description: string
-  instituteType: InstituteType
-  partnerType: InstitutePartner
-  address: Address
-  price: number
-  photosUrl: string[]
-  eventsId: string[]
+  instituteId: string;
+  name: string;
+  logo: string;
+  description: string;
+  instituteType: InstituteType;
+  partnerType: InstitutePartner;
+  address: Address;
+  price: number;
+  photosUrl: string[];
+  eventsId: string[];
 }
 
 // #region PARAMS //
 
 export interface GetInstituteParams {
-  instituteId: string
+  instituteId: string;
 }
 
 export interface GetAllInstitutesByPartnerTypeParams {
-  partnerType: InstitutePartner
+  partnerType: InstitutePartner;
 }
 
 export interface UpdateInstituteParams {}
 
 export interface DeleteInstituteParams {
-  instituteId: string
+  instituteId: string;
 }
 
 export interface CreateInstituteParams {}
 
 export interface GetAllInstitutesParams {
-  page: number
+  page: number;
 }
 
 // #endregion //
 
 // #region RESPONSES //
 
-export type GetAllInstitutesResponse = PaginationResponse<Institute>
+export type GetAllInstitutesResponse = PaginationResponse<Institute>;
 
 export interface GetAllInstitutesByPartnerTypeResponse extends MessageResponse {
-  institutes: Institute[]
+  institutes: Institute[];
 }
 
 export interface UpdateInstituteResponse {}

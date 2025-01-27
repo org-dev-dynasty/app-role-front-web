@@ -11,15 +11,14 @@ import { LoginPage } from './pages/login';
 
 // import { InstituteContextProvider } from './context/institute_context';
 // import { EventContextProvider } from './context/event_context';
-import { AuthContextProvider } from './context/auth';
 
 import { ToastContainer } from 'react-toastify';
 import { PrivateLayout } from './layouts/PrivateLayout';
 import { AdminPage } from './pages/admin';
-import { ProfileContextProvider } from './context/profile';
 import { ForgotPasswordPage } from './pages/forgotPassword';
 import { ResetPasswordPage } from './pages/resetPassword';
-import { AuthLayout } from './layouts/authLayout';
+
+import { AuthLayout } from './layouts/AuthLayout';
 
 export const ROUTES = {
   HOME: '/',
@@ -28,9 +27,49 @@ export const ROUTES = {
   FORGOT_PASSWORD: '/auth/forgot-password',
   RESET_PASSWORD: '/auth/reset-password',
 } as const;
-import { Support } from './pages/support'
+import { Support } from './pages/support';
+import { AuthContextProvider } from './context/auth';
+import { ProfileContextProvider } from './context/profile';
+import { InstituteContextProvider } from './context/institute';
+import { EventContextProvider } from './context/event';
+import { FAQ } from './pages/faq';
 
 export function AppRouter() {
+  return (
+    <Providers>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/'>
+            <Route index element={<LandingPage />} />
+            <Route path='faq' element={<FAQ />} />
+            <Route Component={Support} path='support' element={<Support />} />
+            {/* <Route path='login' element={<LoginPage />} /> */}
+            {/* <Route path='institutes/:instId' element={<Institutions />} /> */}
+            {/* <Route path='institute/:instId' element={<Institute />} /> */}
+            {/* <Route path='role/:eventId' element={<Role />} /> */}
+            {/* <Route path='getEmail' element={<GetEmail />} /> */}
+            {/* <Route path='verifyCode' element={<ResetPasswordCode />} /> */}
+          </Route>
+
+          <Route path='/auth/' element={<AuthLayout />}>
+            <Route path='login' element={<LoginPage />} />
+            <Route path='forgot-password' element={<ForgotPasswordPage />} />
+            <Route path='reset-password' element={<ResetPasswordPage />} />
+          </Route>
+
+          {/* private routes */}
+          <Route path='/admin/' element={<PrivateLayout />}>
+            <Route index element={<AdminPage />} />
+            <Route path='institute/:id' />
+            <Route path='event/:id' />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </Providers>
+  );
+}
+
+export const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <ToastContainer
@@ -41,41 +80,14 @@ export function AppRouter() {
         pauseOnHover
         theme='colored'
       />
+
       <AuthContextProvider>
         <ProfileContextProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route path='/'>
-                <Route index element={<LandingPage />} />
-                {/* <Route path='faq' element={<FAQ />} /> */}
-                {/* <Route path='login' element={<LoginPage />} /> */}
-
-                {/* <Route path='institutes/:instId' element={<Institutions />} /> */}
-                {/* <Route path='institute/:instId' element={<Institute />} /> */}
-                {/* <Route path='role/:eventId' element={<Role />} /> */}
-                {/* <Route path='getEmail' element={<GetEmail />} /> */}
-                {/* <Route path='verifyCode' element={<ResetPasswordCode />} /> */}
-              </Route>
-
-              <Route path='/auth/' element={<AuthLayout />}>
-                <Route path='login' element={<LoginPage />} />
-                <Route
-                  path='forgot-password'
-                  element={<ForgotPasswordPage />}
-                />
-                <Route path='reset-password' element={<ResetPasswordPage />} />
-              </Route>
-              {/* private routes */}
-              <Route path='/admin/' element={<PrivateLayout />}>
-                <Route index element={<AdminPage />} />
-                <Route path='institute/:id' />
-                <Route path='event/:id' />
-              </Route>
-              <Route Component={Support} path='/support' element={<Support/>} />
-            </Routes>
-          </BrowserRouter>
+          <EventContextProvider>
+            <InstituteContextProvider>{children}</InstituteContextProvider>
+          </EventContextProvider>
         </ProfileContextProvider>
       </AuthContextProvider>
     </>
   );
-}
+};

@@ -1,3 +1,13 @@
+import { MoreHorizontal, Plus } from 'lucide-react';
+import { useEffect, useState } from 'react';
+
+import { getAllInstitutes } from '@/context/institute/actions';
+
+import { useInstitute } from '@/hooks/useInstitute';
+import { useInstituteDispatch } from '@/hooks/useInstituteDispatch';
+
+import { Institute } from '@/api/services/instituteService/types';
+
 import { CreateInstituteForm } from '@/components/forms/CreateInstitute';
 import {
   DropdownMenu,
@@ -23,31 +33,25 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { getAllInstitutes } from '@/context/institute/actions';
-import { Institute } from '@/context/institute/types';
-import { useInstituteApiDispatch } from '@/hooks/useInsituteApiDispatch';
-import { useInstituteApi } from '@/hooks/useInstituteApi';
-import { MoreHorizontal, Plus } from 'lucide-react';
-import { useEffect, useState } from 'react';
 
 export const InstituteListContainer = () => {
-  const { allInstitutes } = useInstituteApi();
-  const instituteApiDispatch = useInstituteApiDispatch();
+  const {
+    institutes: { data: allInstitutes },
+  } = useInstitute();
+
+  const instituteApiDispatch = useInstituteDispatch();
 
   const [openInstituteSheet, setOpenInstituteSheet] = useState<boolean>(false);
   const [editingInstitute, setEditingInstitute] = useState<Institute>();
 
   const handleSelectInstitute = (institute: Institute) => {
     console.log(institute);
-    // instituteApiDispatch()
   };
 
   const handleEditInstitute = (institute: Institute) => {
     setEditingInstitute(institute);
     setOpenInstituteSheet(true);
   };
-
-  // const handleDeleteInstitute = (institute: Institute) => {};
 
   const handleOpenChange = (currentOpenState: boolean) => {
     setOpenInstituteSheet(currentOpenState);
@@ -57,19 +61,24 @@ export const InstituteListContainer = () => {
     setEditingInstitute(undefined);
   };
 
-  useEffect(() => {
-    instituteApiDispatch(getAllInstitutes());
-  }, []);
+  const fetchInstitutes = async () => {
+    await instituteApiDispatch(
+      getAllInstitutes({
+        page: 1,
+      })
+    );
+  };
 
-  const todos = !allInstitutes.data.length
-    ? []
-    : new Array(123).fill(allInstitutes.data[0]);
+  useEffect(() => {
+    fetchInstitutes();
+  }, []);
 
   return (
     <SidebarGroup>
       <SidebarGroupLabel asChild>
         <span>Institutos</span>
       </SidebarGroupLabel>
+
       <SidebarGroupAction title='Adicionar Institutos'>
         <Sheet open={openInstituteSheet} onOpenChange={handleOpenChange}>
           <SheetTrigger>
@@ -88,15 +97,16 @@ export const InstituteListContainer = () => {
           </SheetContent>
         </Sheet>
       </SidebarGroupAction>
+
       <SidebarGroupContent>
         <SidebarMenu>
-          {todos.map((institute, key) => (
+          {allInstitutes.map((institute, key) => (
             <SidebarMenuItem key={key}>
               <SidebarMenuButton
                 onClick={() => handleSelectInstitute(institute)}
               >
                 <div className='w-6 h-6 rounded-full overflow-hidden'>
-                  <img src={institute.logoPhoto} />
+                  <img src={institute.logo} />
                 </div>
                 <span>{institute.name}</span>
               </SidebarMenuButton>
