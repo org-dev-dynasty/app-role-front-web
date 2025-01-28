@@ -11,6 +11,7 @@ import {
   SidebarInset,
   SidebarProvider,
 } from '@/components/ui/sidebar';
+import { EventListContainer } from '@/containers/admin/EventListContainer';
 
 export const AdminPage = () => {
   const authDispatch = useAuthDispatch();
@@ -18,6 +19,8 @@ export const AdminPage = () => {
   const handleSignOut = () => {
     authDispatch(authActions.signOut());
   };
+
+  const instituteID = localStorage.getItem('instituteID');
 
   return (
     <div className='w-full h-screen bg-background'>
@@ -31,6 +34,7 @@ export const AdminPage = () => {
         <SidebarInset>
           <Button onClick={handleSignOut}>logout</Button>
           {/* <EventListContainer /> */}
+          {instituteID && <EventListContainer />}
         </SidebarInset>
       </SidebarProvider>
     </div>

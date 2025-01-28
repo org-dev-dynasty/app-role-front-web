@@ -46,6 +46,14 @@ export const InstituteListContainer = () => {
 
   const handleSelectInstitute = (institute: Institute) => {
     console.log(institute);
+    if (!institute) return;
+    if (!institute.instituteId) return;
+    const instID = localStorage.getItem('instituteID');
+    if (instID) {
+      localStorage.removeItem('instituteID');
+    } else {
+      localStorage.setItem('instituteID', JSON.stringify(institute.instituteId));
+    }
   };
 
   const handleEditInstitute = (institute: Institute) => {

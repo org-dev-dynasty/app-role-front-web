@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/sidebar';
 
 import { envs } from '@/utils/envs';
+import { CreateEventForm } from '@/components/forms/CreateEvent';
 
 export const EventListContainer = () => {
   const { isLoaded } = useJsApiLoader({
@@ -273,7 +274,7 @@ export const EventListContainer = () => {
                   </SheetDescription>
                 </SheetHeader>
                 <div className='w-full flex-grow pt-4 pr-4 overflow-y-auto'>
-                  {/* <CreateInstituteForm institute={editingInstitute} /> */}
+                  <CreateEventForm />
                 </div>
               </SheetContent>
             </Sheet>
