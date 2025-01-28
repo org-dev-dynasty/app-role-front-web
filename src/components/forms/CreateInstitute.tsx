@@ -67,12 +67,16 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
         longitude: '',
       },
     },
+    mode: 'onSubmit',
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log('Submitting form');
+    console.log('Values:', values);
     onSuccess?.();
-    console.log(values);
   }
+
+
 
   return (
     <Form {...form}>
@@ -330,9 +334,8 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value='m@example.com'>m@example.com</SelectItem>
-                  <SelectItem value='m@google.com'>m@google.com</SelectItem>
-                  <SelectItem value='m@support.com'>m@support.com</SelectItem>
+                  <SelectItem value='ESTABELECIMENTO_FIXO'>Estabelecimento fixo</SelectItem>
+                  <SelectItem value='AGENCIA_DE_FESTAS'>Agência de festas</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -353,20 +356,18 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value='m@example.com'>m@example.com</SelectItem>
-                  <SelectItem value='m@google.com'>m@google.com</SelectItem>
-                  <SelectItem value='m@support.com'>m@support.com</SelectItem>
+                  <SelectItem value='GLOBAL_PARTNER'>Parceiro global</SelectItem>
+                  <SelectItem value='PROMOTER_PARTNER'>Promotor</SelectItem>
+                  <SelectItem value='NO_PARTNER'>Não parceiro</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
             </FormItem>
           )}
         />
-        <div className='sticky bottom-0 pt-2 bg-background'>
-          <Button type='submit' className='w-full'>
-            Criar Instituto
-          </Button>
-        </div>
+        <Button type='submit' className='w-full'>
+          Criar Instituto
+        </Button>
       </form>
     </Form>
   );

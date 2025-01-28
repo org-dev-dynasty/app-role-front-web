@@ -12,15 +12,25 @@ import {
   SidebarProvider,
 } from '@/components/ui/sidebar';
 import { EventListContainer } from '@/containers/admin/EventListContainer';
+import { useEffect, useState } from 'react';
 
 export const AdminPage = () => {
   const authDispatch = useAuthDispatch();
-
+  const [clicked, setClicked] = useState<boolean>(false);
+  
   const handleSignOut = () => {
     authDispatch(authActions.signOut());
   };
 
-  const instituteID = localStorage.getItem('instituteID');
+  const toggleClicked = () => {
+    setClicked(!clicked);
+  }
+  
+  useEffect(() => {
+    const instituteID = localStorage.getItem('instituteID');
+    console.log(instituteID);
+  }
+  , [clicked]);
 
   return (
     <div className='w-full h-screen bg-background'>
@@ -28,13 +38,13 @@ export const AdminPage = () => {
       <SidebarProvider>
         <Sidebar>
           <SidebarContent>
-            <InstituteListContainer />
+            <InstituteListContainer toggle={toggleClicked} />
           </SidebarContent>
         </Sidebar>
         <SidebarInset>
           <Button onClick={handleSignOut}>logout</Button>
           {/* <EventListContainer /> */}
-          {instituteID && <EventListContainer />}
+          {clicked && <EventListContainer />}
         </SidebarInset>
       </SidebarProvider>
     </div>

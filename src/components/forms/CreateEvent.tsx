@@ -17,6 +17,10 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import PhoneInput from '@/components/input/Phone';
 import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/components/ui/toggle-group"
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -37,6 +41,9 @@ const formSchema = z.object({
   phone: z.string(),
   address: z.string(),
   banner: z.string(),
+  price: z.string(),
+  musicType: z.array(z.string()),
+  features: z.array(z.string()),
   location: addressValidation,
 });
 
@@ -55,6 +62,10 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
       EventDescription: Event ? Event.description : '',
       // partnerType: Event ? Event.partnerType : '',
       // EventType: Event ? Event.EventType : '',
+      price: Event ? Event.price : '',
+      musicType: Event ? Event.musicType : '',
+      features: Event ? Event.features : '',
+      banner: Event ? Event.banner : '',
       phone: '',
       location: {
         address: '',
@@ -322,7 +333,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
           name='EventType'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tipo de evento</FormLabel>
+              <FormLabel>Faixa de idade do evento</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -330,9 +341,9 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value='m@example.com'>m@example.com</SelectItem>
-                  <SelectItem value='m@google.com'>m@google.com</SelectItem>
-                  <SelectItem value='m@support.com'>m@support.com</SelectItem>
+                  <SelectItem value='alta'>alta</SelectItem>
+                  <SelectItem value='media'>média</SelectItem>
+                  <SelectItem value='baixa'>baixa</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -345,7 +356,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
           name='partnerType'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tipo de parceiro</FormLabel>
+              <FormLabel>Tipo de evento</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -353,15 +364,134 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value='m@example.com'>m@example.com</SelectItem>
-                  <SelectItem value='m@google.com'>m@google.com</SelectItem>
-                  <SelectItem value='m@support.com'>m@support.com</SelectItem>
+                  <SelectItem value='Balada'>Balada</SelectItem>
+                  <SelectItem value='Bar Balada'>Bar Balada</SelectItem>
+                  <SelectItem value='Universitario'>Universitário</SelectItem>
+                  <SelectItem value='Bar'>Bar</SelectItem>
+                  <SelectItem value='Show'>Show</SelectItem>
+                  <SelectItem value='Festival'>Festival</SelectItem>
+                  <SelectItem value='Festa'>Festa</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name='price'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Preço</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder='Selecione um valor' />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value='1'>$</SelectItem>
+                  <SelectItem value='2'>$$</SelectItem>
+                  <SelectItem value='3'>$$$</SelectItem>
+                  <SelectItem value='4'>$$$$</SelectItem>
+                  <SelectItem value='5'>$$$$$</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name='musicType'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tipo de música</FormLabel>
+              <ToggleGroup type="multiple" className='flex-wrap' size={"lg"} onValueChange={field.onChange} defaultValue={field.value} variant='outline'>
+                <ToggleGroupItem value="Sertanejo" aria-label="Toggle Sertanejo" >
+                  Sertanejo
+                </ToggleGroupItem>
+                <ToggleGroupItem value="Eletronica" aria-label="Toggle Eletronica" >
+                  Eletrônica
+                </ToggleGroupItem>
+                <ToggleGroupItem value="Funk" aria-label="Toggle Funk" >
+                  Funk
+                </ToggleGroupItem>
+                <ToggleGroupItem value="Rock" aria-label="Toggle Rock" >
+                  Rock
+                </ToggleGroupItem>
+                <ToggleGroupItem value="Pop" aria-label="Toggle Pop" >
+                  Pop
+                </ToggleGroupItem>
+                <ToggleGroupItem value="Pagode" aria-label="Toggle Pagode" >
+                  Pagode
+                </ToggleGroupItem>
+                <ToggleGroupItem value="Rap" aria-label="Toggle Rap" >
+                  Rap
+                </ToggleGroupItem>
+                <ToggleGroupItem value="Reggae" aria-label="Toggle Reggae" >
+                  Reggae
+                </ToggleGroupItem>
+                <ToggleGroupItem value="Forro" aria-label="Toggle Axé" >
+                  Forró
+                </ToggleGroupItem>
+                <ToggleGroupItem value="Trap" aria-label="Toggle Trap" >
+                  Trap
+                </ToggleGroupItem>
+                <ToggleGroupItem value="MPB" aria-label="Toggle MPB" >
+                  MPB
+                </ToggleGroupItem>
+              </ToggleGroup>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name='features'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Adicionais</FormLabel>
+              <ToggleGroup type="multiple" className='flex-wrap' size={"lg"} onValueChange={field.onChange} defaultValue={field.value} variant='outline'>
+                <ToggleGroupItem value="Estacionamento" aria-label="Toggle Estacionamento" >
+                  Estacionamento
+                </ToggleGroupItem>
+                <ToggleGroupItem value="Fumódromo" aria-label="Toggle Fumódromo" >
+                  Fumódromo
+                </ToggleGroupItem>
+                <ToggleGroupItem value="Valet" aria-label="Toggle Valet" >
+                  Valet
+                </ToggleGroupItem>
+                <ToggleGroupItem value="Área aberta" aria-label="Toggle Área aberta" >
+                  Área aberta
+                </ToggleGroupItem>
+                <ToggleGroupItem value="Welcome shot" aria-label="Toggle Welcome shot" >
+                  Welcome shot
+                </ToggleGroupItem>
+                <ToggleGroupItem value="Mesas" aria-label="Toggle Mesas" >
+                  Mesas
+                </ToggleGroupItem>
+                <ToggleGroupItem value="Open bar" aria-label="Toggle Open bar" >
+                  Open bar
+                </ToggleGroupItem>
+                <ToggleGroupItem value="Ao vivo" aria-label="Toggle Ao vivo" >
+                  Ao vivo
+                </ToggleGroupItem>
+                <ToggleGroupItem value="Esquenta" aria-label="Toggle Esquenta" >
+                  Esquenta
+                </ToggleGroupItem>
+                <ToggleGroupItem value="AFTER" aria-label="Toggle AFTER" >
+                  AFTER
+                </ToggleGroupItem>
+              </ToggleGroup>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+
         <div className='sticky bottom-0 pt-2 bg-background'>
           <Button type='submit' className='w-full'>
             Criar evento

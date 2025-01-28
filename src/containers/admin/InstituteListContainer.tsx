@@ -34,7 +34,11 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 
-export const InstituteListContainer = () => {
+interface InstituteListContainerProps {
+  toggle: () => void;
+}
+
+export const InstituteListContainer = ({toggle} : InstituteListContainerProps) => {
   const {
     institutes: { data: allInstitutes },
   } = useInstitute();
@@ -45,9 +49,8 @@ export const InstituteListContainer = () => {
   const [editingInstitute, setEditingInstitute] = useState<Institute>();
 
   const handleSelectInstitute = (institute: Institute) => {
+    toggle();
     console.log(institute);
-    if (!institute) return;
-    if (!institute.instituteId) return;
     const instID = localStorage.getItem('instituteID');
     if (instID) {
       localStorage.removeItem('instituteID');
@@ -100,7 +103,7 @@ export const InstituteListContainer = () => {
               </SheetDescription>
             </SheetHeader>
             <div className='w-full flex-grow pt-4 pr-4 overflow-y-auto'>
-              <CreateInstituteForm institute={editingInstitute} />
+              <CreateInstituteForm institute={editingInstitute} onSuccess={() => setOpenInstituteSheet(false)} />
             </div>
           </SheetContent>
         </Sheet>
