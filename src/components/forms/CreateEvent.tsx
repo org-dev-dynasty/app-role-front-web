@@ -19,7 +19,7 @@ import PhoneInput from '@/components/input/Phone';
 import {
   ToggleGroup,
   ToggleGroupItem,
-} from "@/components/ui/toggle-group"
+} from "@/components/ui/toggle-group";
 import {
   Select,
   SelectContent,
@@ -45,6 +45,8 @@ const formSchema = z.object({
   musicType: z.array(z.string()),
   features: z.array(z.string()),
   location: addressValidation,
+  status: z.string(),
+  packages: z.array(z.string()),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -341,9 +343,12 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value='alta'>alta</SelectItem>
-                  <SelectItem value='media'>média</SelectItem>
-                  <SelectItem value='baixa'>baixa</SelectItem>
+                  <SelectItem value='ADOLESCENT'>18-20</SelectItem>
+                  <SelectItem value='YOUNG_ADULT'>21-25</SelectItem>
+                  <SelectItem value='ADULT'>26-30</SelectItem>
+                  <SelectItem value='MATURE_ADULT'>31-40</SelectItem>
+                  <SelectItem value='SENIOR'>40+</SelectItem>
+                  <SelectItem value='DEFAULT'>TODAS</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -364,19 +369,20 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value='Balada'>Balada</SelectItem>
-                  <SelectItem value='Bar Balada'>Bar Balada</SelectItem>
-                  <SelectItem value='Universitario'>Universitário</SelectItem>
-                  <SelectItem value='Bar'>Bar</SelectItem>
-                  <SelectItem value='Show'>Show</SelectItem>
-                  <SelectItem value='Festival'>Festival</SelectItem>
-                  <SelectItem value='Festa'>Festa</SelectItem>
+                  <SelectItem value='BALADA'>Balada</SelectItem>
+                  <SelectItem value='BAR_BALADA'>Bar Balada</SelectItem>
+                  <SelectItem value='UNIVERSITARIO'>Universitário</SelectItem>
+                  <SelectItem value='BAR'>Bar</SelectItem>
+                  <SelectItem value='SHOW'>Show</SelectItem>
+                  <SelectItem value='FESTIVAL'>Festival</SelectItem>
+                  <SelectItem value='FESTA'>Festa</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name='price'
@@ -409,34 +415,34 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
             <FormItem>
               <FormLabel>Tipo de música</FormLabel>
               <ToggleGroup type="multiple" className='flex-wrap' size={"lg"} onValueChange={field.onChange} defaultValue={field.value} variant='outline'>
-                <ToggleGroupItem value="Sertanejo" aria-label="Toggle Sertanejo" >
+                <ToggleGroupItem value="SERTANEJO" aria-label="Toggle Sertanejo" >
                   Sertanejo
                 </ToggleGroupItem>
-                <ToggleGroupItem value="Eletronica" aria-label="Toggle Eletronica" >
+                <ToggleGroupItem value="ELETRONICA" aria-label="Toggle Eletronica" >
                   Eletrônica
                 </ToggleGroupItem>
-                <ToggleGroupItem value="Funk" aria-label="Toggle Funk" >
+                <ToggleGroupItem value="FUNK" aria-label="Toggle Funk" >
                   Funk
                 </ToggleGroupItem>
-                <ToggleGroupItem value="Rock" aria-label="Toggle Rock" >
+                <ToggleGroupItem value="ROCK" aria-label="Toggle Rock" >
                   Rock
                 </ToggleGroupItem>
-                <ToggleGroupItem value="Pop" aria-label="Toggle Pop" >
+                <ToggleGroupItem value="POP" aria-label="Toggle Pop" >
                   Pop
                 </ToggleGroupItem>
-                <ToggleGroupItem value="Pagode" aria-label="Toggle Pagode" >
+                <ToggleGroupItem value="PAGODE" aria-label="Toggle Pagode" >
                   Pagode
                 </ToggleGroupItem>
-                <ToggleGroupItem value="Rap" aria-label="Toggle Rap" >
+                <ToggleGroupItem value="RAP" aria-label="Toggle Rap" >
                   Rap
                 </ToggleGroupItem>
-                <ToggleGroupItem value="Reggae" aria-label="Toggle Reggae" >
+                <ToggleGroupItem value="REGGAE" aria-label="Toggle Reggae" >
                   Reggae
                 </ToggleGroupItem>
-                <ToggleGroupItem value="Forro" aria-label="Toggle Axé" >
+                <ToggleGroupItem value="FORRO" aria-label="Toggle Axé" >
                   Forró
                 </ToggleGroupItem>
-                <ToggleGroupItem value="Trap" aria-label="Toggle Trap" >
+                <ToggleGroupItem value="TRAP" aria-label="Toggle Trap" >
                   Trap
                 </ToggleGroupItem>
                 <ToggleGroupItem value="MPB" aria-label="Toggle MPB" >
@@ -455,37 +461,81 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
             <FormItem>
               <FormLabel>Adicionais</FormLabel>
               <ToggleGroup type="multiple" className='flex-wrap' size={"lg"} onValueChange={field.onChange} defaultValue={field.value} variant='outline'>
-                <ToggleGroupItem value="Estacionamento" aria-label="Toggle Estacionamento" >
+                <ToggleGroupItem value="ESTACIONAMENTO" aria-label="Toggle Estacionamento" >
                   Estacionamento
                 </ToggleGroupItem>
-                <ToggleGroupItem value="Fumódromo" aria-label="Toggle Fumódromo" >
+                <ToggleGroupItem value="FUMODROMO" aria-label="Toggle Fumódromo" >
                   Fumódromo
                 </ToggleGroupItem>
-                <ToggleGroupItem value="Valet" aria-label="Toggle Valet" >
+                <ToggleGroupItem value="VALET" aria-label="Toggle Valet" >
                   Valet
                 </ToggleGroupItem>
-                <ToggleGroupItem value="Área aberta" aria-label="Toggle Área aberta" >
+                <ToggleGroupItem value="AREA_ABERTA" aria-label="Toggle Área aberta" >
                   Área aberta
                 </ToggleGroupItem>
-                <ToggleGroupItem value="Welcome shot" aria-label="Toggle Welcome shot" >
+                <ToggleGroupItem value="WELCOMO_SHOT" aria-label="Toggle Welcome shot" >
                   Welcome shot
                 </ToggleGroupItem>
-                <ToggleGroupItem value="Mesas" aria-label="Toggle Mesas" >
+                <ToggleGroupItem value="MESAS" aria-label="Toggle Mesas" >
                   Mesas
                 </ToggleGroupItem>
-                <ToggleGroupItem value="Open bar" aria-label="Toggle Open bar" >
+                <ToggleGroupItem value="OPEN_BAR" aria-label="Toggle Open bar" >
                   Open bar
                 </ToggleGroupItem>
-                <ToggleGroupItem value="Ao vivo" aria-label="Toggle Ao vivo" >
+                <ToggleGroupItem value="AO_VIVO" aria-label="Toggle Ao vivo" >
                   Ao vivo
                 </ToggleGroupItem>
-                <ToggleGroupItem value="Esquenta" aria-label="Toggle Esquenta" >
+                <ToggleGroupItem value="ESQUENTA" aria-label="Toggle Esquenta" >
                   Esquenta
                 </ToggleGroupItem>
                 <ToggleGroupItem value="AFTER" aria-label="Toggle AFTER" >
                   AFTER
                 </ToggleGroupItem>
               </ToggleGroup>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name='packages'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Pacotes</FormLabel>
+              <ToggleGroup type="multiple" className='flex-wrap' size={"lg"} onValueChange={field.onChange} defaultValue={field.value} variant='outline'>
+                <ToggleGroupItem value="COMBO" aria-label="Toggle COMBO" >
+                  Combo
+                </ToggleGroupItem>
+                <ToggleGroupItem value="ANIVERSARIO" aria-label="Toggle FUMODROMO" >
+                  Aniversário
+                </ToggleGroupItem>
+                <ToggleGroupItem value="CAMAROTE" aria-label="Toggle CAMAROTE" >
+                  Camarote
+                </ToggleGroupItem>
+              </ToggleGroup>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name='status'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Status</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder='Selecione um valor' />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value='ACTIVE'>Ativo</SelectItem>
+                  <SelectItem value='INACTIVE'>Inativo</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
