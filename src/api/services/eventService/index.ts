@@ -10,7 +10,8 @@ import {
   type GetAllPresencesByEventIdParams,
   type GetAllPresencesByEventIdResponse,
   type GetTopEventsResponse,
-  type GetEventByIdParams
+  type GetEventByIdParams,
+  CreateEventParams
 } from './types'
 
 const EVENT_SERVICE_ROUTES = {
@@ -21,7 +22,9 @@ const EVENT_SERVICE_ROUTES = {
     GET_EVENT: '/get-event',
     GET_TOP_EVENTS: '/get-top-events'
   },
-  POST: {},
+  POST: {
+    CREATE_EVENT: '/create-event'
+  },
   PUT: {},
   DELETE: {}
 } as const
@@ -61,5 +64,9 @@ export class EventService extends AuthenticatedService {
 
   getFeaturedEvents() {
     return this.instance.get<GetAllFeaturedEventsParams>(EVENT_SERVICE_ROUTES.GET.GET_TOP_EVENTS)
+  }
+
+  createEvent(params: CreateEventParams) {
+    return this.instance.post<Event>(EVENT_SERVICE_ROUTES.POST.CREATE_EVENT, params)
   }
 }

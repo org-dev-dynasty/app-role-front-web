@@ -61,7 +61,7 @@ export interface GetEventByIdParams {
   eventId: string
 }
 
-export interface createEventParams {
+export interface CreateEventParams {
   name: string
   description: string
   address: Address
