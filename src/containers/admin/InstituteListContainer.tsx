@@ -35,10 +35,11 @@ import {
 } from '@/components/ui/sidebar';
 
 interface InstituteListContainerProps {
-  toggle: () => void;
+  toggleTrue: () => void;
+  toggleFalse: () => void;
 }
 
-export const InstituteListContainer = ({toggle} : InstituteListContainerProps) => {
+export const InstituteListContainer = ({toggleTrue, toggleFalse} : InstituteListContainerProps) => {
   const {
     institutes: { data: allInstitutes },
   } = useInstitute();
@@ -48,14 +49,16 @@ export const InstituteListContainer = ({toggle} : InstituteListContainerProps) =
   const [openInstituteSheet, setOpenInstituteSheet] = useState<boolean>(false);
   const [editingInstitute, setEditingInstitute] = useState<Institute>();
 
-  const handleSelectInstitute = (institute: Institute) => {
-    toggle();
+  const handleSelectInstitute = async (institute: Institute) => {
     console.log(institute);
     const instID = localStorage.getItem('instituteID');
+    
     if (instID) {
       localStorage.removeItem('instituteID');
+      toggleFalse();
     } else {
       localStorage.setItem('instituteID', JSON.stringify(institute.instituteId));
+      toggleTrue();
     }
   };
 

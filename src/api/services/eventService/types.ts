@@ -38,6 +38,7 @@ export interface GetAllEventsParams {
 
 export interface GetAllEventsByFilterParams {
   search: {
+    instituteId?: string
     ageRange?: string | string[]
     category?: string | string[]
     reviews?: string | string[]

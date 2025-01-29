@@ -22,8 +22,11 @@ export const AdminPage = () => {
     authDispatch(authActions.signOut());
   };
 
-  const toggleClicked = () => {
-    setClicked(!clicked);
+  const toggleTrueClicked = () => {
+    setClicked(true);
+  }
+  const toggleFalseClicked = () => {
+    setClicked(false);
   }
   
   useEffect(() => {
@@ -38,7 +41,7 @@ export const AdminPage = () => {
       <SidebarProvider>
         <Sidebar>
           <SidebarContent>
-            <InstituteListContainer toggle={toggleClicked} />
+            <InstituteListContainer toggleTrue={toggleTrueClicked} toggleFalse={toggleFalseClicked} />
           </SidebarContent>
         </Sidebar>
         <SidebarInset>
