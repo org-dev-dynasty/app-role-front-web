@@ -61,6 +61,25 @@ export interface GetEventByIdParams {
   eventId: string
 }
 
+export interface createEventParams {
+  name: string
+  description: string
+  address: Address
+  price: number
+  ageRange: AgeRange
+  eventDate: number
+  instituteId: string
+  eventStatus: EventStatus
+  musicType: MusicType[]
+  menuLink: string
+  eventPhoto: string
+  galleryLink: string[]
+  packageType: EventPackage[]
+  category: EventCategory
+  ticketUrl: string
+  features: EventFeature[]
+}
+
 // #endregion //
 
 // #region RESPONSES //

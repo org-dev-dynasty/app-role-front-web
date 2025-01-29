@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { date, z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Button } from '@/components/ui/button';
@@ -32,16 +32,31 @@ import { Event } from '@/context/Event/types';
 import { addressValidation } from '@/utils/validations';
 import AddressInput from '../input/Address';
 import { Separator } from '../ui/separator';
+import { CalendarIcon } from 'lucide-react';
+import { Calendar } from '@/components/ui/calendar'; // Ensure you import the correct Calendar component
+import { cn } from '@/lib/utils';
+import { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover';
+import { useState } from 'react';
 
 const formSchema = z.object({
   EventName: z.string(),
   EventDescription: z.string(),
   partnerType: z.string(),
-  EventType: z.string(),
-  phone: z.string(),
+  ticketURL: z.string(),
+  eventCategory: z.string(),
+  date: z.number(),
   address: z.string(),
-  banner: z.string(),
-  price: z.string(),
+  ageRange: z.string(),
+  banner: z.object({
+    image: z.string(),
+    mimeType: z.string(),
+  }),
+  gallery: z.array(z.object({
+    image: z.string(),
+    mimeType: z.string(),
+  })),
+  price: z.number(),
+  instituteId: z.string(),
   musicType: z.array(z.string()),
   features: z.array(z.string()),
   location: addressValidation,
@@ -57,18 +72,28 @@ interface SinInFormProps {
 }
 
 export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
+
+  const [date, setDate] = useState<Date>()
+  const instituteId = localStorage.getItem('instituteId');
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       EventName: Event ? Event.name : '',
+      instituteId: instituteId ? instituteId : '',
       EventDescription: Event ? Event.description : '',
-      // partnerType: Event ? Event.partnerType : '',
-      // EventType: Event ? Event.EventType : '',
+      eventCategory: Event ? Event.eventCategory : '',
+      date: Event ? Event.date : '',
+      address: Event ? Event.address : '',
+      ageRange: Event ? Event.ageRange : '',
       price: Event ? Event.price : '',
       musicType: Event ? Event.musicType : '',
       features: Event ? Event.features : '',
       banner: Event ? Event.banner : '',
-      phone: '',
+      gallery: Event ? Event.gallery : '',
+      ticketURL: Event ? Event.ticketURL : '',
+      status: Event ? Event.status : '',
+      packages: Event ? Event.packages : '',
       location: {
         address: '',
         cep: '',
@@ -144,12 +169,33 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
 
         <FormField
           control={form.control}
-          name='phone'
+          name='date'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Telefone</FormLabel>
+              <FormLabel>Data</FormLabel>
               <FormControl>
-                <PhoneInput placeholder='(99) 99999-9999' {...field} />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-[280px] justify-start text-left font-normal",
+                        !date && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon />
+                      {date ? date.toLocaleDateString() : "Selecione uma data"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0 bg-white rounded-lg border-2">
+                    <Calendar
+                      mode="single"
+                      selected={date}
+                      onSelect={field.onChange}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -332,7 +378,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
 
         <FormField
           control={form.control}
-          name='EventType'
+          name='ageRange'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Faixa de idade do evento</FormLabel>
@@ -514,6 +560,20 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
                   Camarote
                 </ToggleGroupItem>
               </ToggleGroup>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name='ticketURL'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>URL do ticket</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
