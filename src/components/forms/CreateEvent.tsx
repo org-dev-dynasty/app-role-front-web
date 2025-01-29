@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { date, z } from 'zod';
+import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Button } from '@/components/ui/button';
@@ -15,7 +15,6 @@ import {
 
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import PhoneInput from '@/components/input/Phone';
 import {
   ToggleGroup,
   ToggleGroupItem,
@@ -36,22 +35,20 @@ import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar'; // Ensure you import the correct Calendar component
 import { cn } from '@/lib/utils';
 import { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover';
-import { useState } from 'react';
 
 const formSchema = z.object({
   EventName: z.string(),
   EventDescription: z.string(),
-  partnerType: z.string(),
-  ticketURL: z.string(),
+  menuLink: z.string(),
+  ticketUrl: z.string(),
   eventCategory: z.string(),
-  date: z.number(),
-  address: z.string(),
+  date: z.coerce.date(),
   ageRange: z.string(),
-  banner: z.object({
+  eventImage: z.object({
     image: z.string(),
     mimeType: z.string(),
   }),
-  gallery: z.array(z.object({
+  galleryImages: z.array(z.object({
     image: z.string(),
     mimeType: z.string(),
   })),
@@ -59,8 +56,7 @@ const formSchema = z.object({
   instituteId: z.string(),
   musicType: z.array(z.string()),
   features: z.array(z.string()),
-  location: addressValidation,
-  status: z.string(),
+  address: addressValidation,
   packages: z.array(z.string()),
 });
 
@@ -73,7 +69,6 @@ interface SinInFormProps {
 
 export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
 
-  const [date, setDate] = useState<Date>()
   const instituteId = localStorage.getItem('instituteId');
 
   const form = useForm<FormData>({
@@ -84,17 +79,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
       EventDescription: Event ? Event.description : '',
       eventCategory: Event ? Event.eventCategory : '',
       date: Event ? Event.date : '',
-      address: Event ? Event.address : '',
-      ageRange: Event ? Event.ageRange : '',
-      price: Event ? Event.price : '',
-      musicType: Event ? Event.musicType : '',
-      features: Event ? Event.features : '',
-      banner: Event ? Event.banner : '',
-      gallery: Event ? Event.gallery : '',
-      ticketURL: Event ? Event.ticketURL : '',
-      status: Event ? Event.status : '',
-      packages: Event ? Event.packages : '',
-      location: {
+      address: Event ? Event.address : {
         address: '',
         cep: '',
         city: '',
@@ -104,6 +89,14 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
         latitude: '',
         longitude: '',
       },
+      ageRange: Event ? Event.ageRange : '',
+      price: Event ? Event.price : '',
+      musicType: Event ? Event.musicType : '',
+      features: Event ? Event.features : '',
+      eventImage: Event ? Event.banner : '',
+      galleryImages: Event ? Event.gallery : '',
+      ticketUrl: Event ? Event.ticketURL : '',
+      packages: Event ? Event.packages : '',
     },
   });
 
@@ -153,10 +146,25 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
 
         <FormField
           control={form.control}
-          name='banner'
+          name='eventImage'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Banner</FormLabel>
+              <FormLabel>Imagem do evento</FormLabel>
+              <FormControl>
+                <ImageInput {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Separator />
+
+        <FormField
+          control={form.control}
+          name='galleryImages'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Galeria do evento</FormLabel>
               <FormControl>
                 <ImageInput {...field} />
               </FormControl>
@@ -180,17 +188,17 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
                       variant={"outline"}
                       className={cn(
                         "w-[280px] justify-start text-left font-normal",
-                        !date && "text-muted-foreground"
+                        !field.value && "text-muted-foreground"
                       )}
                     >
                       <CalendarIcon />
-                      {date ? date.toLocaleDateString() : "Selecione uma data"}
+                      {field.value ? field.value.toLocaleDateString() : "Selecione uma data"}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0 bg-white rounded-lg border-2">
                     <Calendar
                       mode="single"
-                      selected={date}
+                      selected={field.value}
                       onSelect={field.onChange}
                       initialFocus
                     />
@@ -204,7 +212,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
 
         <FormField
           control={form.control}
-          name='location'
+          name='address'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Buscar endereço</FormLabel>
@@ -217,7 +225,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
 
         <FormField
           control={form.control}
-          name='location'
+          name='address'
           render={({ field: { value, onChange, ...props } }) => (
             <FormItem>
               <FormLabel>CEP</FormLabel>
@@ -235,7 +243,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
 
         <FormField
           control={form.control}
-          name='location'
+          name='address'
           render={({ field: { value, onChange, ...props } }) => (
             <FormItem>
               <FormLabel>Endereço</FormLabel>
@@ -255,7 +263,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
 
         <FormField
           control={form.control}
-          name='location'
+          name='address'
           render={({ field: { value, onChange, ...props } }) => (
             <FormItem>
               <FormLabel>Número</FormLabel>
@@ -275,7 +283,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
 
         <FormField
           control={form.control}
-          name='location'
+          name='address'
           render={({ field: { value, onChange, ...props } }) => (
             <FormItem>
               <FormLabel>Bairro</FormLabel>
@@ -295,7 +303,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
 
         <FormField
           control={form.control}
-          name='location'
+          name='address'
           render={({ field: { value, onChange, ...props } }) => (
             <FormItem>
               <FormLabel>Cidade</FormLabel>
@@ -313,7 +321,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
 
         <FormField
           control={form.control}
-          name='location'
+          name='address'
           render={({ field: { value, onChange, ...props } }) => (
             <FormItem>
               <FormLabel>Estado</FormLabel>
@@ -333,7 +341,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
 
         <FormField
           control={form.control}
-          name='location'
+          name='address'
           render={({ field: { value, onChange, ...props } }) => (
             <FormItem>
               <FormLabel>Latitude</FormLabel>
@@ -354,7 +362,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
 
         <FormField
           control={form.control}
-          name='location'
+          name='address'
           render={({ field: { value, onChange, ...props } }) => (
             <FormItem>
               <FormLabel>Longitude</FormLabel>
@@ -404,7 +412,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
 
         <FormField
           control={form.control}
-          name='partnerType'
+          name='eventCategory'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Tipo de evento</FormLabel>
@@ -435,7 +443,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Preço</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={(value) => field.onChange(Number(value))}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder='Selecione um valor' />
@@ -567,7 +575,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
 
         <FormField
           control={form.control}
-          name='ticketURL'
+          name='ticketUrl'
           render={({ field }) => (
             <FormItem>
               <FormLabel>URL do ticket</FormLabel>
@@ -581,26 +589,17 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
 
         <FormField
           control={form.control}
-          name='status'
+          name='menuLink'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Status</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder='Selecione um valor' />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value='ACTIVE'>Ativo</SelectItem>
-                  <SelectItem value='INACTIVE'>Inativo</SelectItem>
-                </SelectContent>
-              </Select>
+              <FormLabel>Link do menu</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
 
         <div className='sticky bottom-0 pt-2 bg-background'>
           <Button type='submit' className='w-full'>
