@@ -37,27 +37,29 @@ import { cn } from '@/lib/utils';
 import { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover';
 
 const formSchema = z.object({
-  EventName: z.string(),
-  EventDescription: z.string(),
+  name: z.string(),
+  description: z.string(),
   menuLink: z.string(),
   ticketUrl: z.string(),
-  eventCategory: z.string(),
-  date: z.coerce.date(),
+  category: z.string(),
+  eventDate: z.coerce.date(),
   ageRange: z.string(),
-  eventImage: z.object({
-    image: z.string(),
-    mimeType: z.string(),
-  }),
-  galleryImages: z.array(z.object({
-    image: z.string(),
-    mimeType: z.string(),
-  })),
+  eventImage: z.string(),
+  galleryImages: z.string(),
+  // eventImage: z.object({
+  //   image: z.string(),
+  //   mimeType: z.string(),
+  // }),
+  // galleryImages: z.array(z.object({
+  //   image: z.string(),
+  //   mimeType: z.string(),
+  // })),
   price: z.number(),
   instituteId: z.string(),
   musicType: z.array(z.string()),
   features: z.array(z.string()),
   address: addressValidation,
-  packages: z.array(z.string()),
+  packageType: z.array(z.string()),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -74,11 +76,11 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      EventName: Event ? Event.name : '',
+      name: Event ? Event.name : '',
       instituteId: instituteId ? instituteId : '',
-      EventDescription: Event ? Event.description : '',
-      eventCategory: Event ? Event.eventCategory : '',
-      date: Event ? Event.date : '',
+      description: Event ? Event.description : '',
+      category: Event ? Event.eventCategory : '',
+      eventDate: Event ? Event.date : '',
       address: Event ? Event.address : {
         address: '',
         cep: '',
@@ -96,7 +98,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
       eventImage: Event ? Event.banner : '',
       galleryImages: Event ? Event.gallery : '',
       ticketUrl: Event ? Event.ticketURL : '',
-      packages: Event ? Event.packages : '',
+      packageType: Event ? Event.packages : '',
     },
   });
 
@@ -115,7 +117,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
 
         <FormField
           control={form.control}
-          name='EventName'
+          name='name'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Nome do evento</FormLabel>
@@ -129,7 +131,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
 
         <FormField
           control={form.control}
-          name='EventDescription'
+          name='description'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Descrição do evento</FormLabel>
@@ -157,7 +159,6 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
             </FormItem>
           )}
         />
-        <Separator />
 
         <FormField
           control={form.control}
@@ -172,12 +173,61 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
             </FormItem>
           )}
         />
+
+        {/* <FormField
+          control={form.control}
+          name='eventImage'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Imagem do evento</FormLabel>
+              <FormControl>
+                <ImageInput
+                  {...field}
+                  onChange={(imageFile) => {
+                    // Aqui você deve garantir que o valor seja um objeto com a chave image e mimeType
+                    const image = {
+                      image: imageFile ? URL.createObjectURL(imageFile) : '', // Caminho da imagem
+                      mimeType: imageFile ? imageFile.type : '', // Tipo MIME
+                    };
+                    field.onChange(image); // Passa o objeto para o campo do formulário
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name='galleryImages'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Galeria do evento</FormLabel>
+              <FormControl>
+                <ImageInput
+                  {...field}
+                  onChange={(imageFile) => {
+                    // Aqui você deve garantir que o valor seja um objeto com a chave image e mimeType
+                    const image = {
+                      image: imageFile ? URL.createObjectURL(imageFile) : '', // Caminho da imagem
+                      mimeType: imageFile ? imageFile.type : '', // Tipo MIME
+                    };
+                    field.onChange(image); // Passa o objeto para o campo do formulário
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        /> */}
+        
         <Separator />
         <h2 className='text-xl font-bold'>Contato e localização</h2>
 
         <FormField
           control={form.control}
-          name='date'
+          name='eventDate'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Data</FormLabel>
@@ -412,7 +462,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
 
         <FormField
           control={form.control}
-          name='eventCategory'
+          name='category'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Tipo de evento</FormLabel>
@@ -527,7 +577,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
                 <ToggleGroupItem value="AREA_ABERTA" aria-label="Toggle Área aberta" >
                   Área aberta
                 </ToggleGroupItem>
-                <ToggleGroupItem value="WELCOMO_SHOT" aria-label="Toggle Welcome shot" >
+                <ToggleGroupItem value="WELCOME_SHOT" aria-label="Toggle Welcome shot" >
                   Welcome shot
                 </ToggleGroupItem>
                 <ToggleGroupItem value="MESAS" aria-label="Toggle Mesas" >
@@ -553,7 +603,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
 
         <FormField
           control={form.control}
-          name='packages'
+          name='packageType'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Pacotes</FormLabel>
