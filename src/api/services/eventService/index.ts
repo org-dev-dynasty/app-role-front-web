@@ -11,7 +11,9 @@ import {
   type GetAllPresencesByEventIdResponse,
   type GetTopEventsResponse,
   type GetEventByIdParams,
-  CreateEventParams
+  CreateEventParams,
+  UpdateEventParams,
+  DeleteEventParams
 } from './types'
 
 const EVENT_SERVICE_ROUTES = {
@@ -25,8 +27,12 @@ const EVENT_SERVICE_ROUTES = {
   POST: {
     CREATE_EVENT: '/create-event'
   },
-  PUT: {},
-  DELETE: {}
+  PUT: {
+    UPDATE_EVENT: '/update-event'
+  },
+  DELETE: {
+    DELETE_EVENT: '/delete-event'
+  }
 } as const
 
 export class EventService extends AuthenticatedService {
@@ -68,5 +74,13 @@ export class EventService extends AuthenticatedService {
 
   createEvent(params: CreateEventParams) {
     return this.instance.post<Event>(EVENT_SERVICE_ROUTES.POST.CREATE_EVENT, params)
+  }
+
+  updateEvent(params: UpdateEventParams) {
+    return this.instance.put<Event>(EVENT_SERVICE_ROUTES.POST.CREATE_EVENT, params)
+  }
+
+  deleteEvent(params: DeleteEventParams) {
+    return this.instance.delete(EVENT_SERVICE_ROUTES.DELETE.DELETE_EVENT, { params })
   }
 }

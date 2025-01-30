@@ -148,6 +148,46 @@ export const clearEventsByFilter = () => (store: EventStore) => {
   store.searchEvents.setData([])
 }
 
+export const updateEvent = (event: Event) => async (store: EventStore) => {
+  store.events.setLoading(true)
+  store.events.setError(undefined)
+
+  try {
+    const { data } = await store.service.updateEvent(event)
+
+    store.events.setData(
+      store.events.data.map(e => (e.eventId === data.eventId ? data : e))
+    )
+
+    return { success: true, event: data }
+  } catch (error) {
+    const err = error as AxiosError<string>
+    store.events.setError(err.response?.data)
+    return { success: false, message: err.response?.data }
+  } finally {
+    store.events.setLoading(false)
+  }
+}
+
+export const deleteEvent = (eventId: string) => async (store: EventStore) => {
+  store.events.setLoading(true)
+  store.events.setError(undefined)
+
+  try {
+    await store.service.deleteEvent({ eventId })
+
+    store.events.setData(store.events.data.filter(event => event.eventId !== eventId))
+
+    return { success: true }
+  } catch (error) {
+    const err = error as AxiosError<string>
+    store.events.setError(err.response?.data)
+    return { success: false, message: err.response?.data }
+  } finally {
+    store.events.setLoading(false)
+  }
+}
+
 export const createEvent = (event: Event) => async (store: EventStore) => {
   store.events.setLoading(true)
   store.events.setError(undefined)

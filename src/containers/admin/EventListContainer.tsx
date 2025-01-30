@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
-import { Plus } from 'lucide-react';
+import { MoreHorizontal, Plus } from 'lucide-react';
 
 import {
   Sheet,
@@ -20,6 +20,7 @@ import {
   SidebarGroupLabel,
   SidebarInset,
   SidebarMenu,
+  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
@@ -28,12 +29,13 @@ import { envs } from '@/utils/envs';
 import { CreateEventForm } from '@/components/forms/CreateEvent';
 import { useEvent } from '@/hooks/useEvent';
 import { useEventDispatch } from '@/hooks/useEventDispatch';
-import { getAllEventsByFilter } from '@/context/event/actions';
+import { deleteEvent, getAllEventsByFilter } from '@/context/event/actions';
 import { Event } from '@/api/services/eventService/types';
 import { useInstituteDispatch } from '@/hooks/useInstituteDispatch';
 import { getInstitute } from '@/context/institute/actions';
 import { useInstitute } from '@/hooks/useInstitute';
 import { ClipLoader } from 'react-spinners';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@radix-ui/react-dropdown-menu';
 
 export const EventListContainer = () => {
   const {
@@ -46,6 +48,8 @@ export const EventListContainer = () => {
 
   const eventDispatch = useEventDispatch();
   const instituteDispatch = useInstituteDispatch();
+
+  const [editingEvent, setEditingEvent] = useState<Event>();
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
@@ -302,6 +306,17 @@ export const EventListContainer = () => {
     }
   }
 
+  const handleEditEvent = (event: Event) => {
+    setEditingEvent(event);
+    setOpenEventSheet(true);
+  };
+
+  const handleDeleteEvent = async (eventId: string) => {
+    await eventDispatch(
+      deleteEvent(eventId)
+    )
+  }
+
   useEffect(() => {
     fetchEvents();
     fetchInstitute();
@@ -336,7 +351,7 @@ export const EventListContainer = () => {
                   </SheetDescription>
                 </SheetHeader>
                 <div className='w-full flex-grow pt-4 pr-4 overflow-y-auto'>
-                  <CreateEventForm />
+                  <CreateEventForm Event={editingEvent} onSuccess={() => setOpenEventSheet(false)}/>
                 </div>
               </SheetContent>
             </Sheet>
@@ -353,6 +368,24 @@ export const EventListContainer = () => {
                     </div>
                     <span>{event.name}</span>
                   </SidebarMenuButton>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <SidebarMenuAction>
+                        <MoreHorizontal />
+                      </SidebarMenuAction>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent side='right' align='start'>
+                      <DropdownMenuItem
+                        onClick={() => handleEditEvent(event)}
+                      >
+                        <span>Editar Evento</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                      onClick={() => handleDeleteEvent(event.eventId)}>
+                        <span>Deletar Evento</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>

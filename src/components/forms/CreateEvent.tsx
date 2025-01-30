@@ -36,7 +36,7 @@ import { Calendar } from '@/components/ui/calendar'; // Ensure you import the co
 import { cn } from '@/lib/utils';
 import { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover';
 import { useEventDispatch } from '@/hooks/useEventDispatch';
-import { createEvent } from '@/context/event/actions';
+import { createEvent, updateEvent } from '@/context/event/actions';
 
 const formSchema = z.object({
   name: z.string(),
@@ -116,7 +116,10 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
       updatedBy: Event?.updatedBy || '',
     };
     if (Event) {
-      console.log('update');
+      //conferir se está indo certo (provavelmente não)
+      eventDispatch(updateEvent(
+        eventData
+      ))
     } else {
       eventDispatch(createEvent(
         eventData
