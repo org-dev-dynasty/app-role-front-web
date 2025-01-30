@@ -35,18 +35,20 @@ import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar'; // Ensure you import the correct Calendar component
 import { cn } from '@/lib/utils';
 import { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover';
+import { useEventDispatch } from '@/hooks/useEventDispatch';
+import { createEvent } from '@/context/event/actions';
 
 const formSchema = z.object({
   name: z.string(),
   description: z.string(),
-  menuLink: z.string(),
-  ticketUrl: z.string(),
+  menuLink: z.string().optional(),
+  ticketUrl: z.string().optional(),
   category: z.string(),
   eventDate: z.coerce.date(),
   ageRange: z.string(),
-  eventImage: z.string(),
-  galleryImages: z.string(),
-  // eventImage: z.object({
+  eventPhoto: z.string(),
+  galleryImages: z.string().optional(),
+  // eventPhoto: z.object({
   //   image: z.string(),
   //   mimeType: z.string(),
   // }),
@@ -56,10 +58,10 @@ const formSchema = z.object({
   // })),
   price: z.number(),
   instituteId: z.string(),
-  musicType: z.array(z.string()),
-  features: z.array(z.string()),
+  musicType: z.array(z.string()).optional(),
+  features: z.array(z.string()).optional(),
   address: addressValidation,
-  packageType: z.array(z.string()),
+  packageType: z.array(z.string()).optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -70,6 +72,7 @@ interface SinInFormProps {
 }
 
 export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
+  const eventDispatch = useEventDispatch()
 
   const instituteId = localStorage.getItem('instituteId');
 
@@ -95,7 +98,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
       price: Event ? Event.price : '',
       musicType: Event ? Event.musicType : '',
       features: Event ? Event.features : '',
-      eventImage: Event ? Event.banner : '',
+      eventPhoto: Event ? Event.banner : '',
       galleryImages: Event ? Event.gallery : '',
       ticketUrl: Event ? Event.ticketURL : '',
       packageType: Event ? Event.packages : '',
@@ -105,6 +108,20 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
   function onSubmit(values: z.infer<typeof formSchema>) {
     onSuccess?.();
     console.log(values);
+    const eventData: Event = {
+      ...values,
+      createdAt: Event?.createdAt || new Date(),
+      updatedAt: Event?.updatedAt || new Date(),
+      createdBy: Event?.createdBy || '',
+      updatedBy: Event?.updatedBy || '',
+    };
+    if (Event) {
+      console.log('update');
+    } else {
+      eventDispatch(createEvent(
+        eventData
+      ))
+    }
   }
 
   return (
@@ -148,7 +165,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
 
         <FormField
           control={form.control}
-          name='eventImage'
+          name='eventPhoto'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Imagem do evento</FormLabel>
@@ -176,7 +193,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
 
         {/* <FormField
           control={form.control}
-          name='eventImage'
+          name='eventPhoto'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Imagem do evento</FormLabel>
@@ -221,7 +238,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
             </FormItem>
           )}
         /> */}
-        
+
         <Separator />
         <h2 className='text-xl font-bold'>Contato e localização</h2>
 

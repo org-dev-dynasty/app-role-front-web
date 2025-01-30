@@ -28,6 +28,8 @@ import { Institute } from '@/context/institute/types';
 import { addressValidation } from '@/utils/validations';
 import AddressInput from '../input/Address';
 import { Separator } from '../ui/separator';
+import { createInstitute, updateInstitute } from '@/context/institute/actions';
+import { useInstituteDispatch } from '@/hooks/useInstituteDispatch';
 
 const formSchema = z.object({
   instituteName: z.string(),
@@ -48,6 +50,7 @@ interface SinInFormProps {
 }
 
 export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
+  const instituteDispatch = useInstituteDispatch();
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -75,6 +78,28 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log('Submitting form');
     console.log('Values:', values);
+    if (institute) {
+      const updateInstituteData: Institute = {
+        instituteId: institute.instituteId,
+        name: values.instituteName,
+        description: values.instituteDescription,
+        partnerType: values.partnerType,
+        instituteType: values.instituteType,
+        phone: values.phone,
+      };
+      instituteDispatch(updateInstitute(updateInstituteData));
+    } else {
+      const instituteData: Institute = {
+        name: values.instituteName,
+        description: values.instituteDescription,
+        partnerType: values.partnerType,
+        instituteType: values.instituteType,
+        phone: values.phone,
+        address: values.location,
+        logoPhoto: values.logoPhoto,
+      };
+      instituteDispatch(createInstitute(instituteData))
+    }
     onSuccess?.();
   }
 
@@ -368,7 +393,7 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
           )}
         />
         <Button type='submit' className='w-full'>
-          Criar Instituto
+          {institute ? 'Atualizar Instituto' : 'Criar Instituto'}
         </Button>
       </form>
     </Form>

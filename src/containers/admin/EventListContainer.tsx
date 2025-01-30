@@ -33,6 +33,7 @@ import { Event } from '@/api/services/eventService/types';
 import { useInstituteDispatch } from '@/hooks/useInstituteDispatch';
 import { getInstitute } from '@/context/institute/actions';
 import { useInstitute } from '@/hooks/useInstitute';
+import { ClipLoader } from 'react-spinners';
 
 export const EventListContainer = () => {
   const {
@@ -369,7 +370,7 @@ export const EventListContainer = () => {
             <Marker position={center} onClick={(e) => console.log(e)} />
           </GoogleMap>
         ) : (
-          <>carregando</>
+          <div className='flex justify-center items-center w-full flex-grow'><ClipLoader/></div>
         )}
       </SidebarInset>
     </div>

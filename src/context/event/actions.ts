@@ -147,3 +147,22 @@ export const selectEvent = (selectedEvent: Event) => async (store: EventStore) =
 export const clearEventsByFilter = () => (store: EventStore) => {
   store.searchEvents.setData([])
 }
+
+export const createEvent = (event: Event) => async (store: EventStore) => {
+  store.events.setLoading(true)
+  store.events.setError(undefined)
+
+  try {
+    const { data } = await store.service.createEvent(event)
+
+    store.events.setData([...store.events.data, data])
+
+    return { success: true, event: data }
+  } catch (error) {
+    const err = error as AxiosError<string>
+    store.events.setError(err.response?.data)
+    return { success: false, message: err.response?.data }
+  } finally {
+    store.events.setLoading(false)
+  }
+}
