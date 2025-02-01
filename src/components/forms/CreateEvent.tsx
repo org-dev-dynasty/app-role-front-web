@@ -31,11 +31,12 @@ import { addressValidation } from '@/utils/validations';
 import AddressInput from '../input/Address';
 import { Separator } from '../ui/separator';
 import { CalendarIcon } from 'lucide-react';
+import { Event } from '@/api/services/eventService/types';
 import { Calendar } from '@/components/ui/calendar'; // Ensure you import the correct Calendar component
 import { cn } from '@/lib/utils';
 import { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover';
 import { useEventDispatch } from '@/hooks/useEventDispatch';
-import { createEvent, updateEvent } from '@/context/event/actions';
+import { createEvent } from '@/context/event/actions';
 import { CreateEventParams } from '@/api/services/eventService/types';
 import { EventFeature } from '@/constants/eventFeature';
 import { MusicType } from '@/constants/musicType';
@@ -48,8 +49,8 @@ const formSchema = z.object({
   category: z.string(),
   eventDate: z.coerce.date(),
   ageRange: z.string(),
-  eventPhoto: z.any(),
-  galleryImages: z.any().optional(),
+  eventPhoto: z.instanceof(File),
+  galleryImages: z.instanceof(File).optional(),
   price: z.number(),
   instituteId: z.string(),
   musicType: z.array(z.string()).optional(),
@@ -76,9 +77,9 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
       name: Event ? Event.name : '',
       instituteId: instituteId ? instituteId : '',
       description: Event ? Event.description : '',
-      category: Event ? Event.eventCategory : '',
-      eventDate: Event ? Event.date : '',
-      address: Event ? Event.address : {
+      category: Event ? Event.category : '',
+      eventDate: Event ? new Date(Event.eventDate) : undefined,
+      address: Event ? { ...Event.address, number: Event.address.number.toString(), latitude: Event.address.latitude.toString(), longitude: Event.address.longitude.toString() } : {
         address: '',
         cep: '',
         city: '',
@@ -89,13 +90,13 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
         longitude: '',
       },
       ageRange: Event ? Event.ageRange : '',
-      price: Event ? Event.price : '',
-      musicType: Event ? Event.musicType : '',
-      features: Event ? Event.features : '',
-      eventPhoto: Event ? Event.banner : '',
-      galleryImages: Event ? Event.gallery : '',
-      ticketUrl: Event ? Event.ticketURL : '',
-      packageType: Event ? Event.packages : '',
+      price: Event ? Number(Event.price) : undefined,
+      musicType: Event ? Event.musicType : undefined,
+      features: Event ? Event.features : undefined,
+      eventPhoto: Event ? (Event.eventPhoto as unknown as File) : undefined,
+      galleryImages: Event ? (Event.galleryLink as unknown as File) : undefined,
+      ticketUrl: Event ? Event.ticketUrl : '',
+      packageType: Event ? Event.packageType : undefined,
     },
   });
 
@@ -104,9 +105,9 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
     console.log(values);
     if (Event) {
       //conferir se está indo certo (provavelmente não)
-      eventDispatch(updateEvent(
-        eventData
-      ))
+      // eventDispatch(updateEvent(
+      //   eventData
+      // ))
     } else {
       const eventData: CreateEventParams = {
         ...values,

@@ -104,8 +104,8 @@ export interface CreateEventParams {
   eventStatus: EventStatus;
   musicType: MusicType[];
   menuLink: string;
-  eventPhoto: string;
-  galleryLink: string[];
+  eventPhoto: File;
+  galleryLink: File[];
   packageType: EventPackage[];
   category: EventCategory;
   ticketUrl: string;
