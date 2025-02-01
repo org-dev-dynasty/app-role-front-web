@@ -378,6 +378,31 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
 
         <FormField
           control={form.control}
+          name='price'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Preço</FormLabel>
+              <Select onValueChange={(value) => field.onChange(Number(value))}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder='Selecione um valor' />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value='1'>$</SelectItem>
+                  <SelectItem value='2'>$$</SelectItem>
+                  <SelectItem value='3'>$$$</SelectItem>
+                  <SelectItem value='4'>$$$$</SelectItem>
+                  <SelectItem value='5'>$$$$$</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
           name='instituteType'
           render={({ field }) => (
             <FormItem>

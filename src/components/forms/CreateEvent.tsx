@@ -36,6 +36,9 @@ import { cn } from '@/lib/utils';
 import { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover';
 import { useEventDispatch } from '@/hooks/useEventDispatch';
 import { createEvent, updateEvent } from '@/context/event/actions';
+import { CreateEventParams } from '@/api/services/eventService/types';
+import { EventFeature } from '@/constants/eventFeature';
+import { MusicType } from '@/constants/musicType';
 
 const formSchema = z.object({
   name: z.string(),
@@ -45,16 +48,8 @@ const formSchema = z.object({
   category: z.string(),
   eventDate: z.coerce.date(),
   ageRange: z.string(),
-  eventPhoto: z.string(),
-  galleryImages: z.string().optional(),
-  // eventPhoto: z.object({
-  //   image: z.string(),
-  //   mimeType: z.string(),
-  // }),
-  // galleryImages: z.array(z.object({
-  //   image: z.string(),
-  //   mimeType: z.string(),
-  // })),
+  eventPhoto: z.any(),
+  galleryImages: z.any().optional(),
   price: z.number(),
   instituteId: z.string(),
   musicType: z.array(z.string()).optional(),
@@ -107,19 +102,33 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
   function onSubmit(values: z.infer<typeof formSchema>) {
     onSuccess?.();
     console.log(values);
-    const eventData: Event = {
-      ...values,
-      createdAt: Event?.createdAt || new Date(),
-      updatedAt: Event?.updatedAt || new Date(),
-      createdBy: Event?.createdBy || '',
-      updatedBy: Event?.updatedBy || '',
-    };
     if (Event) {
       //conferir se está indo certo (provavelmente não)
       eventDispatch(updateEvent(
         eventData
       ))
     } else {
+      const eventData: CreateEventParams = {
+        ...values,
+        eventStatus: 'ACTIVE',
+        galleryLink: [],
+        eventDate: values.eventDate.getTime(),
+        address: {
+          ...values.address,
+          number: parseInt(values.address.number),
+          latitude: parseFloat(values.address.latitude),
+          longitude: parseFloat(values.address.longitude),
+        },
+        ageRange: values.ageRange as "18-20" | "21-25" | "26-30" | "31-40" | "40+",
+        category: values.category as "BALADA" | "BAR_BALADA" | "UNIVERSITARIO" | "BAR" | "SHOW" | "FESTIVAL" | "FESTA",
+        price: values.price,
+        musicType: values.musicType as MusicType[],
+        features: values.features as EventFeature[],
+        menuLink: values.menuLink ? values.menuLink : '',
+        ticketUrl: values.ticketUrl ? values.ticketUrl : '',
+        packageType: values.packageType as ("COMBO" | "ANIVERSARIO" | "CAMAROTE")[],
+        eventPhoto: values.eventPhoto,
+      };
       eventDispatch(createEvent(
         eventData
       ))
@@ -172,7 +181,9 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
             <FormItem>
               <FormLabel>Imagem do evento</FormLabel>
               <FormControl>
-                <ImageInput {...field} />
+                <ImageInput onChange={(file) => {
+                  field.onChange(file);
+                }} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -186,60 +197,14 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
             <FormItem>
               <FormLabel>Galeria do evento</FormLabel>
               <FormControl>
-                <ImageInput {...field} />
+                <ImageInput onChange={(file) => {
+                  field.onChange(file);
+                }} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
-        {/* <FormField
-          control={form.control}
-          name='eventPhoto'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Imagem do evento</FormLabel>
-              <FormControl>
-                <ImageInput
-                  {...field}
-                  onChange={(imageFile) => {
-                    // Aqui você deve garantir que o valor seja um objeto com a chave image e mimeType
-                    const image = {
-                      image: imageFile ? URL.createObjectURL(imageFile) : '', // Caminho da imagem
-                      mimeType: imageFile ? imageFile.type : '', // Tipo MIME
-                    };
-                    field.onChange(image); // Passa o objeto para o campo do formulário
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name='galleryImages'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Galeria do evento</FormLabel>
-              <FormControl>
-                <ImageInput
-                  {...field}
-                  onChange={(imageFile) => {
-                    // Aqui você deve garantir que o valor seja um objeto com a chave image e mimeType
-                    const image = {
-                      image: imageFile ? URL.createObjectURL(imageFile) : '', // Caminho da imagem
-                      mimeType: imageFile ? imageFile.type : '', // Tipo MIME
-                    };
-                    field.onChange(image); // Passa o objeto para o campo do formulário
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
 
         <Separator />
         <h2 className='text-xl font-bold'>Contato e localização</h2>

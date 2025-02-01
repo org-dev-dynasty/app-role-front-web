@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios'
 import { EventStore } from './types'
 import {
+  CreateEventParams,
   Event,
   GetAllEventsByFilterParams,
   GetAllEventsParams
@@ -188,12 +189,33 @@ export const deleteEvent = (eventId: string) => async (store: EventStore) => {
   }
 }
 
-export const createEvent = (event: Event) => async (store: EventStore) => {
+export const createEvent = (event: CreateEventParams) => async (store: EventStore) => {
   store.events.setLoading(true)
   store.events.setError(undefined)
 
   try {
-    const { data } = await store.service.createEvent(event)
+    const eventReady = new FormData()
+    eventReady.append('name', event.name)
+    eventReady.append('description', event.description)
+    eventReady.append('street', event.address.address)
+    eventReady.append('number', String(event.address.number))
+    eventReady.append('neighborhood', event.address.neighborhood)
+    eventReady.append('city', event.address.city)
+    eventReady.append('state', event.address.state)
+    eventReady.append('cep', event.address.cep)
+    eventReady.append('longitude', String(event.address.longitude))
+    eventReady.append('latitude', String(event.address.latitude))
+    eventReady.append('price', String(event.price))
+    eventReady.append('ageRange', JSON.stringify(event.ageRange))
+    eventReady.append('eventDate', String(event.eventDate))
+    eventReady.append('photo', event.eventPhoto)
+    eventReady.append('gallery', JSON.stringify(event.galleryLink))
+    eventReady.append('instituteId', event.instituteId)
+    eventReady.append('musicType', JSON.stringify(event.musicType))
+    eventReady.append('menuLink', event.menuLink)
+    eventReady.append('ticketUrl', event.ticketUrl)
+
+    const { data } = await store.service.createEvent(eventReady)
 
     store.events.setData([...store.events.data, data])
 
