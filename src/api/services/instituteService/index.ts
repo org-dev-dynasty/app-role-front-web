@@ -2,7 +2,6 @@ import { apiInstance } from '@/api/http'
 import { AxiosInstance } from 'axios'
 import { AuthenticatedService, AuthService } from '../authService'
 import {
-  type CreateInstituteParams,
   type CreateInstituteResponse,
   type DeleteInstituteParams,
   type UpdateInstituteResponse,
@@ -65,10 +64,18 @@ export class InstituteService extends AuthenticatedService {
     return apiInstance.delete(INSTITUTE_SERVICE_ROUTES.DELETE.DELETE_INSTITUTE, { data: params })
   }
 
-  createInstitute(params: CreateInstituteParams) {
+  createInstitute(formData: FormData) {
+    console.log('formData CREATE INSTITUTE', formData)
+
     return apiInstance.post<CreateInstituteResponse>(
       INSTITUTE_SERVICE_ROUTES.POST.CREATE_INSTITUTE,
-      params
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${localStorage.getItem(`${import.meta.env}_authTokens`)}`
+        }
+      }
     )
   }
 }

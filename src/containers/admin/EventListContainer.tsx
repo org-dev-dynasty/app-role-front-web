@@ -341,7 +341,7 @@ export const EventListContainer = () => {
           <SidebarGroupAction title='Adicionar evento'>
             <Sheet open={openEventSheet} onOpenChange={setOpenEventSheet}>
               <SheetTrigger>
-                <Plus size={16} />
+                <Plus size={16} color='white' />
               </SheetTrigger>
               <SheetContent className='flex flex-col'>
                 <SheetHeader>

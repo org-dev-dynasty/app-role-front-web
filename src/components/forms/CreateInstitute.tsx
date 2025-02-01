@@ -24,12 +24,14 @@ import {
   SelectValue,
 } from '../ui/select';
 import ImageInput from '../input/Image';
-import { Institute } from '@/context/institute/types';
+import { CreateInstituteParams as Institute, UpdateInstituteParams } from '@/api/services/instituteService/types';
 import { addressValidation } from '@/utils/validations';
 import AddressInput from '../input/Address';
 import { Separator } from '../ui/separator';
 import { createInstitute, updateInstitute } from '@/context/institute/actions';
 import { useInstituteDispatch } from '@/hooks/useInstituteDispatch';
+import { InstitutePartner } from '@/constants/institutePartner';
+import { InstituteType } from '@/constants/instituteType';
 
 const formSchema = z.object({
   instituteName: z.string(),
@@ -38,8 +40,9 @@ const formSchema = z.object({
   instituteType: z.string(),
   phone: z.string(),
   address: z.string(),
-  logoPhoto: z.string(),
+  logoPhoto: z.instanceof(File),
   location: addressValidation,
+  price: z.number(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -59,8 +62,9 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
       partnerType: institute ? institute.partnerType : '',
       instituteType: institute ? institute.instituteType : '',
       phone: institute ? institute.phone : '',
-      address: institute ? institute.address : '',
-      logoPhoto: institute ? institute.logoPhoto : '',
+      address: institute ? institute.address.address : '',
+      logoPhoto: institute ? institute.logo : undefined,
+      price: institute ? institute.price : 0,
       location: {
         cep: '',
         address: '',
@@ -79,24 +83,46 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
     console.log('Submitting form');
     console.log('Values:', values);
     if (institute) {
-      const updateInstituteData: Institute = {
+      const updateInstituteData: UpdateInstituteParams = {
         instituteId: institute.instituteId,
         name: values.instituteName,
         description: values.instituteDescription,
-        partnerType: values.partnerType,
-        instituteType: values.instituteType,
+        partnerType: values.partnerType as InstitutePartner,
+        instituteType: values.instituteType as InstituteType,
         phone: values.phone,
+        address: {
+          address: values.address,
+          number: Number(values.location.number),
+          neighborhood: values.location.neighborhood,
+          city: values.location.city,
+          state: values.location.state,
+          cep: values.location.cep,
+          latitude: Number(values.location.latitude),
+          longitude: Number(values.location.longitude),
+        },
+        logo: values.logoPhoto,
+        price: values.price
       };
       instituteDispatch(updateInstitute(updateInstituteData));
     } else {
       const instituteData: Institute = {
         name: values.instituteName,
         description: values.instituteDescription,
-        partnerType: values.partnerType,
-        instituteType: values.instituteType,
+        partnerType: values.partnerType as InstitutePartner,
+        instituteType: values.instituteType as InstituteType,
         phone: values.phone,
-        address: values.location,
-        logoPhoto: values.logoPhoto,
+        address: {
+          address: values.address,
+          number: Number(values.location.number),
+          neighborhood: values.location.neighborhood,
+          city: values.location.city,
+          state: values.location.state,
+          cep: values.location.cep,
+          latitude: Number(values.location.latitude),
+          longitude: Number(values.location.longitude),
+        },
+        logo: values.logoPhoto,
+        price: values.price
       };
       instituteDispatch(createInstitute(instituteData))
     }
@@ -151,7 +177,9 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
             <FormItem>
               <FormLabel>Logo</FormLabel>
               <FormControl>
-                <ImageInput {...field} />
+                <ImageInput onChange={(file) => {
+                  field.onChange(file);
+                }}/>
               </FormControl>
               <FormMessage />
             </FormItem>

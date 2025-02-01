@@ -11,7 +11,6 @@ import {
   type GetAllPresencesByEventIdResponse,
   type GetTopEventsResponse,
   type GetEventByIdParams,
-  CreateEventParams,
   UpdateEventParams,
   DeleteEventParams
 } from './types'
@@ -68,12 +67,16 @@ export class EventService extends AuthenticatedService {
     return this.instance.get<Event>(EVENT_SERVICE_ROUTES.GET.GET_EVENT, { params })
   }
 
-  getFeaturedEvents() {
-    return this.instance.get<GetAllFeaturedEventsParams>(EVENT_SERVICE_ROUTES.GET.GET_TOP_EVENTS)
-  }
-
-  createEvent(params: CreateEventParams) {
-    return this.instance.post<Event>(EVENT_SERVICE_ROUTES.POST.CREATE_EVENT, params)
+  createEvent(formData: FormData) {
+    return this.instance.post<Event>(
+      EVENT_SERVICE_ROUTES.POST.CREATE_EVENT,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
   }
 
   updateEvent(params: UpdateEventParams) {

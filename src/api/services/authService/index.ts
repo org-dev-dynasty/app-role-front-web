@@ -118,9 +118,12 @@ export abstract class AuthenticatedService {
     })
 
     this._instance.interceptors.request.use(config => {
+      console.log('FAZENDO REQ: ', config.url)
       if (this._authService.tokens) {
         config.headers['Authorization'] = `Bearer ${this._authService.tokens.idToken}`
       }
+
+      console.log('FAZENDO REQ ID TOKEN: ', config.headers.Authorization)
 
       return config
     })

@@ -5,7 +5,7 @@ import { Skeleton } from '../ui/skeleton';
 const ImageInput = forwardRef<
   HTMLInputElement,
   React.InputHTMLAttributes<HTMLInputElement>
->(({ value, onChange, ...props }, ref) => {
+>(({ onChange, ...props }, ref) => {
   const [loadingImage, setLoadingImage] = useState(false);
   const [preview, setPreview] = useState<string>();
 
@@ -16,6 +16,7 @@ const ImageInput = forwardRef<
 
     if (!file) {
       setLoadingImage(false);
+      onChange?.(undefined as unknown as React.ChangeEvent<HTMLInputElement>);
       return;
     }
 
@@ -26,7 +27,7 @@ const ImageInput = forwardRef<
     };
     reader.readAsDataURL(file);
 
-    onChange?.(event);
+    onChange?.(file as unknown as React.ChangeEvent<HTMLInputElement>);
   };
 
   return (
@@ -35,7 +36,6 @@ const ImageInput = forwardRef<
         type={'file'}
         ref={ref}
         onChange={handleChange}
-        value={value || ''}
         {...props}
       />
 

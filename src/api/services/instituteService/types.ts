@@ -24,13 +24,33 @@ export interface GetAllInstitutesByPartnerTypeParams {
   partnerType: InstitutePartner;
 }
 
-export interface UpdateInstituteParams {}
+export interface UpdateInstituteParams {
+  instituteId?: string;
+  name: string;
+  logo: File;
+  description: string;
+  instituteType: InstituteType;
+  partnerType: InstitutePartner;
+  address: Address;
+  price: number;
+  phone: string;
+}
 
 export interface DeleteInstituteParams {
   instituteId: string;
 }
 
-export interface CreateInstituteParams {}
+export interface CreateInstituteParams {
+  instituteId?: string;
+  name: string;
+  logo: File;
+  description: string;
+  instituteType: InstituteType;
+  partnerType: InstitutePartner;
+  address: Address;
+  price: number;
+  phone: string;
+}
 
 export interface GetAllInstitutesParams {
   page: number;
@@ -50,6 +70,9 @@ export interface UpdateInstituteResponse {}
 
 export interface DeleteInstituteResponse {}
 
-export interface CreateInstituteResponse {}
+export interface CreateInstituteResponse {
+  message: string;
+  id: string;
+}
 
 // #endregion //
