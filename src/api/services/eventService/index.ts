@@ -12,7 +12,8 @@ import {
   type GetTopEventsResponse,
   type GetEventByIdParams,
   UpdateEventParams,
-  DeleteEventParams
+  DeleteEventParams,
+  CreateEventResponse
 } from './types'
 
 const EVENT_SERVICE_ROUTES = {
@@ -68,7 +69,7 @@ export class EventService extends AuthenticatedService {
   }
 
   createEvent(formData: FormData) {
-    return this.instance.post<Event>(
+    return this.instance.post<CreateEventResponse>(
       EVENT_SERVICE_ROUTES.POST.CREATE_EVENT,
       formData,
       {

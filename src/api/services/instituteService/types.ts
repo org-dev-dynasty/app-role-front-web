@@ -52,6 +52,11 @@ export interface CreateInstituteParams {
   phone: string;
 }
 
+export interface CreateInstituteResponse {
+  message: string;
+  id: string;
+}
+
 export interface GetAllInstitutesParams {
   page: number;
 }
@@ -70,9 +75,5 @@ export interface UpdateInstituteResponse {}
 
 export interface DeleteInstituteResponse {}
 
-export interface CreateInstituteResponse {
-  message: string;
-  id: string;
-}
 
 // #endregion //

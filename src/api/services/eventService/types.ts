@@ -112,6 +112,11 @@ export interface CreateEventParams {
   features: EventFeature[];
 }
 
+export interface CreateEventResponse {
+  message: string;
+  id: string;
+}
+
 // #endregion //
 
 // #region RESPONSES //

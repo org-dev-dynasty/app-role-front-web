@@ -77,7 +77,10 @@ export const createInstitute = (params: CreateInstituteParams) => async (store: 
     const institute = new FormData()
 
     institute.append('name', params.name)
-    institute.append('address', params.address.address)
+    institute.append('street', params.address.address)
+    institute.append('cep', params.address.cep)
+    institute.append('longitude', params.address.longitude.toString())
+    institute.append('latitude', params.address.latitude.toString())
     institute.append('city', params.address.city)
     institute.append('state', params.address.state)
     institute.append('neighborhood', params.address.neighborhood)
