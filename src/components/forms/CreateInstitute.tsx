@@ -137,7 +137,7 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
         onSubmit={form.handleSubmit(onSubmit)}
         className='space-y-4 pl-[1px] relative'
       >
-        <h2 className='text-xl font-bold'>Informações de exibição</h2>
+        <h2 className={`text-xl font-bold text-foreground`}>Informações de exibição</h2>
 
         <FormField
           control={form.control}

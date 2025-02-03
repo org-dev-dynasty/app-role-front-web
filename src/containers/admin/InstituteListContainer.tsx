@@ -96,7 +96,7 @@ export const InstituteListContainer = ({toggleTrue, toggleFalse} : InstituteList
       <SidebarGroupAction title='Adicionar Institutos'>
         <Sheet open={openInstituteSheet} onOpenChange={handleOpenChange}>
           <SheetTrigger>
-            <Plus size={16} />
+            <Plus size={16} color='red' />
           </SheetTrigger>
           <SheetContent className='flex flex-col'>
             <SheetHeader>
@@ -122,12 +122,12 @@ export const InstituteListContainer = ({toggleTrue, toggleFalse} : InstituteList
                 <div className='w-6 h-6 rounded-full overflow-hidden'>
                   <img src={institute.logo} />
                 </div>
-                <span>{institute.name}</span>
+                <span className='text-foreground'>{institute.name}</span>
               </SidebarMenuButton>
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+                <DropdownMenuTrigger asChild title='Mais ações'>
                   <SidebarMenuAction>
-                    <MoreHorizontal />
+                    <MoreHorizontal color='red' />
                   </SidebarMenuAction>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent side='right' align='start'>
