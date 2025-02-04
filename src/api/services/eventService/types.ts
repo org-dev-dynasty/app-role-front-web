@@ -1,9 +1,9 @@
-import { AgeRange } from "@/constants/ageRange";
-import { EventCategory } from "@/constants/eventCategory";
-import { EventFeature } from "@/constants/eventFeature";
-import { EventPackage } from "@/constants/eventPackage";
-import { EventStatus } from "@/constants/eventStatus";
-import { MusicType } from "@/constants/musicType";
+import { AgeRange } from '@/constants/ageRange';
+import { EventCategory } from '@/constants/eventCategory';
+import { EventFeature } from '@/constants/eventFeature';
+import { EventPackage } from '@/constants/eventPackage';
+import { EventStatus } from '@/constants/eventStatus';
+import { MusicType } from '@/constants/musicType';
 
 export interface Event {
   eventId: string;

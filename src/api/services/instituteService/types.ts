@@ -1,5 +1,6 @@
 import { InstitutePartner } from '@/constants/institutePartner';
 import { InstituteType } from '@/constants/instituteType';
+import { Region } from '@/constants/regions';
 
 export interface Institute {
   instituteId: string;
@@ -12,6 +13,7 @@ export interface Institute {
   price: number;
   photosUrl: string[];
   eventsId: string[];
+  phone: string;
 }
 
 // #region PARAMS //
@@ -50,6 +52,7 @@ export interface CreateInstituteParams {
   address: Address;
   price: number;
   phone: string;
+  region: Region;
 }
 
 export interface CreateInstituteResponse {
@@ -74,6 +77,5 @@ export interface GetAllInstitutesByPartnerTypeResponse extends MessageResponse {
 export interface UpdateInstituteResponse {}
 
 export interface DeleteInstituteResponse {}
-
 
 // #endregion //

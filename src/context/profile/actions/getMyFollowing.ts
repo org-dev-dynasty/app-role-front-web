@@ -1,21 +1,22 @@
-import { AxiosError } from 'axios'
-import { ProfileStore } from '../types'
+import { AxiosError } from 'axios';
+import { ProfileStore } from '../types';
+import { profileService } from '@/config/services';
 
 // a fazer
 export const getMyFollowing = () => async (store: ProfileStore) => {
-  store.following.setLoading(true)
-  store.following.setError(undefined)
+  store.following.setLoading(true);
+  store.following.setError(undefined);
 
   try {
-    const { data } = await store.service.getMyFollowing()
+    const { data } = await profileService.getMyFollowing();
 
-    return { success: true, following: data }
+    return { success: true, following: data };
   } catch (error) {
-    const err = error as AxiosError<string>
-    store.following.setError(err.response?.data)
+    const err = error as AxiosError<string>;
+    store.following.setError(err.response?.data);
 
-    return { success: false }
+    return { success: false };
   } finally {
-    store.following.setLoading(false)
+    store.following.setLoading(false);
   }
-}
+};

@@ -103,7 +103,7 @@ export default function ResetPasswordCode() {
       <div className="absolute h-2/3 w-1/2 flex p-6 py-18 flex-col justify-center items-center bg-[#444] overflow-y-scroll rounded-lg">
         <div className="flex flex-col w-full justify-center items-center">
           <div className="flex w-full justify-center">
-            <h1 className="text-white text-2xl mt-20 flex">Coloque o código de confirmação {isVerified !== null && (isVerified ? <Check className="ml-4" size={32} color="green" /> : <X className="ml-4" size={32} color="red" />)}</h1>
+            <h1 className="text-white text-2xl mt-20 flex">Coloque o código de confirmação {isVerified !== null && (isVerified ? <Check className="ml-4" size={32} color="green" /> : <X className="ml-4" size={32} />)}</h1>
           </div>
           <div className="flex mb-4 mt-8 justify-center items-center space-x-4">
             {otp.map((digit, index) => (

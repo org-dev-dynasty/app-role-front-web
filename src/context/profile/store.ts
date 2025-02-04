@@ -1,52 +1,49 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
-import { ProfileService } from '@/api/services/profileService'
-import { Profile } from '@/api/services/profileService/types'
-import { useSimpleRequestNode } from '@/hooks/useCreateRequestNode'
+import { Profile } from '@/api/services/profileService/types';
+import { useSimpleRequestNode } from '@/hooks/useCreateRequestNode';
 
-import { favoriteInstitute } from './actions'
 
 const useProfileStoreState = () => {
-  const [data, setData] = useState<Profile>()
+  const [data, setData] = useState<Profile>();
 
   return {
     ...useSimpleRequestNode(),
     data,
-    setData
-  }
-}
+    setData,
+  };
+};
 
 export const verifyUserNameState = () => {
-  const [isValid, setIsValid] = useState<boolean>()
+  const [isValid, setIsValid] = useState<boolean>();
 
   return {
     ...useSimpleRequestNode(),
     isValid,
-    setIsValid
-  }
-}
+    setIsValid,
+  };
+};
 
 export const followState = () => {
-  const [profiles, setProfiles] = useState<Profile[]>()
+  const [profiles, setProfiles] = useState<Profile[]>();
   return {
     ...useSimpleRequestNode(),
     profiles,
-    setProfiles
-  }
-}
+    setProfiles,
+  };
+};
 
 export const searchProfileState = () => {
-  const [result, setResult] = useState<Profile[]>()
+  const [result, setResult] = useState<Profile[]>();
   return {
     ...useSimpleRequestNode(),
     result,
-    setResult
-  }
-}
+    setResult,
+  };
+};
 
-export const useProfileStore = (service: ProfileService) => {
+export const useProfileStore = () => {
   return {
-    service,
     verifyUsername: verifyUserNameState(),
     createProfile: useSimpleRequestNode(),
     profile: useProfileStoreState(),
@@ -59,6 +56,6 @@ export const useProfileStore = (service: ProfileService) => {
     deletePresence: useSimpleRequestNode(),
     favoriteInstitute: useSimpleRequestNode(),
     unfavoriteInstitute: useSimpleRequestNode(),
-    createReview: useSimpleRequestNode()
-  }
-}
+    createReview: useSimpleRequestNode(),
+  };
+};

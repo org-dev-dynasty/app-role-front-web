@@ -1,6 +1,18 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+
+import { Institute } from '@/api/services/instituteService/types';
+
+import {
+  INSTITUTE_PARTNER,
+  institutePartnerFields,
+} from '@/constants/institutePartner';
+import { INSTITUTE_TYPE, instituteTypeFields } from '@/constants/instituteType';
+import { priceFields } from '@/constants/price';
+import { regionFields, REGIONS } from '@/constants/regions';
+
+import { addressValidation } from '@/utils/validations';
 
 import { Button } from '@/components/ui/button';
 
@@ -12,26 +24,19 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-
+import AddressInput from '@/components/input/Address';
+import ImageInput from '@/components/input/Image';
+import PhoneInput from '@/components/input/Phone';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import PhoneInput from '@/components/input/Phone';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../ui/select';
-import ImageInput from '../input/Image';
-import { CreateInstituteParams as Institute, UpdateInstituteParams } from '@/api/services/instituteService/types';
-import { addressValidation } from '@/utils/validations';
-import AddressInput from '../input/Address';
-import { Separator } from '../ui/separator';
-import { createInstitute, updateInstitute } from '@/context/institute/actions';
-import { useInstituteDispatch } from '@/hooks/useInstituteDispatch';
-import { InstitutePartner } from '@/constants/institutePartner';
-import { InstituteType } from '@/constants/instituteType';
+} from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
 
 const formSchema = z.object({
   instituteName: z.string(),
@@ -43,93 +48,71 @@ const formSchema = z.object({
   logoPhoto: z.instanceof(File),
   location: addressValidation,
   price: z.number(),
+  region: z.string(),
 });
 
-type FormData = z.infer<typeof formSchema>;
+export type CreateInstituteFormData = z.infer<typeof formSchema>;
 
 interface SinInFormProps {
-  onSuccess?: () => void;
+  onSuccess?: (data: CreateInstituteFormData) => void;
   institute?: Institute;
 }
 
-export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
-  const instituteDispatch = useInstituteDispatch();
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      instituteName: institute ? institute.name : '',
-      instituteDescription: institute ? institute.description : '',
-      partnerType: institute ? institute.partnerType : '',
-      instituteType: institute ? institute.instituteType : '',
-      phone: institute ? institute.phone : '',
-      address: institute ? institute.address.address : '',
-      logoPhoto: institute ? institute.logo : undefined,
-      price: institute ? institute.price : 0,
+const createDefaultValues = (institute?: Institute) => {
+  if (import.meta.env.DEV && !institute) {
+    return {
+      instituteName: 'Instituto Legal',
+      instituteDescription: 'Descrição legal do instituto',
+      partnerType: INSTITUTE_PARTNER.GLOBAL_PARTNER,
+      instituteType: INSTITUTE_TYPE.ESTABELECIMENTO_FIXO,
+      phone: '11999999999',
+      address: 'Rua Fiação da Saúde, 361',
+      price: 3,
+      region: REGIONS.ZONA_SUL,
       location: {
-        cep: '',
-        address: '',
-        number: '',
-        neighborhood: '',
-        city: '',
-        state: '',
-        latitude: '',
-        longitude: '',
+        cep: '04144020',
+        address: 'Rua Fiação da Saúde',
+        number: '361',
+        neighborhood: 'Vila da Saúde',
+        city: 'São Paulo',
+        state: 'SP',
+        latitude: '-23.61757',
+        longitude: '-46.63765',
       },
+    };
+  }
+
+  return {
+    instituteName: institute ? institute.name : '',
+    instituteDescription: institute ? institute.description : '',
+    partnerType: institute ? institute.partnerType : '',
+    instituteType: institute ? institute.instituteType : '',
+    phone: institute ? institute.phone : '',
+    address: institute ? institute.address.address : '',
+    price: institute?.price,
+    location: {
+      cep: '',
+      address: '',
+      number: '',
+      neighborhood: '',
+      city: '',
+      state: '',
+      latitude: '',
+      longitude: '',
     },
+  };
+};
+
+export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
+  const form = useForm<CreateInstituteFormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: createDefaultValues(institute),
     mode: 'onSubmit',
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log('Submitting form');
-    console.log('Values:', values);
-    if (institute) {
-      const updateInstituteData: UpdateInstituteParams = {
-        instituteId: institute.instituteId,
-        name: values.instituteName,
-        description: values.instituteDescription,
-        partnerType: values.partnerType as InstitutePartner,
-        instituteType: values.instituteType as InstituteType,
-        phone: values.phone,
-        address: {
-          address: values.address,
-          number: Number(values.location.number),
-          neighborhood: values.location.neighborhood,
-          city: values.location.city,
-          state: values.location.state,
-          cep: values.location.cep,
-          latitude: Number(values.location.latitude),
-          longitude: Number(values.location.longitude),
-        },
-        logo: values.logoPhoto,
-        price: values.price
-      };
-      instituteDispatch(updateInstitute(updateInstituteData));
-    } else {
-      const instituteData: Institute = {
-        name: values.instituteName,
-        description: values.instituteDescription,
-        partnerType: values.partnerType as InstitutePartner,
-        instituteType: values.instituteType as InstituteType,
-        phone: values.phone,
-        address: {
-          address: values.address,
-          number: Number(values.location.number),
-          neighborhood: values.location.neighborhood,
-          city: values.location.city,
-          state: values.location.state,
-          cep: values.location.cep,
-          latitude: Number(values.location.latitude),
-          longitude: Number(values.location.longitude),
-        },
-        logo: values.logoPhoto,
-        price: values.price
-      };
-      instituteDispatch(createInstitute(instituteData))
-    }
-    onSuccess?.();
+  function onSubmit(values: CreateInstituteFormData) {
+    onSuccess?.(values);
   }
-
-
 
   return (
     <Form {...form}>
@@ -137,7 +120,9 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
         onSubmit={form.handleSubmit(onSubmit)}
         className='space-y-4 pl-[1px] relative'
       >
-        <h2 className={`text-xl font-bold text-foreground`}>Informações de exibição</h2>
+        <h2 className={`text-xl font-bold text-foreground`}>
+          Informações de exibição
+        </h2>
 
         <FormField
           control={form.control}
@@ -177,9 +162,11 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
             <FormItem>
               <FormLabel>Logo</FormLabel>
               <FormControl>
-                <ImageInput onChange={(file) => {
-                  field.onChange(file);
-                }}/>
+                <ImageInput
+                  onChange={(file) => {
+                    field.onChange(file);
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -330,6 +317,31 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name='region'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Região</FormLabel>
+              <Select
+                value={field.value.toString()}
+                onValueChange={(value) => field.onChange(Number(value))}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder='Selecione um valor' />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {regionFields.map(({ value, label }) => (
+                    <SelectItem value={value}>{label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <FormField
           control={form.control}
@@ -382,18 +394,19 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Preço</FormLabel>
-              <Select onValueChange={(value) => field.onChange(Number(value))}>
+              <Select
+                value={field.value.toString()}
+                onValueChange={(value) => field.onChange(Number(value))}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder='Selecione um valor' />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value='1'>$</SelectItem>
-                  <SelectItem value='2'>$$</SelectItem>
-                  <SelectItem value='3'>$$$</SelectItem>
-                  <SelectItem value='4'>$$$$</SelectItem>
-                  <SelectItem value='5'>$$$$$</SelectItem>
+                  {priceFields.map(({ value, label }) => (
+                    <SelectItem value={value}>{label}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -414,8 +427,9 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value='ESTABELECIMENTO_FIXO'>Estabelecimento fixo</SelectItem>
-                  <SelectItem value='AGENCIA_DE_FESTAS'>Agência de festas</SelectItem>
+                  {instituteTypeFields.map(({ value, label }) => (
+                    <SelectItem value={value}>{label}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -436,9 +450,9 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value='GLOBAL_PARTNER'>Parceiro global</SelectItem>
-                  <SelectItem value='PROMOTER_PARTNER'>Promotor</SelectItem>
-                  <SelectItem value='NO_PARTNER'>Não parceiro</SelectItem>
+                  {institutePartnerFields.map(({ value, label }) => (
+                    <SelectItem value={value}>{label}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />

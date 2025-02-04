@@ -1,14 +1,26 @@
 import { MoreHorizontal, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { getAllInstitutes } from '@/context/institute/actions';
+import {
+  createInstitute,
+  getAllInstitutes,
+  getInstitute,
+  updateInstitute,
+} from '@/context/institute/actions';
 
 import { useInstitute } from '@/hooks/useInstitute';
 import { useInstituteDispatch } from '@/hooks/useInstituteDispatch';
 
-import { Institute } from '@/api/services/instituteService/types';
+import {
+  CreateInstituteParams,
+  Institute,
+  UpdateInstituteParams,
+} from '@/api/services/instituteService/types';
 
-import { CreateInstituteForm } from '@/components/forms/CreateInstitute';
+import {
+  CreateInstituteForm,
+  CreateInstituteFormData,
+} from '@/components/forms/CreateInstitute';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,33 +45,38 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { useEventDispatch } from '@/hooks/useEventDispatch';
+import { getAllEventsByFilter } from '@/context/event/actions';
+import { InstitutePartner } from '@/constants/institutePartner';
+import { InstituteType } from '@/constants/instituteType';
+import { Region } from '@/constants/regions';
 
-interface InstituteListContainerProps {
-  toggleTrue: () => void;
-  toggleFalse: () => void;
-}
-
-export const InstituteListContainer = ({toggleTrue, toggleFalse} : InstituteListContainerProps) => {
+export const InstituteListContainer = () => {
   const {
     institutes: { data: allInstitutes },
   } = useInstitute();
 
   const instituteApiDispatch = useInstituteDispatch();
+  const eventDispatch = useEventDispatch();
 
   const [openInstituteSheet, setOpenInstituteSheet] = useState<boolean>(false);
   const [editingInstitute, setEditingInstitute] = useState<Institute>();
 
   const handleSelectInstitute = async (institute: Institute) => {
-    console.log(institute);
-    const instID = localStorage.getItem('instituteID');
-    
-    if (instID) {
-      localStorage.removeItem('instituteID');
-      toggleFalse();
-    } else {
-      localStorage.setItem('instituteID', JSON.stringify(institute.instituteId));
-      toggleTrue();
+    const response = await instituteApiDispatch(
+      getInstitute({ instituteId: institute.instituteId })
+    );
+
+    if (!response.success) {
+      return;
     }
+
+    eventDispatch(
+      getAllEventsByFilter({
+        search: { instituteId: institute.instituteId },
+        page: 1,
+      })
+    );
   };
 
   const handleEditInstitute = (institute: Institute) => {
@@ -83,6 +100,56 @@ export const InstituteListContainer = ({toggleTrue, toggleFalse} : InstituteList
     );
   };
 
+  const onCreateInstitute = async (values: CreateInstituteFormData) => {
+    if (editingInstitute) {
+      const updateInstituteData: UpdateInstituteParams = {
+        instituteId: editingInstitute.instituteId,
+        name: values.instituteName,
+        description: values.instituteDescription,
+        partnerType: values.partnerType as InstitutePartner,
+        instituteType: values.instituteType as InstituteType,
+        phone: values.phone,
+        address: {
+          address: values.address,
+          number: Number(values.location.number),
+          neighborhood: values.location.neighborhood,
+          city: values.location.city,
+          state: values.location.state,
+          cep: values.location.cep,
+          latitude: Number(values.location.latitude),
+          longitude: Number(values.location.longitude),
+        },
+        logo: values.logoPhoto,
+        price: values.price,
+      };
+      await instituteApiDispatch(updateInstitute(updateInstituteData));
+    } else {
+      const instituteData: CreateInstituteParams = {
+        name: values.instituteName,
+        description: values.instituteDescription,
+        partnerType: values.partnerType as InstitutePartner,
+        instituteType: values.instituteType as InstituteType,
+        phone: values.phone,
+        region: values.region as Region,
+        address: {
+          address: values.address,
+          number: Number(values.location.number),
+          neighborhood: values.location.neighborhood,
+          city: values.location.city,
+          state: values.location.state,
+          cep: values.location.cep,
+          latitude: Number(values.location.latitude),
+          longitude: Number(values.location.longitude),
+        },
+        logo: values.logoPhoto,
+        price: values.price,
+      };
+      await instituteApiDispatch(createInstitute(instituteData));
+    }
+
+    setOpenInstituteSheet(false);
+  };
+
   useEffect(() => {
     fetchInstitutes();
   }, []);
@@ -96,7 +163,7 @@ export const InstituteListContainer = ({toggleTrue, toggleFalse} : InstituteList
       <SidebarGroupAction title='Adicionar Institutos'>
         <Sheet open={openInstituteSheet} onOpenChange={handleOpenChange}>
           <SheetTrigger>
-            <Plus size={16} color='red' />
+            <Plus size={16} />
           </SheetTrigger>
           <SheetContent className='flex flex-col'>
             <SheetHeader>
@@ -106,7 +173,10 @@ export const InstituteListContainer = ({toggleTrue, toggleFalse} : InstituteList
               </SheetDescription>
             </SheetHeader>
             <div className='w-full flex-grow pt-4 pr-4 overflow-y-auto'>
-              <CreateInstituteForm institute={editingInstitute} onSuccess={() => setOpenInstituteSheet(false)} />
+              <CreateInstituteForm
+                institute={editingInstitute}
+                onSuccess={onCreateInstitute}
+              />
             </div>
           </SheetContent>
         </Sheet>
@@ -127,7 +197,7 @@ export const InstituteListContainer = ({toggleTrue, toggleFalse} : InstituteList
               <DropdownMenu>
                 <DropdownMenuTrigger asChild title='Mais ações'>
                   <SidebarMenuAction>
-                    <MoreHorizontal color='red' />
+                    <MoreHorizontal />
                   </SidebarMenuAction>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent side='right' align='start'>

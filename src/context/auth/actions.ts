@@ -2,8 +2,6 @@ import { type AxiosError } from 'axios';
 
 import { STORAGE_KEYS } from '@/constants/storageKeys';
 
-import { AuthService } from '@/api/services/authService';
-
 import {
   type SignInParams,
   type ConfirmForgotPasswordParams,
@@ -16,8 +14,7 @@ import {
 import { type AuthStore } from './types';
 import { USER_STATUS } from '@/constants/userStatus';
 import { USER_ROLE } from '@/constants/userRole';
-
-export const authService = new AuthService();
+import { authService } from '@/config/services';
 
 export const singIn = (params: SignInParams) => async (store: AuthStore) => {
   store.signIn.setLoading(true);

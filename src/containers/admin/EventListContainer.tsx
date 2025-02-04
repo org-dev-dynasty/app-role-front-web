@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import { MoreHorizontal, Plus } from 'lucide-react';
 
-import mapsJSON from '@/utils/maps_styles.json'
+import mapsJSON from '@/utils/maps_styles.json';
 
 import {
   Sheet,
@@ -37,16 +37,22 @@ import { useInstituteDispatch } from '@/hooks/useInstituteDispatch';
 import { getInstitute } from '@/context/institute/actions';
 import { useInstitute } from '@/hooks/useInstitute';
 import { ClipLoader } from 'react-spinners';
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@radix-ui/react-dropdown-menu';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@radix-ui/react-dropdown-menu';
+import { classNames } from 'primereact/utils';
 
 export const EventListContainer = () => {
   const {
-    events: { data: allEvents },
-  } = useEvent()
+    searchEvents: { data: searchEvents },
+  } = useEvent();
 
   const {
-    institutes: { data: institute },
-  } = useInstitute()
+    institutes: { selected: selectedInstitute },
+  } = useInstitute();
 
   const eventDispatch = useEventDispatch();
   const instituteDispatch = useInstituteDispatch();
@@ -89,28 +95,26 @@ export const EventListContainer = () => {
     const instituteID = localStorage.getItem('instituteId');
     if (instituteID) {
       await eventDispatch(
-        getAllEventsByFilter(
-          {
-            page: 1,
-            search: {
-              instituteId: instituteID,
-            }
-          }
-        )
+        getAllEventsByFilter({
+          page: 1,
+          search: {
+            instituteId: instituteID,
+          },
+        })
       );
     }
-  }
+  };
 
   const fetchInstitute = async () => {
     const instId = localStorage.getItem('instituteId');
     if (instId) {
       await instituteDispatch(
         getInstitute({
-          instituteId: instId
+          instituteId: instId,
         })
       );
     }
-  }
+  };
 
   const handleEditEvent = (event: Event) => {
     setEditingEvent(event);
@@ -118,16 +122,12 @@ export const EventListContainer = () => {
   };
 
   const handleDeleteEvent = async (eventId: string) => {
-    await eventDispatch(
-      deleteEvent(eventId)
-    )
-  }
+    await eventDispatch(deleteEvent(eventId));
+  };
 
   useEffect(() => {
     fetchEvents();
     fetchInstitute();
-    console.log(institute);
-    console.log(allEvents);
   }, []);
 
   function handleSelectEvent(event: Event) {
@@ -135,19 +135,24 @@ export const EventListContainer = () => {
   }
 
   return (
-    <div className='w-full h-full flex transform translate-x-[0px]'>
+    <div
+      className={classNames(
+        'w-full h-full flex transform',
+        selectedInstitute ? 'flex' : 'hidden'
+      )}
+    >
       <Sidebar>
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupLabel asChild>
-              {/* // NAo ta funcionando */}
-              <span>Eventos de {institute[0].name}</span>
+              <span>Eventos de {selectedInstitute?.name}</span>
             </SidebarGroupLabel>
           </SidebarGroup>
+
           <SidebarGroupAction title='Adicionar evento'>
             <Sheet open={openEventSheet} onOpenChange={setOpenEventSheet}>
               <SheetTrigger>
-                <Plus size={16} color='red' />
+                <Plus size={16} />
               </SheetTrigger>
               <SheetContent className='flex flex-col'>
                 <SheetHeader>
@@ -157,18 +162,20 @@ export const EventListContainer = () => {
                   </SheetDescription>
                 </SheetHeader>
                 <div className='w-full flex-grow pt-4 pr-4 overflow-y-auto'>
-                  <CreateEventForm Event={editingEvent} onSuccess={() => setOpenEventSheet(false)}/>
+                  <CreateEventForm
+                    Event={editingEvent}
+                    onSuccess={() => setOpenEventSheet(false)}
+                  />
                 </div>
               </SheetContent>
             </Sheet>
           </SidebarGroupAction>
+
           <SidebarGroupContent>
             <SidebarMenu>
-              {allEvents.map((event, key) => (
+              {searchEvents.map((event, key) => (
                 <SidebarMenuItem key={key}>
-                  <SidebarMenuButton
-                    onClick={() => handleSelectEvent(event)}
-                  >
+                  <SidebarMenuButton onClick={() => handleSelectEvent(event)}>
                     <div className='w-6 h-6 rounded-full overflow-hidden'>
                       <img src={event.eventPhoto} />
                     </div>
@@ -181,13 +188,12 @@ export const EventListContainer = () => {
                       </SidebarMenuAction>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent side='right' align='start'>
-                      <DropdownMenuItem
-                        onClick={() => handleEditEvent(event)}
-                      >
+                      <DropdownMenuItem onClick={() => handleEditEvent(event)}>
                         <span>Editar Evento</span>
                       </DropdownMenuItem>
                       <DropdownMenuItem
-                      onClick={() => handleDeleteEvent(event.eventId)}>
+                        onClick={() => handleDeleteEvent(event.eventId)}
+                      >
                         <span>Deletar Evento</span>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -198,20 +204,20 @@ export const EventListContainer = () => {
           </SidebarGroupContent>
         </SidebarContent>
       </Sidebar>
-      <SidebarInset>
-        {isLoaded ? (
-          <GoogleMap
-            mapContainerStyle={containerStyle}
-            center={center}
-            onLoad={onLoad}
-            onUnmount={onUnmount}
-          >
-            <Marker position={center} onClick={(e) => console.log(e)} />
-          </GoogleMap>
-        ) : (
-          <div className='flex justify-center items-center w-full flex-grow'><ClipLoader/></div>
-        )}
-      </SidebarInset>
+      {isLoaded ? (
+        <GoogleMap
+          mapContainerStyle={containerStyle}
+          center={center}
+          onLoad={onLoad}
+          onUnmount={onUnmount}
+        >
+          <Marker position={center} onClick={(e) => console.log(e)} />
+        </GoogleMap>
+      ) : (
+        <div className='flex justify-center items-center w-full flex-grow'>
+          <ClipLoader />
+        </div>
+      )}
     </div>
   );
 };
