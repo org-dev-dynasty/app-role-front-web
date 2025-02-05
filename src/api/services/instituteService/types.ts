@@ -14,6 +14,7 @@ export interface Institute {
   photosUrl: string[];
   eventsId: string[];
   phone: string;
+  district: Region;
 }
 
 // #region PARAMS //
@@ -36,6 +37,7 @@ export interface UpdateInstituteParams {
   address: Address;
   price: number;
   phone: string;
+  district: Region
 }
 
 export interface DeleteInstituteParams {
@@ -52,7 +54,8 @@ export interface CreateInstituteParams {
   address: Address;
   price: number;
   phone: string;
-  region: Region;
+  district: Region;
+  
 }
 
 export interface CreateInstituteResponse {

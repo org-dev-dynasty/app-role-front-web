@@ -113,7 +113,7 @@ export const createInstitute =
       institute.append('instituteType', params.instituteType);
       institute.append('partnerType', params.partnerType);
       institute.append('price', params.price.toString());
-      institute.append('region', params.region);
+      institute.append('district', params.district);
 
       const { data } = await instituteService.createInstitute(institute);
 
@@ -131,6 +131,7 @@ export const createInstitute =
           longitude: params.address.longitude,
           latitude: params.address.latitude,
         },
+        district: params.district,
         description: params.description,
         logo: logo,
         phone: params.phone,

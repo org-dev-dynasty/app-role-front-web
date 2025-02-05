@@ -155,6 +155,7 @@ export abstract class AuthenticatedService {
       },
       async (err: AxiosError) => {
         if (err.response?.status === 401) {
+          console.log('401');
           const originalRequest = err.config!;
 
           try {

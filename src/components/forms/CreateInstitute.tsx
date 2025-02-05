@@ -48,7 +48,7 @@ const formSchema = z.object({
   logoPhoto: z.instanceof(File),
   location: addressValidation,
   price: z.number(),
-  region: z.string(),
+  district: z.string(),
 });
 
 export type CreateInstituteFormData = z.infer<typeof formSchema>;
@@ -68,7 +68,7 @@ const createDefaultValues = (institute?: Institute) => {
       phone: '11999999999',
       address: 'Rua Fiação da Saúde, 361',
       price: 3,
-      region: REGIONS.ZONA_SUL,
+      district: REGIONS.ZONA_SUL,
       location: {
         cep: '04144020',
         address: 'Rua Fiação da Saúde',
@@ -90,6 +90,7 @@ const createDefaultValues = (institute?: Institute) => {
     phone: institute ? institute.phone : '',
     address: institute ? institute.address.address : '',
     price: institute?.price,
+    district: institute ? institute.district : '',
     location: {
       cep: '',
       address: '',
@@ -113,6 +114,8 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
   function onSubmit(values: CreateInstituteFormData) {
     onSuccess?.(values);
   }
+
+  console.log(form.formState.errors);
 
   return (
     <Form {...form}>
@@ -319,7 +322,7 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
         />
         <FormField
           control={form.control}
-          name='region'
+          name='district'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Região</FormLabel>

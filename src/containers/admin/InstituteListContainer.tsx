@@ -101,6 +101,8 @@ export const InstituteListContainer = () => {
   };
 
   const onCreateInstitute = async (values: CreateInstituteFormData) => {
+    console.log('create');
+
     if (editingInstitute) {
       const updateInstituteData: UpdateInstituteParams = {
         instituteId: editingInstitute.instituteId,
@@ -109,6 +111,7 @@ export const InstituteListContainer = () => {
         partnerType: values.partnerType as InstitutePartner,
         instituteType: values.instituteType as InstituteType,
         phone: values.phone,
+        district: values.district as Region,
         address: {
           address: values.address,
           number: Number(values.location.number),
@@ -130,7 +133,7 @@ export const InstituteListContainer = () => {
         partnerType: values.partnerType as InstitutePartner,
         instituteType: values.instituteType as InstituteType,
         phone: values.phone,
-        region: values.region as Region,
+        district: values.district as Region,
         address: {
           address: values.address,
           number: Number(values.location.number),
