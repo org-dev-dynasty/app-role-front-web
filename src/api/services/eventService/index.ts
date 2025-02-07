@@ -51,9 +51,24 @@ export class EventService extends AuthenticatedService {
   }
 
   getAllEventsByFilter(params: GetAllEventsByFilterParams) {
+    if (params.search.instituteId) {
+      localStorage.setItem('instituteId', params.search.instituteId)
+    }
+
+    const queryParams = new URLSearchParams({
+      // Converter para string se necessário
+      page: String(params.page),
+      ...Object.entries(params.search).reduce((acc, [key, value]) => {
+        // Evita adicionar chaves com valor indefinido ou nulo
+        if (value !== undefined && value !== null) {
+          acc[key] = String(value)
+        }
+        return acc
+      }, {} as Record<string, string>),
+    })
+
     return this.instance.get<GetAllEventsByFilterResponse>(
-      EVENT_SERVICE_ROUTES.GET.GET_ALL_EVENTS_BY_FILTER,
-      { params }
+      `${EVENT_SERVICE_ROUTES.GET.GET_ALL_EVENTS_BY_FILTER}?${queryParams.toString()}`
     )
   }
 
