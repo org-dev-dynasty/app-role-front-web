@@ -226,18 +226,25 @@ export const createEvent =
       eventReady.append('longitude', String(event.address.longitude));
       eventReady.append('latitude', String(event.address.latitude));
       eventReady.append('price', String(event.price));
-      eventReady.append('ageRange', JSON.stringify(event.ageRange));
+      eventReady.append('ageRange', event.ageRange);
       eventReady.append('eventDate', String(event.eventDate));
       eventReady.append('photo', event.eventPhoto);
-      eventReady.append('gallery', JSON.stringify(event.galleryLink));
+      console.log(event.galleryLink);
+      for (const gallery of event.galleryLink) {
+        eventReady.append('gallery', gallery);
+      }
       eventReady.append('instituteId', event.instituteId);
       eventReady.append('musicType', JSON.stringify(event.musicType));
       eventReady.append('menuLink', event.menuLink);
       eventReady.append('ticketUrl', event.ticketUrl);
+      eventReady.append('features', JSON.stringify(event.features));
+      eventReady.append('packageType', JSON.stringify(event.packageType));
+      eventReady.append('category', event.category);
+      eventReady.append('district', event.district);
 
       const { data } = await eventService.createEvent(eventReady);
 
-      store.events.setData([...store.events.data, data]);
+      store.events.setData([...store.events.data, data.event]);
 
       return { success: true, event: data };
     } catch (error) {
