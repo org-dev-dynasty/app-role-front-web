@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -166,8 +167,8 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
               <FormLabel>Logo</FormLabel>
               <FormControl>
                 <ImageInput
-                  onChange={(file) => {
-                    field.onChange(file);
+                  onChange={(files: any) => {
+                    field.onChange(files?.[0] ?? undefined);
                   }}
                 />
               </FormControl>
