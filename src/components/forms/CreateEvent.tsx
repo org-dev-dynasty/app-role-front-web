@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Button } from '@/components/ui/button';
+
 
 import {
   Form,
@@ -40,6 +42,8 @@ import { createEvent } from '@/context/event/actions';
 import { CreateEventParams } from '@/api/services/eventService/types';
 import { EventFeature } from '@/constants/eventFeature';
 import { MusicType } from '@/constants/musicType';
+import { ageRangeFields } from '@/constants/ageRange';
+import { Region, regionFields } from '@/constants/regions';
 
 const formSchema = z.object({
   name: z.string(),
@@ -50,7 +54,8 @@ const formSchema = z.object({
   eventDate: z.coerce.date(),
   ageRange: z.string(),
   eventPhoto: z.instanceof(File),
-  galleryImages: z.instanceof(File).optional(),
+  district: z.string(),
+  galleryImages: z.instanceof(File).array(),
   price: z.number(),
   instituteId: z.string(),
   musicType: z.array(z.string()).optional(),
@@ -94,9 +99,10 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
       musicType: Event ? Event.musicType : undefined,
       features: Event ? Event.features : undefined,
       eventPhoto: Event ? (Event.eventPhoto as unknown as File) : undefined,
-      galleryImages: Event ? (Event.galleryLink as unknown as File) : undefined,
+      galleryImages: Event ? (Event.galleryLink as unknown as File[]) : [],
       ticketUrl: Event ? Event.ticketUrl : '',
       packageType: Event ? Event.packageType : undefined,
+      district: Event ? Event.district : '',
     },
   });
 
@@ -112,7 +118,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
       const eventData: CreateEventParams = {
         ...values,
         eventStatus: 'ACTIVE',
-        galleryLink: [],
+        galleryLink: values.galleryImages,
         eventDate: values.eventDate.getTime(),
         address: {
           ...values.address,
@@ -129,6 +135,8 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
         ticketUrl: values.ticketUrl ? values.ticketUrl : '',
         packageType: values.packageType as ("COMBO" | "ANIVERSARIO" | "CAMAROTE")[],
         eventPhoto: values.eventPhoto,
+        district: values.district as Region
+        
       };
       eventDispatch(createEvent(
         eventData
@@ -182,8 +190,9 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
             <FormItem>
               <FormLabel>Imagem do evento</FormLabel>
               <FormControl>
-                <ImageInput onChange={(file) => {
-                  field.onChange(file);
+                <ImageInput onChange={(files: any) => {
+                  console.log(files);
+                  field.onChange(files?.[0] ?? undefined);
                 }} />
               </FormControl>
               <FormMessage />
@@ -198,8 +207,8 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
             <FormItem>
               <FormLabel>Galeria do evento</FormLabel>
               <FormControl>
-                <ImageInput onChange={(file) => {
-                  field.onChange(file);
+                <ImageInput multiple onChange={(files) => {
+                  field.onChange(files);
                 }} />
               </FormControl>
               <FormMessage />
@@ -376,6 +385,31 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
 
         <FormField
           control={form.control}
+          name='district'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Zona do evento</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder='Selecione um valor' />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {regionFields.map((regionField) => (
+                    <SelectItem key={regionField.value} value={regionField.value}>
+                      {regionField.label}
+                    </SelectItem>  
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
           name='address'
           render={({ field: { value, onChange, ...props } }) => (
             <FormItem>
@@ -432,12 +466,11 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value='ADOLESCENT'>18-20</SelectItem>
-                  <SelectItem value='YOUNG_ADULT'>21-25</SelectItem>
-                  <SelectItem value='ADULT'>26-30</SelectItem>
-                  <SelectItem value='MATURE_ADULT'>31-40</SelectItem>
-                  <SelectItem value='SENIOR'>40+</SelectItem>
-                  <SelectItem value='DEFAULT'>TODAS</SelectItem>
+                  {ageRangeFields.map((ageRange) => (
+                    <SelectItem key={ageRange.value} value={ageRange.value}>
+                      {ageRange.label}
+                    </SelectItem>  
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />
