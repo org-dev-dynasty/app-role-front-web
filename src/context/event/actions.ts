@@ -229,7 +229,6 @@ export const createEvent =
       eventReady.append('ageRange', event.ageRange);
       eventReady.append('eventDate', String(event.eventDate));
       eventReady.append('photo', event.eventPhoto);
-      console.log(event.galleryLink);
       for (const gallery of event.galleryLink) {
         eventReady.append('gallery', gallery);
       }
