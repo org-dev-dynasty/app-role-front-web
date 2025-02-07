@@ -91,6 +91,10 @@ export const updateInstitute =
     }
   };
 
+export const clearSelectedInstitute = () => (store: InstituteStore) => {
+  store.institutes.setSelected(undefined);
+}
+
 export const createInstitute =
   (params: CreateInstituteParams) => async (store: InstituteStore) => {
     store.institutes.setLoading(true);
