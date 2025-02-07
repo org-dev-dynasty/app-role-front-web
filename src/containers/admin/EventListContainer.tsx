@@ -140,11 +140,11 @@ export const EventListContainer = () => {
         'w-full h-full flex relative'
       )}
     >
-      <div className={classNames('absolute top-0 left-0 w-full h-16 shadow-md transform pointer-events-none z-10', 
-         selectedInstitute && '-translate-x-full'
+      <div className={classNames('absolute top-0 left-0 w-full h-16 shadow-md transform pointer-events-none z-10',
+        selectedInstitute && '-translate-x-full'
       )}>
 
-        <Sidebar>
+        <Sidebar className='z-50'>
           <SidebarContent>
             <SidebarGroup>
               <SidebarGroupLabel asChild>

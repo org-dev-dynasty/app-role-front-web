@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import {
   clearSelectedInstitute,
   createInstitute,
+  deleteInstitute,
   getAllInstitutes,
   getInstitute,
   updateInstitute,

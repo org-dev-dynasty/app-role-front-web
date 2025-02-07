@@ -1,14 +1,15 @@
 import {
   CreateInstituteParams,
+  DeleteInstituteParams,
   GetAllInstitutesParams,
   GetInstituteParams,
   Institute,
   UpdateInstituteParams,
-} from '@/api/services/instituteService/types';
-import { AxiosError } from 'axios';
-import { InstituteStore } from './types';
-import { GenericUtils } from '@/utils/GenericUtils';
-import { instituteService } from '@/config/services';
+} from "@/api/services/instituteService/types";
+import { AxiosError } from "axios";
+import { InstituteStore } from "./types";
+import { GenericUtils } from "@/utils/GenericUtils";
+import { instituteService } from "@/config/services";
 
 export const getInstitute =
   (params: GetInstituteParams) => async (store: InstituteStore) => {
@@ -61,22 +62,30 @@ export const getAllInstitutes =
     }
   };
 
-export const deleteInstitute = (params: DeleteInstituteParams) => async (store: InstituteStore) => {
-  store.institutes.setLoading(true)
-  store.institutes.setError(undefined)
+export const deleteInstitute =
+  (params: DeleteInstituteParams) => async (store: InstituteStore) => {
+    store.institutes.setLoading(true);
+    store.institutes.setError(undefined);
 
-  try {
-    await store.service.deleteInstitute(params)
+    try {
+      await instituteService.deleteInstitute(params);
 
-    return { success: true }
-  } catch (error) {
-    const err = error as AxiosError<string>
-    store.institutes.setError(err.response?.data)
-    return { success: false, message: err.response?.data }
-  } finally {
-    store.institutes.setLoading(false)
-  }
-}
+      store.institutes.setData(
+        store.institutes.data.filter(
+          (institute) => institute.instituteId !== params.instituteId
+        )
+      );
+
+      return { success: true };
+    } catch (error) {
+      const err = error as AxiosError<string>;
+      store.institutes.setError(err.response?.data);
+      return { success: false, message: err.response?.data };
+    } finally {
+      store.institutes.setLoading(false);
+    }
+    ``;
+  };
 
 export const getAllInstitutesByPartnerType =
   () => async (store: InstituteStore) => {
@@ -110,7 +119,7 @@ export const updateInstitute =
 
 export const clearSelectedInstitute = () => (store: InstituteStore) => {
   store.institutes.setSelected(undefined);
-}
+};
 
 export const createInstitute =
   (params: CreateInstituteParams) => async (store: InstituteStore) => {
@@ -120,21 +129,21 @@ export const createInstitute =
     try {
       const institute = new FormData();
 
-      institute.append('name', params.name);
-      institute.append('street', params.address.address);
-      institute.append('cep', params.address.cep);
-      institute.append('longitude', params.address.longitude.toString());
-      institute.append('latitude', params.address.latitude.toString());
-      institute.append('city', params.address.city);
-      institute.append('state', params.address.state);
-      institute.append('neighborhood', params.address.neighborhood);
-      institute.append('number', params.address.number.toString());
-      institute.append('logo', params.logo);
-      institute.append('description', params.description);
-      institute.append('instituteType', params.instituteType);
-      institute.append('partnerType', params.partnerType);
-      institute.append('price', params.price.toString());
-      institute.append('district', params.district);
+      institute.append("name", params.name);
+      institute.append("street", params.address.address);
+      institute.append("cep", params.address.cep);
+      institute.append("longitude", params.address.longitude.toString());
+      institute.append("latitude", params.address.latitude.toString());
+      institute.append("city", params.address.city);
+      institute.append("state", params.address.state);
+      institute.append("neighborhood", params.address.neighborhood);
+      institute.append("number", params.address.number.toString());
+      institute.append("logo", params.logo);
+      institute.append("description", params.description);
+      institute.append("instituteType", params.instituteType);
+      institute.append("partnerType", params.partnerType);
+      institute.append("price", params.price.toString());
+      institute.append("district", params.district);
 
       const { data } = await instituteService.createInstitute(institute);
 
