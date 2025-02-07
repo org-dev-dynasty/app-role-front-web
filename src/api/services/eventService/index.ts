@@ -100,6 +100,6 @@ export class EventService extends AuthenticatedService {
   }
 
   deleteEvent(params: DeleteEventParams) {
-    return this.instance.delete(EVENT_SERVICE_ROUTES.DELETE.DELETE_EVENT, { params })
+    return this.instance.delete(EVENT_SERVICE_ROUTES.DELETE.DELETE_EVENT, { data: params })
   }
 }

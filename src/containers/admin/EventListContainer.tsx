@@ -144,7 +144,7 @@ export const EventListContainer = () => {
         selectedInstitute && '-translate-x-full'
       )}>
 
-        <Sidebar className='z-50'>
+        <Sidebar className='z-50 pointer-events-auto'>
           <SidebarContent>
             <SidebarGroup>
               <SidebarGroupLabel asChild>

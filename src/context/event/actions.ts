@@ -192,7 +192,7 @@ export const deleteEvent = (eventId: string) => async (store: EventStore) => {
   store.events.setError(undefined);
 
   try {
-    await eventService.deleteEvent({ eventId });
+    await eventService.deleteEvent({eventId: eventId });
 
     store.events.setData(
       store.events.data.filter((event) => event.eventId !== eventId)
