@@ -42,7 +42,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from '@radix-ui/react-dropdown-menu';
+} from '@/components/ui/dropdown-menu';
 import { classNames } from 'primereact/utils';
 
 export const EventListContainer = () => {
@@ -137,73 +137,77 @@ export const EventListContainer = () => {
   return (
     <div
       className={classNames(
-        'w-full h-full flex transform',
-        selectedInstitute ? 'flex' : 'hidden'
+        'w-full h-full flex relative'
       )}
     >
-      <Sidebar>
-        <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupLabel asChild>
-              <span>Eventos de {selectedInstitute?.name}</span>
-            </SidebarGroupLabel>
-          </SidebarGroup>
+      <div className={classNames('absolute top-0 left-0 w-full h-16 shadow-md transform pointer-events-none z-10', 
+         selectedInstitute && '-translate-x-full'
+      )}>
 
-          <SidebarGroupAction title='Adicionar evento'>
-            <Sheet open={openEventSheet} onOpenChange={setOpenEventSheet}>
-              <SheetTrigger>
-                <Plus size={16} />
-              </SheetTrigger>
-              <SheetContent className='flex flex-col'>
-                <SheetHeader>
-                  <SheetTitle>Adicionar um novo evento</SheetTitle>
-                  <SheetDescription>
-                    Preencha o formulário abaixo para adicionar um novo evento
-                  </SheetDescription>
-                </SheetHeader>
-                <div className='w-full flex-grow pt-4 pr-4 overflow-y-auto'>
-                  <CreateEventForm
-                    Event={editingEvent}
-                    onSuccess={() => setOpenEventSheet(false)}
-                  />
-                </div>
-              </SheetContent>
-            </Sheet>
-          </SidebarGroupAction>
+        <Sidebar>
+          <SidebarContent>
+            <SidebarGroup>
+              <SidebarGroupLabel asChild>
+                <span>Eventos de {selectedInstitute?.name}</span>
+              </SidebarGroupLabel>
+            </SidebarGroup>
 
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {searchEvents.map((event, key) => (
-                <SidebarMenuItem key={key}>
-                  <SidebarMenuButton onClick={() => handleSelectEvent(event)}>
-                    <div className='w-6 h-6 rounded-full overflow-hidden'>
-                      <img src={event.eventPhoto} />
-                    </div>
-                    <span>{event.name}</span>
-                  </SidebarMenuButton>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <SidebarMenuAction>
-                        <MoreHorizontal />
-                      </SidebarMenuAction>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent side='right' align='start'>
-                      <DropdownMenuItem onClick={() => handleEditEvent(event)}>
-                        <span>Editar Evento</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => handleDeleteEvent(event.eventId)}
-                      >
-                        <span>Deletar Evento</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarContent>
-      </Sidebar>
+            <SidebarGroupAction title='Adicionar evento'>
+              <Sheet open={openEventSheet} onOpenChange={setOpenEventSheet}>
+                <SheetTrigger>
+                  <Plus size={16} />
+                </SheetTrigger>
+                <SheetContent className='flex flex-col'>
+                  <SheetHeader>
+                    <SheetTitle>Adicionar um novo evento</SheetTitle>
+                    <SheetDescription>
+                      Preencha o formulário abaixo para adicionar um novo evento
+                    </SheetDescription>
+                  </SheetHeader>
+                  <div className='w-full flex-grow pt-4 pr-4 overflow-y-auto'>
+                    <CreateEventForm
+                      Event={editingEvent}
+                      onSuccess={() => setOpenEventSheet(false)}
+                    />
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </SidebarGroupAction>
+
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {searchEvents.map((event, key) => (
+                  <SidebarMenuItem key={key}>
+                    <SidebarMenuButton onClick={() => handleSelectEvent(event)}>
+                      <div className='w-6 h-6 rounded-full overflow-hidden'>
+                        <img src={event.eventPhoto} />
+                      </div>
+                      <span>{event.name}</span>
+                    </SidebarMenuButton>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <SidebarMenuAction>
+                          <MoreHorizontal />
+                        </SidebarMenuAction>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent side='right' align='start'>
+                        <DropdownMenuItem onClick={() => handleEditEvent(event)}>
+                          <span>Editar Evento</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleDeleteEvent(event.eventId)}
+                        >
+                          <span>Deletar Evento</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarContent>
+        </Sidebar>
+      </div>
       {isLoaded ? (
         <GoogleMap
           mapContainerStyle={containerStyle}
