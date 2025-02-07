@@ -61,6 +61,23 @@ export const getAllInstitutes =
     }
   };
 
+export const deleteInstitute = (params: DeleteInstituteParams) => async (store: InstituteStore) => {
+  store.institutes.setLoading(true)
+  store.institutes.setError(undefined)
+
+  try {
+    await store.service.deleteInstitute(params)
+
+    return { success: true }
+  } catch (error) {
+    const err = error as AxiosError<string>
+    store.institutes.setError(err.response?.data)
+    return { success: false, message: err.response?.data }
+  } finally {
+    store.institutes.setLoading(false)
+  }
+}
+
 export const getAllInstitutesByPartnerType =
   () => async (store: InstituteStore) => {
     store.institutes.setLoading(true);

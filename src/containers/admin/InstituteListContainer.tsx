@@ -1,6 +1,5 @@
 import { MoreHorizontal, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
-
 import {
   clearSelectedInstitute,
   createInstitute,
@@ -86,6 +85,14 @@ export const InstituteListContainer = () => {
       })
     );
   };
+
+  const handleDeleteInstitute = (institute: Institute) => {
+    instituteApiDispatch(
+      deleteInstitute({
+        instituteId: institute.instituteId,
+      })
+    );
+  }
 
   const handleEditInstitute = (institute: Institute) => {
     setEditingInstitute(institute);
@@ -219,7 +226,9 @@ export const InstituteListContainer = () => {
                   >
                     <span>Editar Instituto</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => {
+                    handleDeleteInstitute(institute);
+                  }}>
                     <span>Deletar Instituto</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
