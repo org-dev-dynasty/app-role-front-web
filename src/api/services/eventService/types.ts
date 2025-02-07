@@ -4,6 +4,7 @@ import { EventFeature } from '@/constants/eventFeature';
 import { EventPackage } from '@/constants/eventPackage';
 import { EventStatus } from '@/constants/eventStatus';
 import { MusicType } from '@/constants/musicType';
+import { Region } from '@/constants/regions';
 
 export interface Event {
   eventId: string;
@@ -15,6 +16,7 @@ export interface Event {
   eventDate: number;
   instituteId: string;
   eventStatus: EventStatus;
+  district: Region;
   musicType: MusicType[];
   menuLink: string;
   eventPhoto: string;
@@ -104,6 +106,7 @@ export interface CreateEventParams {
   eventStatus: EventStatus;
   musicType: MusicType[];
   menuLink: string;
+  district: Region;
   eventPhoto: File;
   galleryLink: File[];
   packageType: EventPackage[];
@@ -114,7 +117,7 @@ export interface CreateEventParams {
 
 export interface CreateEventResponse {
   message: string;
-  id: string;
+  event: Event;
 }
 
 // #endregion //
