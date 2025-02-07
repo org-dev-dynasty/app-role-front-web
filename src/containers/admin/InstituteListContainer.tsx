@@ -2,6 +2,7 @@ import { MoreHorizontal, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
+  clearSelectedInstitute,
   createInstitute,
   getAllInstitutes,
   getInstitute,
@@ -53,7 +54,7 @@ import { Region } from '@/constants/regions';
 
 export const InstituteListContainer = () => {
   const {
-    institutes: { data: allInstitutes },
+    institutes: { data: allInstitutes, selected: selectedInstitute },
   } = useInstitute();
 
   const instituteApiDispatch = useInstituteDispatch();
@@ -63,6 +64,13 @@ export const InstituteListContainer = () => {
   const [editingInstitute, setEditingInstitute] = useState<Institute>();
 
   const handleSelectInstitute = async (institute: Institute) => {
+    if (institute.instituteId === selectedInstitute?.instituteId) {
+      instituteApiDispatch(
+        clearSelectedInstitute()
+      );
+      return
+    }    
+    
     const response = await instituteApiDispatch(
       getInstitute({ instituteId: institute.instituteId })
     );
