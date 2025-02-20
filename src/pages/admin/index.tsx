@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { InstituteListContainer } from '@/containers/admin/InstituteListContainer';
 
 import * as authActions from '@/context/auth/actions';
@@ -19,6 +20,8 @@ export const AdminPage = () => {
   const handleSignOut = () => {
     authDispatch(authActions.signOut());
   };
+
+  
 
   return (
     <div className='w-full h-screen bg-background'>
