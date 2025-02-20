@@ -3,7 +3,7 @@ import { PropsWithChildren, useEffect } from 'react';
 import { STORAGE_KEYS } from '@/constants/storageKeys';
 import { authContext } from './context';
 import { useAuthStore } from './store';
-import { authService } from './actions';
+import { authService } from '@/config/services';
 
 //TO-DO: AUTO LOGIN
 export function AuthContextProvider({ children }: PropsWithChildren) {

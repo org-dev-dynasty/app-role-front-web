@@ -4,13 +4,14 @@ import * as authActions from '@/context/auth/actions';
 
 import { useAuthDispatch } from '@/hooks/useAuthDispatch';
 
-import { Button } from '@/components/ui/button';
 import {
   Sidebar,
   SidebarContent,
   SidebarInset,
   SidebarProvider,
 } from '@/components/ui/sidebar';
+
+import { EventListContainer } from '@/containers/admin/EventListContainer';
 
 export const AdminPage = () => {
   const authDispatch = useAuthDispatch();
@@ -21,7 +22,6 @@ export const AdminPage = () => {
 
   return (
     <div className='w-full h-screen bg-background'>
-      <Button onClick={handleSignOut}>logout</Button>
       <SidebarProvider>
         <Sidebar>
           <SidebarContent>
@@ -29,8 +29,7 @@ export const AdminPage = () => {
           </SidebarContent>
         </Sidebar>
         <SidebarInset>
-          <Button onClick={handleSignOut}>logout</Button>
-          {/* <EventListContainer /> */}
+          <EventListContainer />
         </SidebarInset>
       </SidebarProvider>
     </div>

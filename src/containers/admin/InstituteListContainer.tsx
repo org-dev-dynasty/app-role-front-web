@@ -1,14 +1,27 @@
 import { MoreHorizontal, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
-
-import { getAllInstitutes } from '@/context/institute/actions';
+import {
+  clearSelectedInstitute,
+  createInstitute,
+  deleteInstitute,
+  getAllInstitutes,
+  getInstitute,
+  updateInstitute,
+} from '@/context/institute/actions';
 
 import { useInstitute } from '@/hooks/useInstitute';
 import { useInstituteDispatch } from '@/hooks/useInstituteDispatch';
 
-import { Institute } from '@/api/services/instituteService/types';
+import {
+  CreateInstituteParams,
+  Institute,
+  UpdateInstituteParams,
+} from '@/api/services/instituteService/types';
 
-import { CreateInstituteForm } from '@/components/forms/CreateInstitute';
+import {
+  CreateInstituteForm,
+  CreateInstituteFormData,
+} from '@/components/forms/CreateInstitute';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,20 +46,54 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { useEventDispatch } from '@/hooks/useEventDispatch';
+import { getAllEventsByFilter } from '@/context/event/actions';
+import { InstitutePartner } from '@/constants/institutePartner';
+import { InstituteType } from '@/constants/instituteType';
+import { Region } from '@/constants/regions';
 
 export const InstituteListContainer = () => {
   const {
-    institutes: { data: allInstitutes },
+    institutes: { data: allInstitutes, selected: selectedInstitute },
   } = useInstitute();
 
   const instituteApiDispatch = useInstituteDispatch();
+  const eventDispatch = useEventDispatch();
 
   const [openInstituteSheet, setOpenInstituteSheet] = useState<boolean>(false);
   const [editingInstitute, setEditingInstitute] = useState<Institute>();
 
-  const handleSelectInstitute = (institute: Institute) => {
-    console.log(institute);
+  const handleSelectInstitute = async (institute: Institute) => {
+    if (institute.instituteId === selectedInstitute?.instituteId) {
+      instituteApiDispatch(
+        clearSelectedInstitute()
+      );
+      return
+    }    
+    
+    const response = await instituteApiDispatch(
+      getInstitute({ instituteId: institute.instituteId })
+    );
+
+    if (!response.success) {
+      return;
+    }
+
+    eventDispatch(
+      getAllEventsByFilter({
+        search: { instituteId: institute.instituteId },
+        page: 1,
+      })
+    );
   };
+
+  const handleDeleteInstitute = (institute: Institute) => {
+    instituteApiDispatch(
+      deleteInstitute({
+        instituteId: institute.instituteId,
+      })
+    );
+  }
 
   const handleEditInstitute = (institute: Institute) => {
     setEditingInstitute(institute);
@@ -67,6 +114,59 @@ export const InstituteListContainer = () => {
         page: 1,
       })
     );
+  };
+
+  const onCreateInstitute = async (values: CreateInstituteFormData) => {
+    console.log('create');
+
+    if (editingInstitute) {
+      const updateInstituteData: UpdateInstituteParams = {
+        instituteId: editingInstitute.instituteId,
+        name: values.instituteName,
+        description: values.instituteDescription,
+        partnerType: values.partnerType as InstitutePartner,
+        instituteType: values.instituteType as InstituteType,
+        phone: values.phone,
+        district: values.district as Region,
+        address: {
+          address: values.address,
+          number: Number(values.location.number),
+          neighborhood: values.location.neighborhood,
+          city: values.location.city,
+          state: values.location.state,
+          cep: values.location.cep,
+          latitude: Number(values.location.latitude),
+          longitude: Number(values.location.longitude),
+        },
+        logo: values.logoPhoto,
+        price: values.price,
+      };
+      await instituteApiDispatch(updateInstitute(updateInstituteData));
+    } else {
+      const instituteData: CreateInstituteParams = {
+        name: values.instituteName,
+        description: values.instituteDescription,
+        partnerType: values.partnerType as InstitutePartner,
+        instituteType: values.instituteType as InstituteType,
+        phone: values.phone,
+        district: values.district as Region,
+        address: {
+          address: values.address,
+          number: Number(values.location.number),
+          neighborhood: values.location.neighborhood,
+          city: values.location.city,
+          state: values.location.state,
+          cep: values.location.cep,
+          latitude: Number(values.location.latitude),
+          longitude: Number(values.location.longitude),
+        },
+        logo: values.logoPhoto,
+        price: values.price,
+      };
+      await instituteApiDispatch(createInstitute(instituteData));
+    }
+
+    setOpenInstituteSheet(false);
   };
 
   useEffect(() => {
@@ -92,7 +192,10 @@ export const InstituteListContainer = () => {
               </SheetDescription>
             </SheetHeader>
             <div className='w-full flex-grow pt-4 pr-4 overflow-y-auto'>
-              <CreateInstituteForm institute={editingInstitute} />
+              <CreateInstituteForm
+                institute={editingInstitute}
+                onSuccess={onCreateInstitute}
+              />
             </div>
           </SheetContent>
         </Sheet>
@@ -108,10 +211,10 @@ export const InstituteListContainer = () => {
                 <div className='w-6 h-6 rounded-full overflow-hidden'>
                   <img src={institute.logo} />
                 </div>
-                <span>{institute.name}</span>
+                <span className='text-foreground'>{institute.name}</span>
               </SidebarMenuButton>
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+                <DropdownMenuTrigger asChild title='Mais ações'>
                   <SidebarMenuAction>
                     <MoreHorizontal />
                   </SidebarMenuAction>
@@ -124,7 +227,9 @@ export const InstituteListContainer = () => {
                   >
                     <span>Editar Instituto</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => {
+                    handleDeleteInstitute(institute);
+                  }}>
                     <span>Deletar Instituto</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>

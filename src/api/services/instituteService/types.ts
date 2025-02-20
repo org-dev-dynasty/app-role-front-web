@@ -1,5 +1,6 @@
 import { InstitutePartner } from '@/constants/institutePartner';
 import { InstituteType } from '@/constants/instituteType';
+import { Region } from '@/constants/regions';
 
 export interface Institute {
   instituteId: string;
@@ -12,6 +13,8 @@ export interface Institute {
   price: number;
   photosUrl: string[];
   eventsId: string[];
+  phone: string;
+  district: Region;
 }
 
 // #region PARAMS //
@@ -24,13 +27,41 @@ export interface GetAllInstitutesByPartnerTypeParams {
   partnerType: InstitutePartner;
 }
 
-export interface UpdateInstituteParams {}
+export interface UpdateInstituteParams {
+  instituteId?: string;
+  name: string;
+  logo: File;
+  description: string;
+  instituteType: InstituteType;
+  partnerType: InstitutePartner;
+  address: Address;
+  price: number;
+  phone: string;
+  district: Region
+}
 
 export interface DeleteInstituteParams {
   instituteId: string;
 }
 
-export interface CreateInstituteParams {}
+export interface CreateInstituteParams {
+  instituteId?: string;
+  name: string;
+  logo: File;
+  description: string;
+  instituteType: InstituteType;
+  partnerType: InstitutePartner;
+  address: Address;
+  price: number;
+  phone: string;
+  district: Region;
+  
+}
+
+export interface CreateInstituteResponse {
+  message: string;
+  id: string;
+}
 
 export interface GetAllInstitutesParams {
   page: number;
@@ -49,7 +80,5 @@ export interface GetAllInstitutesByPartnerTypeResponse extends MessageResponse {
 export interface UpdateInstituteResponse {}
 
 export interface DeleteInstituteResponse {}
-
-export interface CreateInstituteResponse {}
 
 // #endregion //

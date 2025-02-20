@@ -10,7 +10,10 @@ import {
   type GetAllPresencesByEventIdParams,
   type GetAllPresencesByEventIdResponse,
   type GetTopEventsResponse,
-  type GetEventByIdParams
+  type GetEventByIdParams,
+  UpdateEventParams,
+  DeleteEventParams,
+  CreateEventResponse
 } from './types'
 
 const EVENT_SERVICE_ROUTES = {
@@ -21,9 +24,15 @@ const EVENT_SERVICE_ROUTES = {
     GET_EVENT: '/get-event',
     GET_TOP_EVENTS: '/get-top-events'
   },
-  POST: {},
-  PUT: {},
-  DELETE: {}
+  POST: {
+    CREATE_EVENT: '/create-event'
+  },
+  PUT: {
+    UPDATE_EVENT: '/update-event'
+  },
+  DELETE: {
+    DELETE_EVENT: '/delete-event'
+  }
 } as const
 
 export class EventService extends AuthenticatedService {
@@ -42,9 +51,24 @@ export class EventService extends AuthenticatedService {
   }
 
   getAllEventsByFilter(params: GetAllEventsByFilterParams) {
+    if (params.search.instituteId) {
+      localStorage.setItem('instituteId', params.search.instituteId)
+    }
+
+    const queryParams = new URLSearchParams({
+      // Converter para string se necessário
+      page: String(params.page),
+      ...Object.entries(params.search).reduce((acc, [key, value]) => {
+        // Evita adicionar chaves com valor indefinido ou nulo
+        if (value !== undefined && value !== null) {
+          acc[key] = String(value)
+        }
+        return acc
+      }, {} as Record<string, string>),
+    })
+
     return this.instance.get<GetAllEventsByFilterResponse>(
-      EVENT_SERVICE_ROUTES.GET.GET_ALL_EVENTS_BY_FILTER,
-      { params }
+      `${EVENT_SERVICE_ROUTES.GET.GET_ALL_EVENTS_BY_FILTER}?${queryParams.toString()}`
     )
   }
 
@@ -59,7 +83,23 @@ export class EventService extends AuthenticatedService {
     return this.instance.get<Event>(EVENT_SERVICE_ROUTES.GET.GET_EVENT, { params })
   }
 
-  getFeaturedEvents() {
-    return this.instance.get<GetAllFeaturedEventsParams>(EVENT_SERVICE_ROUTES.GET.GET_TOP_EVENTS)
+  createEvent(formData: FormData) {
+    return this.instance.post<CreateEventResponse>(
+      EVENT_SERVICE_ROUTES.POST.CREATE_EVENT,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+  }
+
+  updateEvent(params: UpdateEventParams) {
+    return this.instance.put<Event>(EVENT_SERVICE_ROUTES.POST.CREATE_EVENT, params)
+  }
+
+  deleteEvent(params: DeleteEventParams) {
+    return this.instance.delete(EVENT_SERVICE_ROUTES.DELETE.DELETE_EVENT, { data: params })
   }
 }

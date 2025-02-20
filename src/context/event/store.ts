@@ -1,11 +1,13 @@
-import { EventService } from '@/api/services/eventService'
-import { Event } from '@/api/services/eventService/types'
-import { usePaginationNode, useSimpleRequestNode } from '@/hooks/useCreateRequestNode'
-import { useState } from 'react'
+import { Event } from '@/api/services/eventService/types';
+import {
+  usePaginationNode,
+  useSimpleRequestNode,
+} from '@/hooks/useCreateRequestNode';
+import { useState } from 'react';
 
 const useEventStoreState = () => {
-  const [data, setData] = useState<Event[]>([])
-  const [selected, setSelected] = useState<Event>()
+  const [data, setData] = useState<Event[]>([]);
+  const [selected, setSelected] = useState<Event>();
 
   return {
     ...useSimpleRequestNode(),
@@ -13,25 +15,24 @@ const useEventStoreState = () => {
     data,
     setData,
     selected,
-    setSelected
-  }
-}
+    setSelected,
+  };
+};
 
 const useSimpleEventListState = () => {
-  const [data, setData] = useState<Event[]>([])
+  const [data, setData] = useState<Event[]>([]);
 
   return {
     ...useSimpleRequestNode(),
     data,
-    setData
-  }
-}
+    setData,
+  };
+};
 
-export const useEventStore = (service: EventService) => {
+export const useEventStore = () => {
   return {
-    service,
     events: useEventStoreState(),
     topEvents: useSimpleEventListState(),
-    searchEvents: useEventStoreState()
-  }
-}
+    searchEvents: useEventStoreState(),
+  };
+};
