@@ -69,8 +69,8 @@ export const InstituteListContainer = () => {
         clearSelectedInstitute()
       );
       return
-    }    
-    
+    }
+
     const response = await instituteApiDispatch(
       getInstitute({ instituteId: institute.instituteId })
     );
@@ -95,10 +95,10 @@ export const InstituteListContainer = () => {
     );
   }
 
-  const handleEditInstitute = (institute: Institute) => {
-    setEditingInstitute(institute);
-    setOpenInstituteSheet(true);
-  };
+  // const handleEditInstitute = (institute: Institute) => {
+  //   setEditingInstitute(institute);
+  //   setOpenInstituteSheet(true);
+  // };
 
   const handleOpenChange = (currentOpenState: boolean) => {
     setOpenInstituteSheet(currentOpenState);
@@ -220,13 +220,13 @@ export const InstituteListContainer = () => {
                   </SidebarMenuAction>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent side='right' align='start'>
-                  <DropdownMenuItem
+                  {/* <DropdownMenuItem
                     onClick={() => {
                       handleEditInstitute(institute);
                     }}
                   >
                     <span>Editar Instituto</span>
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> */}
                   <DropdownMenuItem onClick={() => {
                     handleDeleteInstitute(institute);
                   }}>
