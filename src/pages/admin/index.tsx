@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { InstituteListContainer } from '@/containers/admin/InstituteListContainer';
 
-import * as authActions from '@/context/auth/actions';
 
-import { useAuthDispatch } from '@/hooks/useAuthDispatch';
 
 import {
   Sidebar,
@@ -15,11 +13,6 @@ import {
 import { EventListContainer } from '@/containers/admin/EventListContainer';
 
 export const AdminPage = () => {
-  const authDispatch = useAuthDispatch();
-
-  const handleSignOut = () => {
-    authDispatch(authActions.signOut());
-  };
 
   
 

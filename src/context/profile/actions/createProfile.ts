@@ -1,7 +1,5 @@
 import {
-  CreateProfileParams,
-  Profile,
-  SimpleProfile,
+  CreateProfileParams, SimpleProfile
 } from '@/api/services/profileService/types';
 import { ProfileStore } from '../types';
 import { AxiosError } from 'axios';

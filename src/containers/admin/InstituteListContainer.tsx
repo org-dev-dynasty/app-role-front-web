@@ -203,8 +203,8 @@ export const InstituteListContainer = () => {
 
       <SidebarGroupContent>
         <SidebarMenu>
-          {allInstitutes.map((institute, key) => (
-            <SidebarMenuItem key={key}>
+          {Array.isArray(allInstitutes) && allInstitutes.map((institute) => (
+            <SidebarMenuItem key={institute.instituteId}>
               <SidebarMenuButton
                 onClick={() => handleSelectInstitute(institute)}
               >

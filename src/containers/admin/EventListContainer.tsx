@@ -19,12 +19,10 @@ import {
   SidebarGroup,
   SidebarGroupAction,
   SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarInset,
-  SidebarMenu,
+  SidebarGroupLabel, SidebarMenu,
   SidebarMenuAction,
   SidebarMenuButton,
-  SidebarMenuItem,
+  SidebarMenuItem
 } from '@/components/ui/sidebar';
 
 import { envs } from '@/utils/envs';
