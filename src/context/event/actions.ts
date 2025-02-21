@@ -247,6 +247,7 @@ export const createEvent =
 
       return { success: true, event: data };
     } catch (error) {
+      console.log("ERRO AO CRIAR EVENTO: ", error);
       const err = error as AxiosError<string>;
       store.events.setError(err.response?.data);
       return { success: false, message: err.response?.data };

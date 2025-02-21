@@ -69,11 +69,12 @@ export const InstituteListContainer = () => {
         clearSelectedInstitute()
       );
       return
-    }    
-    
+    }
+
     const response = await instituteApiDispatch(
       getInstitute({ instituteId: institute.instituteId })
     );
+    localStorage.setItem('instituteName' , institute.name);
 
     if (!response.success) {
       return;
@@ -95,10 +96,10 @@ export const InstituteListContainer = () => {
     );
   }
 
-  const handleEditInstitute = (institute: Institute) => {
-    setEditingInstitute(institute);
-    setOpenInstituteSheet(true);
-  };
+  // const handleEditInstitute = (institute: Institute) => {
+  //   setEditingInstitute(institute);
+  //   setOpenInstituteSheet(true);
+  // };
 
   const handleOpenChange = (currentOpenState: boolean) => {
     setOpenInstituteSheet(currentOpenState);
@@ -203,8 +204,8 @@ export const InstituteListContainer = () => {
 
       <SidebarGroupContent>
         <SidebarMenu>
-          {allInstitutes.map((institute, key) => (
-            <SidebarMenuItem key={key}>
+          {Array.isArray(allInstitutes) && allInstitutes.map((institute) => (
+            <SidebarMenuItem key={institute.instituteId}>
               <SidebarMenuButton
                 onClick={() => handleSelectInstitute(institute)}
               >
@@ -220,13 +221,13 @@ export const InstituteListContainer = () => {
                   </SidebarMenuAction>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent side='right' align='start'>
-                  <DropdownMenuItem
+                  {/* <DropdownMenuItem
                     onClick={() => {
                       handleEditInstitute(institute);
                     }}
                   >
                     <span>Editar Instituto</span>
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> */}
                   <DropdownMenuItem onClick={() => {
                     handleDeleteInstitute(institute);
                   }}>

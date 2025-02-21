@@ -19,16 +19,14 @@ import {
   SidebarGroup,
   SidebarGroupAction,
   SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarInset,
-  SidebarMenu,
+  SidebarGroupLabel, SidebarMenu,
   SidebarMenuAction,
   SidebarMenuButton,
-  SidebarMenuItem,
+  SidebarMenuItem
 } from '@/components/ui/sidebar';
 
 import { envs } from '@/utils/envs';
-import { CreateEventForm } from '@/components/forms/CreateEvent';
+// import { CreateEventForm } from '@/components/forms/CreateEvent';
 import { useEvent } from '@/hooks/useEvent';
 import { useEventDispatch } from '@/hooks/useEventDispatch';
 import { deleteEvent, getAllEventsByFilter } from '@/context/event/actions';
@@ -50,14 +48,12 @@ export const EventListContainer = () => {
     searchEvents: { data: searchEvents },
   } = useEvent();
 
-  const {
-    institutes: { selected: selectedInstitute },
-  } = useInstitute();
+  const [isLoading, setIsLoading] = useState(true); // Estado de carregamento
 
   const eventDispatch = useEventDispatch();
   const instituteDispatch = useInstituteDispatch();
 
-  const [editingEvent, setEditingEvent] = useState<Event>();
+  // const [editingEvent, setEditingEvent] = useState<Event>();
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
@@ -104,6 +100,14 @@ export const EventListContainer = () => {
       );
     }
   };
+  
+  const instName = localStorage.getItem('instituteName');
+  const truncateText = (text: string, maxLength: number): string => {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + '...';
+    }
+    return text;
+  };
 
   const fetchInstitute = async () => {
     const instId = localStorage.getItem('instituteId');
@@ -114,12 +118,17 @@ export const EventListContainer = () => {
         })
       );
     }
+    setIsLoading(false); // Finaliza o carregamento
   };
 
-  const handleEditEvent = (event: Event) => {
-    setEditingEvent(event);
-    setOpenEventSheet(true);
-  };
+  const {
+    institutes: { selected: selectedInstitute },
+  } = useInstitute();
+
+  // const handleEditEvent = (event: Event) => {
+  //   setEditingEvent(event);
+  //   setOpenEventSheet(true);
+  // };
 
   const handleDeleteEvent = async (eventId: string) => {
     await eventDispatch(deleteEvent(eventId));
@@ -134,27 +143,33 @@ export const EventListContainer = () => {
     console.log(event);
   }
 
+  if (isLoading) {
+    return <div>Carregando...</div>; // Exibe um indicador de carregamento
+  }
+
   return (
     <div
       className={classNames(
         'w-full h-full flex relative'
       )}
     >
-      <div className={classNames('absolute top-0 left-0 w-full h-16 shadow-md transform pointer-events-none z-10',
+      <div className={classNames('absolute shadow-none top-0 left-0 w-full h-16 transform pointer-events-none z-10',
         selectedInstitute && '-translate-x-full'
       )}>
 
-        <Sidebar className='z-50 pointer-events-auto'>
-          <SidebarContent>
+        <Sidebar className='z-50 pointer-events-auto shadow-none'>
+          <SidebarContent className='shadow-none'>
             <SidebarGroup>
               <SidebarGroupLabel asChild>
-                <span>Eventos de {selectedInstitute?.name}</span>
+                <span>
+                  Eventos de {instName ? truncateText(instName, 19) : 'Carregando...'}
+                </span>
               </SidebarGroupLabel>
             </SidebarGroup>
 
             <SidebarGroupAction title='Adicionar evento'>
               <Sheet open={openEventSheet} onOpenChange={setOpenEventSheet}>
-                <SheetTrigger>
+                <SheetTrigger className='shadow-none'>
                   <Plus size={16} />
                 </SheetTrigger>
                 <SheetContent className='flex flex-col'>
@@ -164,12 +179,12 @@ export const EventListContainer = () => {
                       Preencha o formulário abaixo para adicionar um novo evento
                     </SheetDescription>
                   </SheetHeader>
-                  <div className='w-full flex-grow pt-4 pr-4 overflow-y-auto'>
+                  {/* <div className='w-full flex-grow pt-4 pr-4 overflow-y-auto'>
                     <CreateEventForm
                       Event={editingEvent}
                       onSuccess={() => setOpenEventSheet(false)}
                     />
-                  </div>
+                  </div> */}
                 </SheetContent>
               </Sheet>
             </SidebarGroupAction>
@@ -180,7 +195,7 @@ export const EventListContainer = () => {
                   <SidebarMenuItem key={key}>
                     <SidebarMenuButton onClick={() => handleSelectEvent(event)}>
                       <div className='w-6 h-6 rounded-full overflow-hidden'>
-                        <img src={event.eventPhoto} />
+                        <img src={event.eventPhoto} alt={`Foto do evento ${event.name}`} />
                       </div>
                       <span>{event.name}</span>
                     </SidebarMenuButton>
@@ -191,9 +206,9 @@ export const EventListContainer = () => {
                         </SidebarMenuAction>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent side='right' align='start'>
-                        <DropdownMenuItem onClick={() => handleEditEvent(event)}>
+                        {/* <DropdownMenuItem onClick={() => handleEditEvent(event)}>
                           <span>Editar Evento</span>
-                        </DropdownMenuItem>
+                        </DropdownMenuItem> */}
                         <DropdownMenuItem
                           onClick={() => handleDeleteEvent(event.eventId)}
                         >

@@ -8,12 +8,14 @@ type ImageInputProps = Omit<
   'onChange'
 > & {
   onChange?: (files: File[]) => void;
+  maxSize?: number; // Propriedade para definir o tamanho máximo em MB
 };
 
 const ImageInput = forwardRef<HTMLInputElement, ImageInputProps>(
-  ({ onChange, multiple, ...props }, ref) => {
+  ({ onChange, multiple, maxSize = 8, ...props }, ref) => {
     const [loadingImage, setLoadingImage] = useState(false);
     const [previews, setPreviews] = useState<string[]>([]);
+    const [error, setError] = useState<string | null>(null);
 
     const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
       const files = event.target.files;
@@ -23,10 +25,21 @@ const ImageInput = forwardRef<HTMLInputElement, ImageInputProps>(
         return;
       }
 
-      setLoadingImage(true);
-
-      // Convertemos para array “real”
+      // Verifica o tamanho dos arquivos
       const filesArray = Array.from(files);
+      const maxSizeBytes = maxSize * 1024 * 1024; // Converte MB para bytes
+
+      for (const file of filesArray) {
+        if (file.size > maxSizeBytes) {
+          setError(`O arquivo "${file.name}" excede o limite de ${maxSize} MB.`);
+          setPreviews([]);
+          onChange?.([]); // Limpa os arquivos inválidos
+          return;
+        }
+      }
+
+      setError(null); // Limpa o erro anterior
+      setLoadingImage(true);
 
       // Fazemos a leitura assíncrona de cada arquivo em base64
       const toBase64 = (file: File) =>
@@ -50,10 +63,14 @@ const ImageInput = forwardRef<HTMLInputElement, ImageInputProps>(
         <Input
           type="file"
           ref={ref}
-          multiple={multiple} 
+          multiple={multiple}
           onChange={handleChange}
           {...props}
         />
+
+        {error && (
+          <p className="text-red-500 text-sm mt-2">{error}</p>
+        )}
 
         {loadingImage && (
           <Skeleton className="w-full h-40 mt-2" />

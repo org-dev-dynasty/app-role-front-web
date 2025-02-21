@@ -43,9 +43,9 @@ export function Contact() {
     }
   };
 
-  const clearCheckBox = () => {
-    setChecked(false);
-  };
+  // const clearCheckBox = () => {
+  //   setChecked(false);
+  // };
 
   const handleEmailChange = (e: any) => {
     setEmail(e.target.value);
@@ -54,11 +54,11 @@ export function Contact() {
     }
   };
 
-  const clearForm = () => {
-    setEmail('');
-    setName('');
-    setMessage('');
-  };
+  // const clearForm = () => {
+  //   setEmail('');
+  //   setName('');
+  //   setMessage('');
+  // };
 
   const showError = (message: any) => {
     if (toast.current) {
@@ -72,15 +72,15 @@ export function Contact() {
     }
   };
 
-  const showSuccess = (message: any) => {
-    toast.current.show({
-      summary: 'Sucesso',
-      detail: message,
-      life: 3000,
-      className:
-        'bg-transparent text-green-400 border-2 border-white border-opacity-60 p-2 rounded-xl',
-    });
-  };
+  // const showSuccess = (message: any) => {
+  //   toast.current.show({
+  //     summary: 'Sucesso',
+  //     detail: message,
+  //     life: 3000,
+  //     className:
+  //       'bg-transparent text-green-400 border-2 border-white border-opacity-60 p-2 rounded-xl',
+  //   });
+  // };
 
   const handleButtonAnimation = () => {
     setIsButtonClicked(true);
@@ -163,19 +163,17 @@ export function Contact() {
                 <div className='flex pt-11 items-center'>
                   <div className='flex items-center'>
                     <button
-                      className={`w-[32px] h-[32px] rounded-[10px] ml-[68px] flex items-center justify-center transform duration-300 border-2 ${
-                        checked
+                      className={`w-[32px] h-[32px] rounded-[10px] ml-[68px] flex items-center justify-center transform duration-300 border-2 ${checked
                           ? 'bg-light-purple border-light-purple'
                           : 'bg-transparent border-white'
-                      }`}
+                        }`}
                       onClick={handleButtonClick}
                     >
                       <i
-                        className={`${
-                          checked
+                        className={`${checked
                             ? 'pi pi-check text-white transform duration-300'
                             : 'text-transparent'
-                        }`}
+                          }`}
                       ></i>
                     </button>
                     <p className='text-2xl ml-4 font-satoshi text-white'>
@@ -185,9 +183,8 @@ export function Contact() {
                   <div className='ml-40'>
                     <Button
                       className={`bg-gradient-to-r from-[#5A189A] to-[#1E0834] w-44 h-9 border-1 rounded-3xl justify-center text-2xl font-bold shadow-2xl shadow-black ml-32 transition-transform duration-200 hover:brightness-75
-                      text-white ${
-                        isButtonClicked ? 'transform scale-110' : ''
-                      }`}
+                      text-white ${isButtonClicked ? 'transform scale-110' : ''
+                        }`}
                       onClick={() => {
                         handleSubmit();
                         handleButtonAnimation();
@@ -279,11 +276,10 @@ export function Contact() {
               <div className='flex pt-11 items-center pb-10'>
                 <div className='flex items-center'>
                   <button
-                    className={`w-[32px] h-[32px] rounded-[10px] flex items-center justify-center ${
-                      checked
+                    className={`w-[32px] h-[32px] rounded-[10px] flex items-center justify-center ${checked
                         ? 'bg-[#5A189A]'
                         : 'bg-transparent border-2 border-white'
-                    }`}
+                      }`}
                     onClick={handleButtonClick}
                   >
                     {checked && <i className='pi pi-check text-white'></i>}
@@ -294,9 +290,8 @@ export function Contact() {
                 </div>
                 <div className='ml-40'>
                   <Button
-                    className={`bg-gradient-to-r from-[#5A189A] to-[#1E0834] w-44 h-9 border-1 rounded-3xl justify-center text-2xl font-bold shadow-2xl shadow-black ml-32 transition-transform duration-200 text-white ${
-                      isButtonClicked ? 'transform scale-110' : ''
-                    }`}
+                    className={`bg-gradient-to-r from-[#5A189A] to-[#1E0834] w-44 h-9 border-1 rounded-3xl justify-center text-2xl font-bold shadow-2xl shadow-black ml-32 transition-transform duration-200 text-white ${isButtonClicked ? 'transform scale-110' : ''
+                      }`}
                     onClick={() => {
                       handleSubmit();
                       handleButtonAnimation();
@@ -387,11 +382,10 @@ export function Contact() {
               <div className='flex pt-11 justify-between pb-10 w-full'>
                 <div className='flex items-center pr-3'>
                   <button
-                    className={`w-[32px] h-[32px] rounded-[10px]  flex justify-center ${
-                      checked
+                    className={`w-[32px] h-[32px] rounded-[10px]  flex justify-center ${checked
                         ? 'bg-[#5A189A]'
                         : 'bg-transparent border-2 border-white'
-                    }`}
+                      }`}
                     onClick={handleButtonClick}
                   >
                     {checked && <i className='pi pi-check text-white'></i>}
@@ -401,9 +395,8 @@ export function Contact() {
                   </p>
                 </div>
                 <Button
-                  className={`bg-gradient-to-r from-[#5A189A] to-[#1E0834] w-44 h-9 border-1 rounded-3xl justify-center text-2xl font-bold shadow-2xl shadow-black  transition-transform duration-200 text-white ${
-                    isButtonClicked ? 'transform scale-110' : ''
-                  }`}
+                  className={`bg-gradient-to-r from-[#5A189A] to-[#1E0834] w-44 h-9 border-1 rounded-3xl justify-center text-2xl font-bold shadow-2xl shadow-black  transition-transform duration-200 text-white ${isButtonClicked ? 'transform scale-110' : ''
+                    }`}
                   onClick={() => {
                     handleSubmit();
                     handleButtonAnimation();

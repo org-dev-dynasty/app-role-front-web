@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
-import { Profile } from '@/api/services/profileService/types';
+import { Profile, SimpleProfile } from '@/api/services/profileService/types';
 import { useSimpleRequestNode } from '@/hooks/useCreateRequestNode';
 
 
 const useProfileStoreState = () => {
-  const [data, setData] = useState<Profile>();
+  const [data, setData] = useState<Profile | SimpleProfile>();
 
   return {
     ...useSimpleRequestNode(),

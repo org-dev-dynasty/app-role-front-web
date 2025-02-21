@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { Location } from '../context/institute/types';
 import { useLoadScript } from '@react-google-maps/api';
 import { envs } from '@/utils/envs';
 import { Input } from './ui/input';
@@ -60,13 +61,18 @@ const AddressAutocomplete = ({
           );
           const neighborhood = neighborhoodComponent?.long_name || '(Bairro)';
 
-          onAddressSelect?.(
+          onAddressSelect?.({
             street,
             zip,
             latitude,
             longitude,
             city,
-            neighborhood
+            neighborhood,
+            address: '',
+            number: '',
+            cep: '',
+            state: ''
+          }
           ); // Retorna o endereço e o CEP para o pai
         }
       });

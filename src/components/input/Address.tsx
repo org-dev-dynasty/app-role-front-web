@@ -11,8 +11,8 @@ interface AddressInputProps {
   // country?: string;
   onChange: (location: StringLocationObject) => void;
 }
-
-const libraries = ['places'];
+type Library = 'places';
+const libraries: Library[] = ['places'];
 
 const AddressInput = ({
   // types = [],

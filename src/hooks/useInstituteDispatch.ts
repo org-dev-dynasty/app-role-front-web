@@ -1,4 +1,3 @@
-import { AuthStore } from '@/context/auth/types'
 import { useInstitute } from './useInstitute'
 import { InstituteStore } from '@/context/institute/types'
 

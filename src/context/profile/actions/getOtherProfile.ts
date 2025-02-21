@@ -10,7 +10,7 @@ export const getOtherProfile =
     store.otherProfile.setError(undefined);
 
     try {
-      const data = await profileService.getOtherProfile(params);
+      await profileService.getOtherProfile(params);
     } catch (error) {
       const err = error as AxiosError<string>;
       store.otherProfile.setError(err.response?.data);
