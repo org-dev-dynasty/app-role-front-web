@@ -190,7 +190,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
             <FormItem>
               <FormLabel>Imagem do evento</FormLabel>
               <FormControl>
-                <ImageInput onChange={(files: any) => {
+                <ImageInput maxSize={4} onChange={(files: any) => {
                   console.log(files);
                   field.onChange(files?.[0] ?? undefined);
                 }} />
@@ -207,7 +207,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
             <FormItem>
               <FormLabel>Galeria do evento</FormLabel>
               <FormControl>
-                <ImageInput multiple onChange={(files) => {
+                <ImageInput maxSize={4} multiple onChange={(files) => {
                   field.onChange(files);
                 }} />
               </FormControl>

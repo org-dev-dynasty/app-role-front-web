@@ -74,6 +74,7 @@ export const InstituteListContainer = () => {
     const response = await instituteApiDispatch(
       getInstitute({ instituteId: institute.instituteId })
     );
+    localStorage.setItem('instituteName' , institute.name);
 
     if (!response.success) {
       return;

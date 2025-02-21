@@ -48,9 +48,7 @@ export const EventListContainer = () => {
     searchEvents: { data: searchEvents },
   } = useEvent();
 
-  const {
-    institutes: { selected: selectedInstitute },
-  } = useInstitute();
+  const [isLoading, setIsLoading] = useState(true); // Estado de carregamento
 
   const eventDispatch = useEventDispatch();
   const instituteDispatch = useInstituteDispatch();
@@ -102,6 +100,14 @@ export const EventListContainer = () => {
       );
     }
   };
+  
+  const instName = localStorage.getItem('instituteName');
+  const truncateText = (text: string, maxLength: number): string => {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + '...';
+    }
+    return text;
+  };
 
   const fetchInstitute = async () => {
     const instId = localStorage.getItem('instituteId');
@@ -112,7 +118,12 @@ export const EventListContainer = () => {
         })
       );
     }
+    setIsLoading(false); // Finaliza o carregamento
   };
+
+  const {
+    institutes: { selected: selectedInstitute },
+  } = useInstitute();
 
   const handleEditEvent = (event: Event) => {
     setEditingEvent(event);
@@ -132,27 +143,33 @@ export const EventListContainer = () => {
     console.log(event);
   }
 
+  if (isLoading) {
+    return <div>Carregando...</div>; // Exibe um indicador de carregamento
+  }
+
   return (
     <div
       className={classNames(
         'w-full h-full flex relative'
       )}
     >
-      <div className={classNames('absolute top-0 left-0 w-full h-16 shadow-md transform pointer-events-none z-10',
+      <div className={classNames('absolute shadow-none top-0 left-0 w-full h-16 transform pointer-events-none z-10',
         selectedInstitute && '-translate-x-full'
       )}>
 
-        <Sidebar className='z-50 pointer-events-auto'>
-          <SidebarContent>
+        <Sidebar className='z-50 pointer-events-auto shadow-none'>
+          <SidebarContent className='shadow-none'>
             <SidebarGroup>
               <SidebarGroupLabel asChild>
-                <span>Eventos de {selectedInstitute?.name}</span>
+                <span>
+                  Eventos de {instName ? truncateText(instName, 19) : 'Carregando...'}
+                </span>
               </SidebarGroupLabel>
             </SidebarGroup>
 
             <SidebarGroupAction title='Adicionar evento'>
               <Sheet open={openEventSheet} onOpenChange={setOpenEventSheet}>
-                <SheetTrigger>
+                <SheetTrigger className='shadow-none'>
                   <Plus size={16} />
                 </SheetTrigger>
                 <SheetContent className='flex flex-col'>
@@ -178,7 +195,7 @@ export const EventListContainer = () => {
                   <SidebarMenuItem key={key}>
                     <SidebarMenuButton onClick={() => handleSelectEvent(event)}>
                       <div className='w-6 h-6 rounded-full overflow-hidden'>
-                        <img src={event.eventPhoto} />
+                        <img src={event.eventPhoto} alt={`Foto do evento ${event.name}`} />
                       </div>
                       <span>{event.name}</span>
                     </SidebarMenuButton>
