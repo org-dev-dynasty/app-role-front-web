@@ -125,10 +125,10 @@ export const EventListContainer = () => {
     institutes: { selected: selectedInstitute },
   } = useInstitute();
 
-  const handleEditEvent = (event: Event) => {
-    setEditingEvent(event);
-    setOpenEventSheet(true);
-  };
+  // const handleEditEvent = (event: Event) => {
+  //   setEditingEvent(event);
+  //   setOpenEventSheet(true);
+  // };
 
   const handleDeleteEvent = async (eventId: string) => {
     await eventDispatch(deleteEvent(eventId));
@@ -206,9 +206,9 @@ export const EventListContainer = () => {
                         </SidebarMenuAction>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent side='right' align='start'>
-                        <DropdownMenuItem onClick={() => handleEditEvent(event)}>
+                        {/* <DropdownMenuItem onClick={() => handleEditEvent(event)}>
                           <span>Editar Evento</span>
-                        </DropdownMenuItem>
+                        </DropdownMenuItem> */}
                         <DropdownMenuItem
                           onClick={() => handleDeleteEvent(event.eventId)}
                         >
