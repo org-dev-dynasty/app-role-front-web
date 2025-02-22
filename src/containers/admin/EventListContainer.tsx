@@ -26,7 +26,7 @@ import {
 } from '@/components/ui/sidebar';
 
 import { envs } from '@/utils/envs';
-// import { CreateEventForm } from '@/components/forms/CreateEvent';
+import { CreateEventForm } from '@/components/forms/CreateEvent';
 import { useEvent } from '@/hooks/useEvent';
 import { useEventDispatch } from '@/hooks/useEventDispatch';
 import { deleteEvent, getAllEventsByFilter } from '@/context/event/actions';
@@ -53,7 +53,7 @@ export const EventListContainer = () => {
   const eventDispatch = useEventDispatch();
   const instituteDispatch = useInstituteDispatch();
 
-  // const [editingEvent, setEditingEvent] = useState<Event>();
+  const [editingEvent, setEditingEvent] = useState<Event>();
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
@@ -125,10 +125,10 @@ export const EventListContainer = () => {
     institutes: { selected: selectedInstitute },
   } = useInstitute();
 
-  // const handleEditEvent = (event: Event) => {
-  //   setEditingEvent(event);
-  //   setOpenEventSheet(true);
-  // };
+  const handleEditEvent = (event: Event) => {
+    setEditingEvent(event);
+    setOpenEventSheet(true);
+  };
 
   const handleDeleteEvent = async (eventId: string) => {
     await eventDispatch(deleteEvent(eventId));
@@ -179,12 +179,12 @@ export const EventListContainer = () => {
                       Preencha o formulário abaixo para adicionar um novo evento
                     </SheetDescription>
                   </SheetHeader>
-                  {/* <div className='w-full flex-grow pt-4 pr-4 overflow-y-auto'>
+                  <div className='w-full flex-grow pt-4 pr-4 overflow-y-auto'>
                     <CreateEventForm
                       Event={editingEvent}
                       onSuccess={() => setOpenEventSheet(false)}
                     />
-                  </div> */}
+                  </div>
                 </SheetContent>
               </Sheet>
             </SidebarGroupAction>
@@ -206,9 +206,9 @@ export const EventListContainer = () => {
                         </SidebarMenuAction>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent side='right' align='start'>
-                        {/* <DropdownMenuItem onClick={() => handleEditEvent(event)}>
+                        <DropdownMenuItem onClick={() => handleEditEvent(event)}>
                           <span>Editar Evento</span>
-                        </DropdownMenuItem> */}
+                        </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => handleDeleteEvent(event.eventId)}
                         >
