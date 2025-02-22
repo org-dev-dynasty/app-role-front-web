@@ -60,7 +60,7 @@ interface SinInFormProps {
 }
 
 const createDefaultValues = (institute?: Institute) => {
-  if (import.meta.env.DEV && !institute) {
+  if (!institute) {
     return {
       instituteName: 'Instituto Legal',
       instituteDescription: 'Descrição legal do instituto',
