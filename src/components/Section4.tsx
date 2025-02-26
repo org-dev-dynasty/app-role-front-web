@@ -86,7 +86,7 @@ export const Section4 = () => {
               ORGANIZAÇÃO
             </p>
           </div>
-          <p className='text-2xl font-satoshi '>
+          <p className='text-2xl font-satoshi text-black'>
             Tenha todos os seus estabelecimentos em um único lugar para que você
             possa controlar e organizar todos os{' '}
             <span className='text-light-purple'>ROLE</span>s de forma fácil e
@@ -101,7 +101,7 @@ export const Section4 = () => {
               ANÁLISE
             </p>
           </div>
-          <p className='text-2xl font-satoshi '>
+          <p className='text-2xl font-satoshi text-black'>
             Utilize ferramentas para conhecer melhor o seu público e seus
             interesses, adaptando suas ofertas e aumentando a satisfação das
             pessoas!
@@ -115,7 +115,7 @@ export const Section4 = () => {
               PUBLICIDADE
             </p>
           </div>
-          <p className='text-2xl font-satoshi '>
+          <p className='text-2xl font-satoshi text-black'>
             Crie, configure e promova seus
             <span className='text-light-purple pl-2'>ROLE</span>s assertivamente
             para todos os usuários do aplicativo!
