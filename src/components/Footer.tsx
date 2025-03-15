@@ -1,6 +1,8 @@
 import { envs } from "../utils/envs"
 import { BackgroundBubbles } from "./BackgroundBubbles"
 
+import pdf from '../assets/politica_de_privacidade.pdf'
+
 export function Footer({ isNavbarOpened, openPopUp, isPopUpOpened }: { isNavbarOpened: boolean, openPopUp: () => void, isPopUpOpened: boolean }) {
     return (
         <>
@@ -39,7 +41,11 @@ export function Footer({ isNavbarOpened, openPopUp, isPopUpOpened }: { isNavbarO
                 </p>
                  {/* LINK DE POLITICA DE PRIVACIDADE  */}
                 <p className="font-nunito font-medium text-lg md:text-xl lg:text-xl pt-2 md:pt-4 lg:pt-5">
-                    <a href="https://drive.google.com/file/d/1T7uEWzh2m1ggL5lPdu3hZm4UuLPq_ZOC/view?usp=drivesdk" className="text-[#9C4EDC] drop-shadow-purple-mid hover:underline font-semibold">
+                    <a href={pdf} 
+                        className="text-[#9C4EDC] drop-shadow-purple-mid hover:underline font-semibold"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
                         Política de Privacidade
                     </a>
                 </p>
