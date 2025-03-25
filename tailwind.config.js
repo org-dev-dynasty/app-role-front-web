@@ -80,7 +80,11 @@ export default {
   				ring: 'hsl(var(--sidebar-ring))'
   			}
   		},
-  		keyframes: {
+			keyframes: {
+				'loader-dot': {
+          '0%, 100%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.5)' },
+        },
   			slideInRight: {
   				'0%': {
   					transform: 'translateX(100%)'
@@ -165,7 +169,8 @@ export default {
   				}
   			}
   		},
-  		animation: {
+			animation: {
+				'loader-dot': 'loader-dot 1.5s infinite ease-in-out',
   			slideInRight: 'slideInRight 0.5s ease-in-out forwards',
   			slideOutRight: 'slideOutRight 0.5s ease-in-out forwards',
   			infiniteSpin: 'infiniteSpin 30s linear infinite',

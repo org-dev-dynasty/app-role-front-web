@@ -1,16 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import { LandingPage } from './pages/landingPage';
-// import Role from './pages/restrictedArea/Event';
-// import Institute from './pages/restrictedArea/Institute';
-// import Institutions from './pages/restrictedArea/Institutions';
 import { LoginPage } from './pages/login';
-// import ResetPasswordCode from './pages/restrictedArea/confirmCode';
-// import GetEmail from './pages/restrictedArea/getEmail';
-// import { FAQ } from './pages/faq';
-
-// import { InstituteContextProvider } from './context/institute_context';
-// import { EventContextProvider } from './context/event_context';
 
 import { ToastContainer } from 'react-toastify';
 import { PrivateLayout } from './layouts/PrivateLayout';
@@ -43,12 +34,6 @@ export function AppRouter() {
             <Route index element={<LandingPage />} />
             <Route path='faq' element={<FAQ />} />
             <Route Component={Support} path='support' element={<Support />} />
-            {/* <Route path='login' element={<LoginPage />} /> */}
-            {/* <Route path='institutes/:instId' element={<Institutions />} /> */}
-            {/* <Route path='institute/:instId' element={<Institute />} /> */}
-            {/* <Route path='role/:eventId' element={<Role />} /> */}
-            {/* <Route path='getEmail' element={<GetEmail />} /> */}
-            {/* <Route path='verifyCode' element={<ResetPasswordCode />} /> */}
           </Route>
 
           <Route path='/auth/' element={<AuthLayout />}>

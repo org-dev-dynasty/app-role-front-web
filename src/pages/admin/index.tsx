@@ -19,7 +19,7 @@ export const AdminPage = () => {
   };
 
   return (
-    <div className='w-full h-screen bg-background'>
+    <div className='w-full h-screen bg-[#1c1c1c] overflow-hidden'>
       <div className='flex justify-end p-4'>
         <button
           className='text-white bg-primary rounded-md px-4 py-2'
@@ -34,9 +34,10 @@ export const AdminPage = () => {
             <InstituteListContainer />
           </SidebarContent>
         </Sidebar>
-        <SidebarInset>
+        {/* <SidebarInset>
           <EventListContainer />
-        </SidebarInset>
+        </SidebarInset> */}
+        
       </SidebarProvider>
     </div>
   );

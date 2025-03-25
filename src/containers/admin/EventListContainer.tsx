@@ -100,7 +100,7 @@ export const EventListContainer = () => {
       );
     }
   };
-  
+
   const instName = localStorage.getItem('instituteName');
   const truncateText = (text: string, maxLength: number): string => {
     if (text.length > maxLength) {
@@ -223,20 +223,6 @@ export const EventListContainer = () => {
           </SidebarContent>
         </Sidebar>
       </div>
-      {isLoaded ? (
-        <GoogleMap
-          mapContainerStyle={containerStyle}
-          center={center}
-          onLoad={onLoad}
-          onUnmount={onUnmount}
-        >
-          <Marker position={center} onClick={(e) => console.log(e)} />
-        </GoogleMap>
-      ) : (
-        <div className='flex justify-center items-center w-full flex-grow'>
-          <ClipLoader />
-        </div>
-      )}
     </div>
   );
 };
