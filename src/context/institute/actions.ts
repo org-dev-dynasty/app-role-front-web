@@ -49,6 +49,7 @@ export const getAllInstitutes =
 
     try {
       const { data } = await instituteService.getAllInstitutes(params);
+      console.log(data);
 
       store.institutes.setData(data.items);
 

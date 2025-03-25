@@ -65,9 +65,6 @@ export const InstituteListContainer = () => {
 
   const handleSelectInstitute = async (institute: Institute) => {
     if (institute.instituteId === selectedInstitute?.instituteId) {
-      instituteApiDispatch(
-        clearSelectedInstitute()
-      );
       return
     }
 
