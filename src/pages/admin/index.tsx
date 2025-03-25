@@ -26,15 +26,15 @@ export const AdminPage = () => {
   const instituteDispatch = useInstituteDispatch();
 
   const fetchInstitute = async () => {
-      const instId = localStorage.getItem('instituteId');
-      if (instId) {
-        await instituteDispatch(
-          getInstitute({
-            instituteId: instId,
-          })
-        );
-      }
-    };
+    const instId = localStorage.getItem('instituteId');
+    if (instId) {
+      await instituteDispatch(
+        getInstitute({
+          instituteId: instId,
+        })
+      );
+    }
+  };
 
 
   const fetchEvents = async () => {
@@ -88,7 +88,7 @@ export const AdminPage = () => {
 
           {searchEvents.length === 0 &&
             (<div className="flex items-center h-24 justify-evenly px-10 gap-10">
-              <div className="w-5 h-5 rounded-full bg-gray-100 animate-loader-dot delay-150"></div>
+              <div className="w-5 h-5 rounded-full bg-gray-100 animate-loader-dot delay-100"></div>
               <div className="w-5 h-5 rounded-full bg-gray-100 animate-loader-dot delay-300"></div>
               <div className="w-5 h-5 rounded-full bg-gray-100 animate-loader-dot delay-500"></div>
             </div>)
