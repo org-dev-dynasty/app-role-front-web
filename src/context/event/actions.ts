@@ -194,8 +194,8 @@ export const deleteEvent = (eventId: string) => async (store: EventStore) => {
   try {
     await eventService.deleteEvent({eventId: eventId });
 
-    store.events.setData(
-      store.events.data.filter((event) => event.eventId !== eventId)
+    store.searchEvents.setData(
+      store.searchEvents.data.filter((event) => event.eventId !== eventId)
     );
 
     return { success: true };

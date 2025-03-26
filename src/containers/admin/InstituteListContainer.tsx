@@ -1,5 +1,5 @@
 
-import { MoreHorizontal, Plus } from 'lucide-react';
+import { Loader2, MoreHorizontal, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import {
   clearSelectedInstitute,
@@ -52,13 +52,13 @@ import { getAllEventsByFilter } from '@/context/event/actions';
 import { InstitutePartner } from '@/constants/institutePartner';
 import { InstituteType } from '@/constants/instituteType';
 import { Region } from '@/constants/regions';
-import { set } from 'date-fns';
+import { toast } from 'react-toastify';
 
 interface InstituteListContainerProps {
   setTrigger: (value: boolean) => void;
 }
 
-export default function InstituteListContainer({setTrigger}: InstituteListContainerProps) {
+export default function InstituteListContainer({ setTrigger }: InstituteListContainerProps) {
   const {
     institutes: { data: allInstitutes, selected: selectedInstitute },
   } = useInstitute();
@@ -66,11 +66,14 @@ export default function InstituteListContainer({setTrigger}: InstituteListContai
   const instituteApiDispatch = useInstituteDispatch();
   const eventDispatch = useEventDispatch();
 
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [localActionLoading, setLocalActionLoading] = useState<boolean>(false)
+
   const [openInstituteSheet, setOpenInstituteSheet] = useState<boolean>(false);
   const [editingInstitute, setEditingInstitute] = useState<Institute>();
 
   const handleSelectInstitute = async (institute: Institute) => {
-    
+
     if (institute.instituteId === selectedInstitute?.instituteId) {
       instituteApiDispatch(clearSelectedInstitute());
       localStorage.removeItem('instituteId');
@@ -78,35 +81,43 @@ export default function InstituteListContainer({setTrigger}: InstituteListContai
       setTrigger(false); // Resetar o trigger
       return;
     }
+    try {
+      setTrigger(false);
+      setTimeout(() => setTrigger(true), 100);
 
+      const response = await instituteApiDispatch(
+        getInstitute({ instituteId: institute.instituteId })
+      );
+      localStorage.setItem('instituteName', institute.name);
 
-    setTrigger(false); // Primeiro desativa
-    setTimeout(() => setTrigger(true), 100); // Depois reativa após pequeno delay
+      if (!response.success) return;
 
-    const response = await instituteApiDispatch(
-      getInstitute({ instituteId: institute.instituteId })
-    );
-    localStorage.setItem('instituteName', institute.name);
-
-    if (!response.success) {
-      return;
+      await eventDispatch(
+        getAllEventsByFilter({
+          search: { instituteId: institute.instituteId },
+          page: 1,
+        })
+      );
+    } finally {
+      setLocalActionLoading(false);
     }
-
-    eventDispatch(
-      getAllEventsByFilter({
-        search: { instituteId: institute.instituteId },
-        page: 1,
-      })
-    );
   };
 
-  const handleDeleteInstitute = (institute: Institute) => {
-    instituteApiDispatch(
-      deleteInstitute({
-        instituteId: institute.instituteId,
-      })
-    );
-  }
+  const handleDeleteInstitute = async (institute: Institute) => {
+    setLocalActionLoading(true);
+    try {
+      await instituteApiDispatch(
+        deleteInstitute({
+          instituteId: institute.instituteId,
+        })
+      );
+      toast.success('Instituto deletado com sucesso');
+    } catch (error) {
+      toast.error('Erro ao deletar instituto');
+    } finally {
+      setLocalActionLoading(false);
+    }
+  };
 
   // const handleEditInstitute = (institute: Institute) => {
   //   setEditingInstitute(institute);
@@ -122,69 +133,80 @@ export default function InstituteListContainer({setTrigger}: InstituteListContai
   };
 
   const fetchInstitutes = async () => {
-    await instituteApiDispatch(
-      getAllInstitutes({
-        page: 1,
-      })
-    );
+    setIsLoading(true);
+    try {
+      await instituteApiDispatch(
+        getAllInstitutes({
+          page: 1,
+        })
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const onCreateInstitute = async (values: CreateInstituteFormData) => {
-    console.log('create');
+    setLocalActionLoading(true);
+    try {
+      console.log('create');
 
-    if (editingInstitute) {
-      const updateInstituteData: UpdateInstituteParams = {
-        instituteId: editingInstitute.instituteId,
-        name: values.instituteName,
-        description: values.instituteDescription,
-        partnerType: values.partnerType as InstitutePartner,
-        instituteType: values.instituteType as InstituteType,
-        phone: values.phone,
-        district: values.district as Region,
-        address: {
-          address: values.address,
-          number: Number(values.location.number),
-          neighborhood: values.location.neighborhood,
-          city: values.location.city,
-          state: values.location.state,
-          cep: values.location.cep,
-          latitude: Number(values.location.latitude),
-          longitude: Number(values.location.longitude),
-        },
-        logo: values.logoPhoto,
-        price: values.price,
-      };
-      await instituteApiDispatch(updateInstitute(updateInstituteData));
-    } else {
-      const instituteData: CreateInstituteParams = {
-        name: values.instituteName,
-        description: values.instituteDescription,
-        partnerType: values.partnerType as InstitutePartner,
-        instituteType: values.instituteType as InstituteType,
-        phone: values.phone,
-        district: values.district as Region,
-        address: {
-          address: values.address,
-          number: Number(values.location.number),
-          neighborhood: values.location.neighborhood,
-          city: values.location.city,
-          state: values.location.state,
-          cep: values.location.cep,
-          latitude: Number(values.location.latitude),
-          longitude: Number(values.location.longitude),
-        },
-        logo: values.logoPhoto,
-        price: values.price,
-      };
-      await instituteApiDispatch(createInstitute(instituteData));
+      if (editingInstitute) {
+        const updateInstituteData: UpdateInstituteParams = {
+          instituteId: editingInstitute.instituteId,
+          name: values.instituteName,
+          description: values.instituteDescription,
+          partnerType: values.partnerType as InstitutePartner,
+          instituteType: values.instituteType as InstituteType,
+          phone: values.phone,
+          district: values.district as Region,
+          address: {
+            address: values.address,
+            number: Number(values.location.number),
+            neighborhood: values.location.neighborhood,
+            city: values.location.city,
+            state: values.location.state,
+            cep: values.location.cep,
+            latitude: Number(values.location.latitude),
+            longitude: Number(values.location.longitude),
+          },
+          logo: values.logoPhoto,
+          price: values.price,
+        };
+        await instituteApiDispatch(updateInstitute(updateInstituteData));
+      } else {
+        const instituteData: CreateInstituteParams = {
+          name: values.instituteName,
+          description: values.instituteDescription,
+          partnerType: values.partnerType as InstitutePartner,
+          instituteType: values.instituteType as InstituteType,
+          phone: values.phone,
+          district: values.district as Region,
+          address: {
+            address: values.address,
+            number: Number(values.location.number),
+            neighborhood: values.location.neighborhood,
+            city: values.location.city,
+            state: values.location.state,
+            cep: values.location.cep,
+            latitude: Number(values.location.latitude),
+            longitude: Number(values.location.longitude),
+          },
+          logo: values.logoPhoto,
+          price: values.price,
+        };
+        await instituteApiDispatch(createInstitute(instituteData));
+      }
+    } finally {
+      setLocalActionLoading(false);
+      setOpenInstituteSheet(false);
     }
-
-    setOpenInstituteSheet(false);
   };
 
   useEffect(() => {
     fetchInstitutes();
   }, []);
+
+  const showLoading = isLoading || localActionLoading;
 
   return (
     <SidebarGroup>
@@ -194,8 +216,12 @@ export default function InstituteListContainer({setTrigger}: InstituteListContai
 
       <SidebarGroupAction title='Adicionar Institutos'>
         <Sheet open={openInstituteSheet} onOpenChange={handleOpenChange}>
-          <SheetTrigger>
-            <Plus size={16} />
+          <SheetTrigger disabled={showLoading}>
+            {showLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Plus size={16} />
+            )}
           </SheetTrigger>
           <SheetContent className='flex flex-col'>
             <SheetHeader>
@@ -205,51 +231,64 @@ export default function InstituteListContainer({setTrigger}: InstituteListContai
               </SheetDescription>
             </SheetHeader>
             <div className='w-full flex-grow pt-4 pr-4 overflow-y-auto'>
-              <CreateInstituteForm
-                institute={editingInstitute}
-                onSuccess={onCreateInstitute}
-              />
+              {localActionLoading ? (
+                <div className="flex justify-center items-center h-full">
+                  <Loader2 className="h-8 w-8 animate-spin" />
+                </div>
+              ) : (
+                <CreateInstituteForm
+                  institute={editingInstitute}
+                  onSuccess={onCreateInstitute}
+                />
+              )}
             </div>
           </SheetContent>
         </Sheet>
       </SidebarGroupAction>
 
       <SidebarGroupContent>
-        <SidebarMenu>
-          {Array.isArray(allInstitutes) && allInstitutes.map((institute) => (
-            <SidebarMenuItem key={institute.instituteId}>
-              <SidebarMenuButton
-                onClick={() => handleSelectInstitute(institute)}
-              >
-                <div className='w-6 h-6 rounded-full overflow-hidden'>
-                  <img src={institute.logo} />
-                </div>
-                <span className='text-foreground'>{institute.name}</span>
-              </SidebarMenuButton>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild title='Mais ações'>
-                  <SidebarMenuAction>
-                    <MoreHorizontal />
-                  </SidebarMenuAction>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent side='right' align='start'>
-                  {/* <DropdownMenuItem
-                    onClick={() => {
-                      handleEditInstitute(institute);
-                    }}
-                  >
-                    <span>Editar Instituto</span>
-                  </DropdownMenuItem> */}
-                  <DropdownMenuItem onClick={() => {
-                    handleDeleteInstitute(institute);
-                  }}>
-                    <span>Deletar Instituto</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
+        {showLoading ? (
+          <div className='flex items-center h-24 justify-evenly px-10 gap-10'>
+            <div className='w-5 h-5 rounded-full bg-gray-100 animate-loader-dot delay-100'></div>
+            <div className='w-5 h-5 rounded-full bg-gray-100 animate-loader-dot delay-300'></div>
+            <div className='w-5 h-5 rounded-full bg-gray-100 animate-loader-dot delay-500'></div>
+          </div>
+        ) : (
+          <SidebarMenu>
+            {Array.isArray(allInstitutes) && allInstitutes.map((institute) => (
+              <SidebarMenuItem key={institute.instituteId}>
+                <SidebarMenuButton
+                  onClick={() => handleSelectInstitute(institute)}
+                  disabled={localActionLoading}
+                >
+                  <div className='w-6 h-6 rounded-full overflow-hidden'>
+                    <img src={institute.logo} alt={institute.name} />
+                  </div>
+                  <span className='text-foreground'>{institute.name}</span>
+                </SidebarMenuButton>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild title='Mais ações' disabled={localActionLoading}>
+                    <SidebarMenuAction>
+                      {localActionLoading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <MoreHorizontal />
+                      )}
+                    </SidebarMenuAction>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent side='right' align='start'>
+                    <DropdownMenuItem
+                      onClick={() => handleDeleteInstitute(institute)}
+                      disabled={localActionLoading}
+                    >
+                      {localActionLoading ? 'Processando...' : 'Deletar Instituto'}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        )}
       </SidebarGroupContent>
     </SidebarGroup>
   );

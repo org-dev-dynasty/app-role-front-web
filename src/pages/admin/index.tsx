@@ -54,6 +54,8 @@ export const AdminPage = () => {
   const authDispatch = useAuthDispatch();
 
   const handleSignOut = () => {
+    localStorage.removeItem('instituteId');
+    localStorage.removeItem('instituteName');
     authDispatch(authActions.signOut());
   };
 

@@ -33,6 +33,7 @@ import {
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
 import { classNames } from 'primereact/utils';
+import { toast } from 'react-toastify';
 
 interface EventListContainerProps {
   trigger: boolean;
@@ -101,7 +102,9 @@ export default function EventListContainer({ trigger }: EventListContainerProps)
   };
 
   const handleDeleteEvent = async (eventId: string) => {
+    setInternalTrigger(true);
     await eventDispatch(deleteEvent(eventId));
+    toast.success('Evento deletado com sucesso');
   };
 
   function handleSelectEvent(event: Event) {
@@ -122,7 +125,7 @@ export default function EventListContainer({ trigger }: EventListContainerProps)
             <SidebarGroup>
               <SidebarGroupLabel asChild>
                 <span>
-                  Eventos de {instName ? truncateText(instName, 19) : 'Carregando...'}
+                  {instName && ("Eventos de " + truncateText(instName, 19) )}
                 </span>
               </SidebarGroupLabel>
             </SidebarGroup>
@@ -151,7 +154,7 @@ export default function EventListContainer({ trigger }: EventListContainerProps)
 
             <SidebarGroupContent>
               <SidebarMenu>
-                {isLoading ? (
+                {instName ? (isLoading ? (
                   <div className="flex items-center h-24 justify-evenly px-10">
                     <div className="w-5 h-5 rounded-full bg-gray-100 animate-loader-dot delay-100"></div>
                     <div className="w-5 h-5 rounded-full bg-gray-100 animate-loader-dot delay-300"></div>
@@ -188,7 +191,11 @@ export default function EventListContainer({ trigger }: EventListContainerProps)
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </SidebarMenuItem>
-                  )))}
+                  )))) : (
+                  <div className="text-center py-4 text-gray-500">
+                    Selecione um instituto
+                  </div>
+                )}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarContent>
