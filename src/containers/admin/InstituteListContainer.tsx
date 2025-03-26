@@ -1,3 +1,4 @@
+
 import { MoreHorizontal, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import {
@@ -65,6 +66,9 @@ export const InstituteListContainer = () => {
 
   const handleSelectInstitute = async (institute: Institute) => {
     if (institute.instituteId === selectedInstitute?.instituteId) {
+      instituteApiDispatch(
+        clearSelectedInstitute()
+      );
       return
     }
 
@@ -112,7 +116,6 @@ export const InstituteListContainer = () => {
         page: 1,
       })
     );
-    console.log(allInstitutes);
   };
 
   const onCreateInstitute = async (values: CreateInstituteFormData) => {
@@ -171,23 +174,6 @@ export const InstituteListContainer = () => {
   useEffect(() => {
     fetchInstitutes();
   }, []);
-
-  if (!allInstitutes) {
-    return (
-      <SidebarGroup>
-        <SidebarGroupLabel asChild>
-          <span>Institutos</span>
-        </SidebarGroupLabel>
-        <SidebarGroupContent>
-          <div className="flex items-center h-24 justify-evenly px-10">
-            <div className="w-5 h-5 rounded-full bg-gray-100 animate-loader-dot delay-150"></div>
-            <div className="w-5 h-5 rounded-full bg-gray-100 animate-loader-dot delay-300"></div>
-            <div className="w-5 h-5 rounded-full bg-gray-100 animate-loader-dot delay-500"></div>
-          </div>
-        </SidebarGroupContent>
-      </SidebarGroup>
-    );
-  }
 
   return (
     <SidebarGroup>

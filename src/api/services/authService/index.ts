@@ -138,13 +138,12 @@ export abstract class AuthenticatedService {
     this._publicInstance = axios.create({
       baseURL: envs.api,
     });
-    console.log("Api", envs.api);
 
     this._instance.interceptors.request.use((config) => {
       if (this._authService.tokens) {
         config.headers[
           'Authorization'
-        ] = `Bearer ${this._authService.tokens.idToken}`;
+        ] = `${this._authService.tokens.idToken}`;
       }
 
       return config;

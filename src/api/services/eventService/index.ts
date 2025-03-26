@@ -84,6 +84,8 @@ export class EventService extends AuthenticatedService {
   }
 
   createEvent(formData: FormData) {
+    console.log('formData', formData)
+    console.log('EVENT_SERVICE_ROUTES.POST.CREATE_EVENT', EVENT_SERVICE_ROUTES.POST.CREATE_EVENT)
     return this.instance.post<CreateEventResponse>(
       EVENT_SERVICE_ROUTES.POST.CREATE_EVENT,
       formData,

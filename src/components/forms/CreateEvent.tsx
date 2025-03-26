@@ -108,7 +108,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     onSuccess?.();
-    console.log(values);
+    console.log("VALORES: ", values);
     if (Event) {
       //conferir se está indo certo (provavelmente não)
       // eventDispatch(updateEvent(

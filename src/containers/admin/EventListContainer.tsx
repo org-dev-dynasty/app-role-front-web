@@ -1,9 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
+import { useEffect, useState } from 'react';
 import { MoreHorizontal, Plus } from 'lucide-react';
-
-import mapsJSON from '@/utils/maps_styles.json';
-
 import {
   Sheet,
   SheetContent,
@@ -25,16 +21,12 @@ import {
   SidebarMenuItem
 } from '@/components/ui/sidebar';
 
-import { envs } from '@/utils/envs';
 import { CreateEventForm } from '@/components/forms/CreateEvent';
 import { useEvent } from '@/hooks/useEvent';
 import { useEventDispatch } from '@/hooks/useEventDispatch';
 import { deleteEvent, getAllEventsByFilter } from '@/context/event/actions';
 import { Event } from '@/api/services/eventService/types';
 import { useInstituteDispatch } from '@/hooks/useInstituteDispatch';
-import { getInstitute } from '@/context/institute/actions';
-import { useInstitute } from '@/hooks/useInstitute';
-import { ClipLoader } from 'react-spinners';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -42,62 +34,43 @@ import {
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
 import { classNames } from 'primereact/utils';
+import { set } from 'date-fns';
 
 export const EventListContainer = () => {
   const {
     searchEvents: { data: searchEvents },
   } = useEvent();
 
-  const [isLoading, setIsLoading] = useState(true); // Estado de carregamento
+  const [isLoading, setIsLoading] = useState(true);
 
   const eventDispatch = useEventDispatch();
   const instituteDispatch = useInstituteDispatch();
 
   const [editingEvent, setEditingEvent] = useState<Event>();
 
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: envs.googleMapsUrl,
-    libraries: ['places'],
-  });
 
   const [openEventSheet, setOpenEventSheet] = useState(false);
-
-  const mapRef = React.useRef<google.maps.Map | null>(null);
-
-  const onLoad = (map: google.maps.Map) => {
-    mapRef.current = map;
-
-    mapRef.current.setClickableIcons(false);
-    mapRef.current?.setZoom(12);
-    mapRef.current?.setOptions(mapsJSON);
-  };
-
-  const onUnmount = () => {
-    mapRef.current = null;
-  };
-
-  const containerStyle = {
-    width: '100%',
-    height: '100%',
-  };
-
-  const center = {
-    lat: -23.5489,
-    lng: -46.6388,
-  };
 
   const fetchEvents = async () => {
     const instituteID = localStorage.getItem('instituteId');
     if (instituteID) {
-      await eventDispatch(
-        getAllEventsByFilter({
-          page: 1,
-          search: {
-            instituteId: instituteID,
-          },
-        })
-      );
+      setIsLoading(true); // Ativa o loading antes da requisição
+      try {
+        await eventDispatch(
+          getAllEventsByFilter({
+            page: 1,
+            search: {
+              instituteId: instituteID,
+            },
+          })
+        );
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      } finally {
+        setIsLoading(false); // Desativa o loading após a requisição (tanto sucesso quanto erro)
+      }
+    } else {
+      setIsLoading(false); // Caso não tenha instituteID
     }
   };
 
@@ -108,22 +81,6 @@ export const EventListContainer = () => {
     }
     return text;
   };
-
-  const fetchInstitute = async () => {
-    const instId = localStorage.getItem('instituteId');
-    if (instId) {
-      await instituteDispatch(
-        getInstitute({
-          instituteId: instId,
-        })
-      );
-    }
-    setIsLoading(false); // Finaliza o carregamento
-  };
-
-  const {
-    institutes: { selected: selectedInstitute },
-  } = useInstitute();
 
   const handleEditEvent = (event: Event) => {
     setEditingEvent(event);
@@ -136,15 +93,10 @@ export const EventListContainer = () => {
 
   useEffect(() => {
     fetchEvents();
-    fetchInstitute();
   }, []);
 
   function handleSelectEvent(event: Event) {
     console.log(event);
-  }
-
-  if (isLoading) {
-    return <div>Carregando...</div>; // Exibe um indicador de carregamento
   }
 
   return (
@@ -153,8 +105,7 @@ export const EventListContainer = () => {
         'w-full h-full flex relative'
       )}
     >
-      <div className={classNames('absolute shadow-none top-0 left-0 w-full h-16 transform pointer-events-none z-10',
-        selectedInstitute && '-translate-x-full'
+      <div className={classNames('absolute duration-100 transition-transform shadow-none top-0 left-0 w-full h-16 transform pointer-events-none z-10',
       )}>
 
         <Sidebar className='z-50 pointer-events-auto shadow-none'>
@@ -191,33 +142,42 @@ export const EventListContainer = () => {
 
             <SidebarGroupContent>
               <SidebarMenu>
-                {searchEvents.map((event, key) => (
-                  <SidebarMenuItem key={key}>
-                    <SidebarMenuButton onClick={() => handleSelectEvent(event)}>
-                      <div className='w-6 h-6 rounded-full overflow-hidden'>
-                        <img src={event.eventPhoto} alt={`Foto do evento ${event.name}`} />
-                      </div>
-                      <span>{event.name}</span>
-                    </SidebarMenuButton>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <SidebarMenuAction>
-                          <MoreHorizontal />
-                        </SidebarMenuAction>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent side='right' align='start'>
-                        <DropdownMenuItem onClick={() => handleEditEvent(event)}>
-                          <span>Editar Evento</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => handleDeleteEvent(event.eventId)}
-                        >
-                          <span>Deletar Evento</span>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </SidebarMenuItem>
-                ))}
+                {isLoading ? (
+                  <div className="flex items-center h-24 justify-evenly px-10">
+                    {/* Loading indicators */}
+                  </div>
+                ) : searchEvents?.length === 0 ? (
+                  <div className="text-center py-4 text-gray-500">
+                    Nenhum evento encontrado
+                  </div>
+                ) : (
+                  searchEvents?.map((event, key) => (
+                    <SidebarMenuItem key={key}>
+                      <SidebarMenuButton onClick={() => handleSelectEvent(event)}>
+                        <div className='w-6 h-6 rounded-full overflow-hidden'>
+                          <img src={event.eventPhoto} alt={`Foto do evento ${event.name}`} />
+                        </div>
+                        <span>{event.name}</span>
+                      </SidebarMenuButton>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <SidebarMenuAction>
+                            <MoreHorizontal />
+                          </SidebarMenuAction>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent side='right' align='start'>
+                          <DropdownMenuItem onClick={() => handleEditEvent(event)}>
+                            <span>Editar Evento</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleDeleteEvent(event.eventId)}
+                          >
+                            <span>Deletar Evento</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </SidebarMenuItem>
+                  )))}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarContent>
