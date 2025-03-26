@@ -52,8 +52,13 @@ import { getAllEventsByFilter } from '@/context/event/actions';
 import { InstitutePartner } from '@/constants/institutePartner';
 import { InstituteType } from '@/constants/instituteType';
 import { Region } from '@/constants/regions';
+import { set } from 'date-fns';
 
-export const InstituteListContainer = () => {
+interface InstituteListContainerProps {
+  setTrigger: (value: boolean) => void;
+}
+
+export default function InstituteListContainer({setTrigger}: InstituteListContainerProps) {
   const {
     institutes: { data: allInstitutes, selected: selectedInstitute },
   } = useInstitute();
@@ -65,12 +70,18 @@ export const InstituteListContainer = () => {
   const [editingInstitute, setEditingInstitute] = useState<Institute>();
 
   const handleSelectInstitute = async (institute: Institute) => {
+    
     if (institute.instituteId === selectedInstitute?.instituteId) {
-      instituteApiDispatch(
-        clearSelectedInstitute()
-      );
-      return
+      instituteApiDispatch(clearSelectedInstitute());
+      localStorage.removeItem('instituteId');
+      localStorage.removeItem('instituteName');
+      setTrigger(false); // Resetar o trigger
+      return;
     }
+
+
+    setTrigger(false); // Primeiro desativa
+    setTimeout(() => setTrigger(true), 100); // Depois reativa após pequeno delay
 
     const response = await instituteApiDispatch(
       getInstitute({ instituteId: institute.instituteId })

@@ -26,7 +26,6 @@ import { useEvent } from '@/hooks/useEvent';
 import { useEventDispatch } from '@/hooks/useEventDispatch';
 import { deleteEvent, getAllEventsByFilter } from '@/context/event/actions';
 import { Event } from '@/api/services/eventService/types';
-import { useInstituteDispatch } from '@/hooks/useInstituteDispatch';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -34,9 +33,12 @@ import {
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
 import { classNames } from 'primereact/utils';
-import { set } from 'date-fns';
 
-export const EventListContainer = () => {
+interface EventListContainerProps {
+  trigger: boolean;
+}
+
+export default function EventListContainer({ trigger }: EventListContainerProps) {
   const {
     searchEvents: { data: searchEvents },
   } = useEvent();
@@ -44,17 +46,25 @@ export const EventListContainer = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const eventDispatch = useEventDispatch();
-  const instituteDispatch = useInstituteDispatch();
 
   const [editingEvent, setEditingEvent] = useState<Event>();
 
 
   const [openEventSheet, setOpenEventSheet] = useState(false);
 
+  const [internalTrigger, setInternalTrigger] = useState(false);
+
+  useEffect(() => {
+    setIsLoading(true);
+    if (trigger) {
+      setInternalTrigger(true);
+    }
+  }, [trigger]);
+
   const fetchEvents = async () => {
     const instituteID = localStorage.getItem('instituteId');
     if (instituteID) {
-      setIsLoading(true); // Ativa o loading antes da requisição
+      setIsLoading(true);
       try {
         await eventDispatch(
           getAllEventsByFilter({
@@ -64,15 +74,18 @@ export const EventListContainer = () => {
             },
           })
         );
-      } catch (error) {
-        console.error('Error fetching events:', error);
       } finally {
-        setIsLoading(false); // Desativa o loading após a requisição (tanto sucesso quanto erro)
+        setIsLoading(false);
       }
-    } else {
-      setIsLoading(false); // Caso não tenha instituteID
     }
   };
+
+  useEffect(() => {
+    if (internalTrigger) {
+      fetchEvents();
+      setInternalTrigger(false);
+    }
+  }, [internalTrigger]);
 
   const instName = localStorage.getItem('instituteName');
   const truncateText = (text: string, maxLength: number): string => {
@@ -90,10 +103,6 @@ export const EventListContainer = () => {
   const handleDeleteEvent = async (eventId: string) => {
     await eventDispatch(deleteEvent(eventId));
   };
-
-  useEffect(() => {
-    fetchEvents();
-  }, []);
 
   function handleSelectEvent(event: Event) {
     console.log(event);
@@ -144,7 +153,9 @@ export const EventListContainer = () => {
               <SidebarMenu>
                 {isLoading ? (
                   <div className="flex items-center h-24 justify-evenly px-10">
-                    {/* Loading indicators */}
+                    <div className="w-5 h-5 rounded-full bg-gray-100 animate-loader-dot delay-100"></div>
+                    <div className="w-5 h-5 rounded-full bg-gray-100 animate-loader-dot delay-300"></div>
+                    <div className="w-5 h-5 rounded-full bg-gray-100 animate-loader-dot delay-500"></div>
                   </div>
                 ) : searchEvents?.length === 0 ? (
                   <div className="text-center py-4 text-gray-500">

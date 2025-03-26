@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { InstituteListContainer } from '@/containers/admin/InstituteListContainer';
 import * as authActions from '@/context/auth/actions';
 import {
   Sidebar,
@@ -7,7 +6,9 @@ import {
 } from '@/components/ui/sidebar';
 
 import { useAuthDispatch } from '@/hooks/useAuthDispatch';
-import { EventListContainer } from '@/containers/admin/EventListContainer';
+import EventListContainer from '@/containers/admin/EventListContainer';
+import React from 'react';
+import InstituteListContainer from '@/containers/admin/InstituteListContainer';
 
 export const AdminPage = () => {
   // const {
@@ -56,6 +57,12 @@ export const AdminPage = () => {
     authDispatch(authActions.signOut());
   };
 
+  const [trigger, setTrigger] = React.useState(false);
+  function handleTrigger(value: boolean) {
+    setTrigger(value);
+    console.log('trigger', value);
+  }
+
 
   // const handleEditEvent = (event: Event) => {
   //   setEditingEvent(event);
@@ -82,11 +89,11 @@ export const AdminPage = () => {
       <SidebarProvider>
         <Sidebar>
           <SidebarContent>
-            <InstituteListContainer />
+            <InstituteListContainer setTrigger={handleTrigger} />
           </SidebarContent>
         </Sidebar>
         <SidebarInset>
-          <EventListContainer />
+          <EventListContainer trigger={trigger} />
         </SidebarInset>
         {/* <div className='h-full w-full bg-transparent items-center flex flex-col flex-grow'>
           <div className='flex justify-between w-full p-4'>
