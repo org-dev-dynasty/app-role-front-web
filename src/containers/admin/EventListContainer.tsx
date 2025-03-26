@@ -45,6 +45,7 @@ export default function EventListContainer({ trigger }: EventListContainerProps)
   } = useEvent();
 
   const [isLoading, setIsLoading] = useState(true);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
 
   const eventDispatch = useEventDispatch();
 
@@ -102,9 +103,10 @@ export default function EventListContainer({ trigger }: EventListContainerProps)
   };
 
   const handleDeleteEvent = async (eventId: string) => {
-    setInternalTrigger(true);
+    setIsDeleteLoading(true);
     await eventDispatch(deleteEvent(eventId));
     toast.success('Evento deletado com sucesso');
+    setIsDeleteLoading(false);
   };
 
   function handleSelectEvent(event: Event) {
@@ -154,7 +156,7 @@ export default function EventListContainer({ trigger }: EventListContainerProps)
 
             <SidebarGroupContent>
               <SidebarMenu>
-                {instName ? (isLoading ? (
+                {instName ? ((isLoading || isDeleteLoading) ? (
                   <div className="flex items-center h-24 justify-evenly px-10">
                     <div className="w-5 h-5 rounded-full bg-gray-100 animate-loader-dot delay-100"></div>
                     <div className="w-5 h-5 rounded-full bg-gray-100 animate-loader-dot delay-300"></div>
