@@ -47,7 +47,7 @@ import { Region, regionFields } from '@/constants/regions';
 
 const formSchema = z.object({
   name: z.string(),
-  description: z.string(),
+  description: z.string().min(10),
   menuLink: z.string().optional(),
   ticketUrl: z.string().optional(),
   category: z.string(),
@@ -58,10 +58,10 @@ const formSchema = z.object({
   galleryImages: z.instanceof(File).array(),
   price: z.number(),
   instituteId: z.string(),
-  musicType: z.array(z.string()).optional(),
-  features: z.array(z.string()).optional(),
+  musicType: z.array(z.string()),
+  features: z.array(z.string()),
   address: addressValidation,
-  packageType: z.array(z.string()).optional(),
+  packageType: z.array(z.string()),
 });
 
 type FormData = z.infer<typeof formSchema>;
