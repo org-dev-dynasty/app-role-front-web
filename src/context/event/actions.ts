@@ -7,6 +7,7 @@ import {
   GetAllEventsParams,
 } from '@/api/services/eventService/types';
 import { eventService } from '@/config/services';
+import { toast } from 'react-toastify';
 
 export const getAllEvents =
   (params: GetAllEventsParams) => async (store: EventStore) => {
@@ -244,10 +245,11 @@ export const createEvent =
       const { data } = await eventService.createEvent(eventReady);
 
       store.events.setData([...store.events.data, data.event]);
-
+      toast.success('Evento criado com sucesso');
       return { success: true, event: data };
     } catch (error) {
       console.log("ERRO AO CRIAR EVENTO: ", error);
+      toast.error('Erro ao criar evento');
       const err = error as AxiosError<string>;
       store.events.setError(err.response?.data);
       return { success: false, message: err.response?.data };
