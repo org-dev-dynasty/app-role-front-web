@@ -47,7 +47,7 @@ import { Region, regionFields } from '@/constants/regions';
 
 const formSchema = z.object({
   name: z.string(),
-  description: z.string().min(10),
+  description: z.string().min(10, 'Descrição muito curta'),
   menuLink: z.string().optional(),
   ticketUrl: z.string().optional(),
   category: z.string(),
