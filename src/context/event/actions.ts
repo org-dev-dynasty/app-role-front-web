@@ -8,6 +8,7 @@ import {
 } from '@/api/services/eventService/types';
 import { eventService } from '@/config/services';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 export const getAllEvents =
   (params: GetAllEventsParams) => async (store: EventStore) => {
@@ -249,7 +250,14 @@ export const createEvent =
       return { success: true, event: data };
     } catch (error) {
       console.log("ERRO AO CRIAR EVENTO: ", error);
-      toast.error('Erro ao criar evento');
+      const axiosError = error as AxiosError;
+      if (axiosError.response?.status === 401) {
+        toast.error('Sessão expirada. Por favor, faça login novamente.');
+        const navigate = useNavigate();
+        navigate('/auth/login');
+      } else {
+        toast.error('Erro ao criar evento');
+      }
       const err = error as AxiosError<string>;
       store.events.setError(err.response?.data);
       return { success: false, message: err.response?.data };

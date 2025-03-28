@@ -10,6 +10,8 @@ import { AxiosError } from "axios";
 import { InstituteStore } from "./types";
 import { GenericUtils } from "@/utils/GenericUtils";
 import { instituteService } from "@/config/services";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export const getInstitute =
   (params: GetInstituteParams) => async (store: InstituteStore) => {
@@ -176,11 +178,19 @@ export const createInstitute =
 
       store.institutes.setData([...store.institutes.data, newInstitute]);
 
+      toast.success('Instituto criado com sucesso');
       return { success: true, institute: data };
     } catch (error) {
-      const err = error as AxiosError<string>;
-      store.institutes.setError(err.response?.data);
-      return { success: false, message: err.response?.data };
+      const axiosError = error as AxiosError;
+      if (axiosError.response?.status === 401) {
+        toast.error('Sessão expirada. Por favor, faça login novamente.');
+        const navigate = useNavigate();
+        navigate('/auth/login');
+      } else {
+        toast.error('Erro ao criar Instituto');
+      }
+      store.institutes.setError(axiosError.response?.data as string | undefined);
+      return { success: false, message: axiosError.response?.data };
     } finally {
       store.institutes.setLoading(false);
     }

@@ -49,7 +49,8 @@ export default function EventListContainer({ trigger }: EventListContainerProps)
 
   const eventDispatch = useEventDispatch();
 
-  const [editingEvent, setEditingEvent] = useState<Event>();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [seeingEvent, setSeeingEvent] = useState<Event>();
 
 
   const [openEventSheet, setOpenEventSheet] = useState(false);
@@ -97,8 +98,8 @@ export default function EventListContainer({ trigger }: EventListContainerProps)
     return text;
   };
 
-  const handleEditEvent = (event: Event) => {
-    setEditingEvent(event);
+  const handleSeeEvent = (event: Event) => {
+    setSeeingEvent(event);
     setOpenEventSheet(true);
   };
 
@@ -127,14 +128,14 @@ export default function EventListContainer({ trigger }: EventListContainerProps)
             <SidebarGroup>
               <SidebarGroupLabel asChild>
                 <span>
-                  {instName && ("Eventos de " + truncateText(instName, 19) )}
+                  {instName && ("Eventos de " + truncateText(instName, 19))}
                 </span>
               </SidebarGroupLabel>
             </SidebarGroup>
 
             <SidebarGroupAction title='Adicionar evento'>
               <Sheet open={openEventSheet} onOpenChange={setOpenEventSheet}>
-                <SheetTrigger className='shadow-none'>
+                <SheetTrigger className='shadow-none bg-light-purple rounded-sm z-50' onClick={() => setSeeingEvent(undefined)}>
                   <Plus size={16} />
                 </SheetTrigger>
                 <SheetContent className='flex flex-col'>
@@ -146,7 +147,7 @@ export default function EventListContainer({ trigger }: EventListContainerProps)
                   </SheetHeader>
                   <div className='w-full flex-grow pt-4 pr-4 overflow-y-auto'>
                     <CreateEventForm
-                      Event={editingEvent}
+                      Event={seeingEvent}
                       onSuccess={() => setOpenEventSheet(false)}
                     />
                   </div>
@@ -182,8 +183,8 @@ export default function EventListContainer({ trigger }: EventListContainerProps)
                           </SidebarMenuAction>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent side='right' align='start'>
-                          <DropdownMenuItem onClick={() => handleEditEvent(event)}>
-                            <span>Editar Evento</span>
+                          <DropdownMenuItem onClick={() => handleSeeEvent(event)}>
+                            <span>Ver Evento</span>
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => handleDeleteEvent(event.eventId)}
@@ -205,4 +206,4 @@ export default function EventListContainer({ trigger }: EventListContainerProps)
       </div>
     </div>
   );
-};
+}
