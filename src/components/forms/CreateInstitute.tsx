@@ -60,28 +60,6 @@ interface SinInFormProps {
 }
 
 const createDefaultValues = (institute?: Institute) => {
-  if (!institute) {
-    return {
-      instituteName: 'Instituto Legal',
-      instituteDescription: 'Descrição legal do instituto',
-      partnerType: INSTITUTE_PARTNER.GLOBAL_PARTNER,
-      instituteType: INSTITUTE_TYPE.ESTABELECIMENTO_FIXO,
-      phone: '11999999999',
-      address: 'Rua Fiação da Saúde, 361',
-      price: 3,
-      district: REGIONS.ZONA_SUL,
-      location: {
-        cep: '04144020',
-        address: 'Rua Fiação da Saúde',
-        number: '361',
-        neighborhood: 'Vila da Saúde',
-        city: 'São Paulo',
-        state: 'SP',
-        latitude: '-23.61757',
-        longitude: '-46.63765',
-      },
-    };
-  }
 
   console.log(institute);
 
@@ -93,16 +71,16 @@ const createDefaultValues = (institute?: Institute) => {
     phone: institute ? institute.phone : '',
     address: institute ? institute.address.address : '',
     price: institute?.price,
-    district: institute ? institute.district : '',
     location: {
+      district: institute ? institute.address.district : '',
       cep: institute ? institute.address.cep : '',
-      address: institute ? institute.address.street : '',
-      number: institute ? institute.address.number : '',
+      address: institute ? institute.address.address : '',
+      number: institute ? String(institute.address.number) : '',
       neighborhood: institute ? institute.address.neighborhood : '',
       city: institute ? institute.address.city : '',
       state: institute ? institute.address.state : '',
-      latitude: institute ? institute.address.latitude : '',
-      longitude: institute ? institute.address.longitude : '',
+      latitude: institute ? String(institute.address.latitude) : '',
+      longitude: institute ? String(institute.address.longitude) : '',
     },
   };
 };
@@ -345,11 +323,7 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
               <FormLabel>Zona do Instituto</FormLabel>
               {institute ? (
                 <Select disabled onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder={institute.address.district?.replace(/_/g, ' ')} />
-                    </SelectTrigger>
-                  </FormControl>
+                  {institute.address.district?.replace(/_/g, ' ')}
                 </Select>
               ) : (<Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
