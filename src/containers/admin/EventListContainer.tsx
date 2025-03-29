@@ -108,7 +108,7 @@ export default function EventListContainer({ trigger }: EventListContainerProps)
   };
 
   function handleSelectEvent(event: Event) {
-    console.log(event);
+    console.log('Selected event:', event);
   }
 
   return (
@@ -124,7 +124,7 @@ export default function EventListContainer({ trigger }: EventListContainerProps)
           <SidebarContent className='shadow-none'>
             <SidebarGroup>
               <SidebarGroupLabel asChild>
-                <span>
+                <span title={instName ? instName : ""}>
                   {instName && ("Eventos de " + truncateText(instName, 19))}
                 </span>
               </SidebarGroupLabel>
@@ -132,14 +132,14 @@ export default function EventListContainer({ trigger }: EventListContainerProps)
 
             <SidebarGroupAction title='Adicionar evento'>
               <Sheet open={openEventSheet} onOpenChange={setOpenEventSheet}>
-                <SheetTrigger className='shadow-none bg-light-purple rounded-sm z-50' onClick={() => setSeeingEvent(undefined)}>
+                {instName && (<SheetTrigger className='shadow-none bg-light-purple rounded-sm z-50' onClick={() => setSeeingEvent(undefined)}>
                   <Plus size={16} />
-                </SheetTrigger>
+                </SheetTrigger>)}
                 <SheetContent className='flex flex-col'>
                   <SheetHeader>
-                    <SheetTitle>Adicionar um novo evento</SheetTitle>
+                    <SheetTitle title={seeingEvent?.name} >{seeingEvent ? `${truncateText(seeingEvent?.name, 31)}` : "Adicionar um novo evento"}</SheetTitle>
                     <SheetDescription>
-                      Preencha o formulário abaixo para adicionar um novo evento
+                      {!seeingEvent && ("Preencha o formulário abaixo para adicionar um novo evento")}
                     </SheetDescription>
                   </SheetHeader>
                   <div className='w-full flex-grow pt-4 pr-4 overflow-y-auto'>
@@ -171,7 +171,7 @@ export default function EventListContainer({ trigger }: EventListContainerProps)
                         <div className='w-6 h-6 rounded-full overflow-hidden'>
                           <img src={event.eventPhoto} alt={`Foto do evento ${event.name}`} />
                         </div>
-                        <span>{event.name}</span>
+                        <span title={event.name}>{truncateText(event.name, 22)}</span>
                       </SidebarMenuButton>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>

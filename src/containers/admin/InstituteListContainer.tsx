@@ -216,7 +216,7 @@ export default function InstituteListContainer({ setTrigger }: InstituteListCont
 
       <SidebarGroupAction title='Adicionar Institutos'>
         <Sheet open={openInstituteSheet} onOpenChange={handleOpenChange}>
-          <SheetTrigger disabled={showLoading}>
+          <SheetTrigger disabled={showLoading} className='shadow-none bg-light-purple rounded-sm z-50'>
             {showLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
@@ -260,6 +260,7 @@ export default function InstituteListContainer({ setTrigger }: InstituteListCont
                 <SidebarMenuButton
                   onClick={() => handleSelectInstitute(institute)}
                   disabled={localActionLoading}
+                  title={institute.name}
                 >
                   <div className='w-6 h-6 rounded-full overflow-hidden'>
                     <img src={institute.logo} alt={institute.name} />

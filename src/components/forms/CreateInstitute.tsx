@@ -489,9 +489,9 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
             </FormItem>
           )}
         />
-        <Button type='submit' className='w-full'>
-          {institute ? 'Atualizar Instituto' : 'Criar Instituto'}
-        </Button>
+        {!institute && (<Button type='submit' className='w-full'>
+          'Criar Instituto'
+        </Button>)}
       </form>
     </Form>
   );
