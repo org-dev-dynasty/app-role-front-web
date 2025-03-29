@@ -119,10 +119,10 @@ export default function InstituteListContainer({ setTrigger }: InstituteListCont
     }
   };
 
-  // const handleEditInstitute = (institute: Institute) => {
-  //   setEditingInstitute(institute);
-  //   setOpenInstituteSheet(true);
-  // };
+  const handleEditInstitute = (institute: Institute) => {
+    setEditingInstitute(institute);
+    setOpenInstituteSheet(true);
+  };
 
   const handleOpenChange = (currentOpenState: boolean) => {
     setOpenInstituteSheet(currentOpenState);
@@ -278,6 +278,12 @@ export default function InstituteListContainer({ setTrigger }: InstituteListCont
                   </DropdownMenuTrigger>
                   <DropdownMenuContent side='right' align='start'>
                     <DropdownMenuItem
+                      onClick={() => handleEditInstitute(institute)}
+                      disabled={localActionLoading}
+                    >
+                      {localActionLoading ? 'Processando...' : 'Ver Instituto'}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
                       onClick={() => handleDeleteInstitute(institute)}
                       disabled={localActionLoading}
                     >
@@ -292,4 +298,4 @@ export default function InstituteListContainer({ setTrigger }: InstituteListCont
       </SidebarGroupContent>
     </SidebarGroup>
   );
-};
+}

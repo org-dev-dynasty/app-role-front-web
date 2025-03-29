@@ -247,6 +247,7 @@ export const createEvent =
 
       store.events.setData([...store.events.data, data.event]);
       toast.success('Evento criado com sucesso');
+      store.events.setLoading(false);
       return { success: true, event: data };
     } catch (error) {
       console.log("ERRO AO CRIAR EVENTO: ", error);

@@ -187,7 +187,12 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
           )}
         />
 
-        {!Event?.eventId && (
+        {Event?.eventId ? (
+          <div className='flex flex-col gap-2'>
+            <FormLabel>Imagem do evento</FormLabel>
+            <img src={Event.eventPhoto} alt="" />
+          </div>
+        ) : (
           <FormField
             control={form.control}
             name='eventPhoto'
@@ -206,7 +211,12 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
           />
         )}
 
-        {!Event?.eventId && (<FormField
+        {Event?.eventId ? (
+          <div className='flex flex-col gap-2'>
+            <FormLabel>Galeria do evento</FormLabel>
+            {Event.galleryLink[0] ? (<img src={Event.galleryLink[0]} alt="" />) : (<p className='text-gray-500'>Nenhuma imagem na galeria</p>)}
+          </div>
+        ) : (<FormField
           control={form.control}
           name='galleryImages'
           render={({ field }) => (
@@ -555,7 +565,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
                 <ToggleGroup disabled={true} type="multiple" className='flex-wrap' size={"lg"} onValueChange={field.onChange} defaultValue={field.value} variant='outline'>
                   {Event.musicType.map((musicType) => (
                     <ToggleGroupItem key={musicType} value={musicType} aria-label={`Toggle ${musicType}`}>
-                      {musicType}
+                      {musicType.match(/_/g) ? musicType.replace(/_/g, ' ') : musicType}
                     </ToggleGroupItem>
                   ))}
                 </ToggleGroup>
@@ -609,7 +619,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
                 <ToggleGroup disabled={true} type="multiple" className='flex-wrap' size={"lg"} onValueChange={field.onChange} defaultValue={field.value} variant='outline'>
                   {Event.features.map((feature) => (
                     <ToggleGroupItem key={feature} value={feature} aria-label={`Toggle ${feature}`}>
-                      {feature}
+                      {feature.match(/_/g) ? feature.replace(/_/g, ' ') : feature}
                     </ToggleGroupItem>
                   ))}
                 </ToggleGroup>

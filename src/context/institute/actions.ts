@@ -181,6 +181,8 @@ export const createInstitute =
       toast.success('Instituto criado com sucesso');
       return { success: true, institute: data };
     } catch (error) {
+      console.error('Erro ao criar Instituto');
+      console.error(error);
       const axiosError = error as AxiosError;
       if (axiosError.response?.status === 401) {
         toast.error('Sessão expirada. Por favor, faça login novamente.');

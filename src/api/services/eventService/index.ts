@@ -86,15 +86,20 @@ export class EventService extends AuthenticatedService {
   createEvent(formData: FormData) {
     console.log('formData', formData)
     console.log('EVENT_SERVICE_ROUTES.POST.CREATE_EVENT', EVENT_SERVICE_ROUTES.POST.CREATE_EVENT)
-    return this.instance.post<CreateEventResponse>(
-      EVENT_SERVICE_ROUTES.POST.CREATE_EVENT,
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }
-    );
+    try {
+      return this.instance.post<CreateEventResponse>(
+        EVENT_SERVICE_ROUTES.POST.CREATE_EVENT,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+    } catch (error) {
+      console.error('Error creating event:', error);
+      throw error; // Re-throw the error after logging it
+    }
   }
 
   updateEvent(params: UpdateEventParams) {

@@ -43,7 +43,6 @@ export default function EventListContainer({ trigger }: EventListContainerProps)
   const {
     searchEvents: { data: searchEvents },
   } = useEvent();
-
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
 
@@ -51,8 +50,6 @@ export default function EventListContainer({ trigger }: EventListContainerProps)
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [seeingEvent, setSeeingEvent] = useState<Event>();
-
-
   const [openEventSheet, setOpenEventSheet] = useState(false);
 
   const [internalTrigger, setInternalTrigger] = useState(false);
@@ -148,7 +145,7 @@ export default function EventListContainer({ trigger }: EventListContainerProps)
                   <div className='w-full flex-grow pt-4 pr-4 overflow-y-auto'>
                     <CreateEventForm
                       Event={seeingEvent}
-                      onSuccess={() => setOpenEventSheet(false)}
+                      onSuccess={() => { setOpenEventSheet(false); setInternalTrigger(true); }}
                     />
                   </div>
                 </SheetContent>
@@ -156,7 +153,7 @@ export default function EventListContainer({ trigger }: EventListContainerProps)
             </SidebarGroupAction>
 
             <SidebarGroupContent>
-              <SidebarMenu>
+              <SidebarMenu className='w-full overflow-y-scroll pb-28'>
                 {instName ? ((isLoading || isDeleteLoading) ? (
                   <div className="flex items-center h-24 justify-evenly px-10">
                     <div className="w-5 h-5 rounded-full bg-gray-100 animate-loader-dot delay-100"></div>
