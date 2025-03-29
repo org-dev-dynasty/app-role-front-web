@@ -95,14 +95,14 @@ const createDefaultValues = (institute?: Institute) => {
     price: institute?.price,
     district: institute ? institute.district : '',
     location: {
-      cep: '',
-      address: '',
-      number: '',
-      neighborhood: '',
-      city: '',
-      state: '',
-      latitude: '',
-      longitude: '',
+      cep: institute ? institute.address.cep : '',
+      address: institute ? institute.address.street : '',
+      number: institute ? institute.address.number : '',
+      neighborhood: institute ? institute.address.neighborhood : '',
+      city: institute ? institute.address.city : '',
+      state: institute ? institute.address.state : '',
+      latitude: institute ? institute.address.latitude : '',
+      longitude: institute ? institute.address.longitude : '',
     },
   };
 };
@@ -164,6 +164,7 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
 
         {institute ? (
           <div>
+            <FormLabel>Logo</FormLabel>
             <img src={institute.logo} alt="" />
           </div>
         )
@@ -346,7 +347,7 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
                 <Select disabled onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder={institute.address.district} />
+                      <SelectValue placeholder={institute.address.district?.replace(/_/g, ' ')} />
                     </SelectTrigger>
                   </FormControl>
                 </Select>
