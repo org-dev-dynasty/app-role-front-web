@@ -34,6 +34,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { classNames } from 'primereact/utils';
 import { toast } from 'react-toastify';
+import { truncateText } from '@/pages/admin';
 
 interface EventListContainerProps {
   trigger: boolean;
@@ -88,12 +89,6 @@ export default function EventListContainer({ trigger }: EventListContainerProps)
   }, [internalTrigger]);
 
   const instName = localStorage.getItem('instituteName');
-  const truncateText = (text: string, maxLength: number): string => {
-    if (text.length > maxLength) {
-      return text.substring(0, maxLength) + '...';
-    }
-    return text;
-  };
 
   const handleSeeEvent = (event: Event) => {
     setSeeingEvent(event);
@@ -124,7 +119,7 @@ export default function EventListContainer({ trigger }: EventListContainerProps)
           <SidebarContent className='shadow-none'>
             <SidebarGroup>
               <SidebarGroupLabel asChild>
-                <span title={instName ? instName : ""}>
+                <span title={instName ? instName : ""} className='text-sm font-semibold text-light-purple'>
                   {instName && ("Eventos de " + truncateText(instName, 19))}
                 </span>
               </SidebarGroupLabel>

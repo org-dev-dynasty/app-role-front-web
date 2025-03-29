@@ -12,6 +12,16 @@ import InstituteListContainer from '@/containers/admin/InstituteListContainer';
 import { LogOut } from 'lucide-react';
 import { IMAGES } from '@/constants/image';
 
+export const truncateText = (text: string | null, maxLength: number): string => {
+  if (text)
+  {if (text.length > maxLength) {
+    return text.substring(0, maxLength) + '...';
+  }
+    return text;
+  }
+  return ''
+};
+
 export const AdminPage = () => {
 
   const authDispatch = useAuthDispatch();
@@ -21,6 +31,7 @@ export const AdminPage = () => {
     localStorage.removeItem('instituteName');
     authDispatch(authActions.signOut());
   };
+
 
   const [trigger, setTrigger] = React.useState(false);
   function handleTrigger(value: boolean) {
@@ -46,7 +57,7 @@ export const AdminPage = () => {
               />
             </div>
             <h1 className='text-white text-xl font-chillax'>
-              {localStorage.getItem('instituteName')}
+              {truncateText(localStorage.getItem('instituteName'), 52)}
             </h1>
             <button
               className='text-secondary bg-primary rounded-md px-4 py-2'

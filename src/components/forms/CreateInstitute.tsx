@@ -6,12 +6,11 @@ import { z } from 'zod';
 import { Institute } from '@/api/services/instituteService/types';
 
 import {
-  INSTITUTE_PARTNER,
-  institutePartnerFields,
+  institutePartnerFields
 } from '@/constants/institutePartner';
-import { INSTITUTE_TYPE, instituteTypeFields } from '@/constants/instituteType';
+import { instituteTypeFields } from '@/constants/instituteType';
 import { priceFields } from '@/constants/price';
-import { regionFields, REGIONS } from '@/constants/regions';
+import { regionFields } from '@/constants/regions';
 
 import { addressValidation } from '@/utils/validations';
 
@@ -45,7 +44,6 @@ const formSchema = z.object({
   partnerType: z.string(),
   instituteType: z.string(),
   phone: z.string(),
-  address: z.string(),
   logoPhoto: z.instanceof(File),
   location: addressValidation,
   price: z.number(),
@@ -69,12 +67,12 @@ const createDefaultValues = (institute?: Institute) => {
     partnerType: institute ? institute.partnerType : '',
     instituteType: institute ? institute.instituteType : '',
     phone: institute ? institute.phone : '',
-    address: institute ? institute.address.address : '',
-    price: institute?.price,
+    price: Number(institute?.price) || undefined,
     location: {
       district: institute ? institute.address.district : '',
       cep: institute ? institute.address.cep : '',
-      address: institute ? institute.address.address : '',
+      street: institute ? institute.address.address : '',
+      address: institute ? (institute.address.street || institute.address.address) : '',
       number: institute ? String(institute.address.number) : '',
       neighborhood: institute ? institute.address.neighborhood : '',
       city: institute ? institute.address.city : '',
@@ -95,8 +93,6 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
   function onSubmit(values: CreateInstituteFormData) {
     onSuccess?.(values);
   }
-
-  console.log(form.formState.errors);
 
   return (
     <Form {...form}>
@@ -130,7 +126,6 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
               <FormLabel>Descrição do instituto</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder='Crie uma descrição para o instituto'
                   {...field}
                   disabled={institute ? true : false}
                 />
@@ -323,7 +318,7 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
               <FormLabel>Zona do Instituto</FormLabel>
               {institute ? (
                 <Select disabled onValueChange={field.onChange} defaultValue={field.value}>
-                  {institute.address.district?.replace(/_/g, ' ')}
+                  <div className='p-2 border-[1px] border-[#1c1c1c] text-[#999] rounded-lg'> {institute.address.district?.replace(/_/g, ' ')} </div>
                 </Select>
               ) : (<Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
@@ -396,7 +391,7 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
             <FormItem>
               <FormLabel>Preço</FormLabel>
               <Select
-                value={field.value.toString()}
+                defaultValue={String(field.value)}
                 onValueChange={(value) => field.onChange(Number(value))}
                 disabled={institute ? true : false}
               >

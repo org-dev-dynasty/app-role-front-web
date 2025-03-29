@@ -6,8 +6,7 @@ import {
   createInstitute,
   deleteInstitute,
   getAllInstitutes,
-  getInstitute,
-  updateInstitute,
+  getInstitute
 } from '@/context/institute/actions';
 
 import { useInstitute } from '@/hooks/useInstitute';
@@ -15,8 +14,7 @@ import { useInstituteDispatch } from '@/hooks/useInstituteDispatch';
 
 import {
   CreateInstituteParams,
-  Institute,
-  UpdateInstituteParams,
+  Institute
 } from '@/api/services/instituteService/types';
 
 import {
@@ -53,6 +51,7 @@ import { InstitutePartner } from '@/constants/institutePartner';
 import { InstituteType } from '@/constants/instituteType';
 import { Region } from '@/constants/regions';
 import { toast } from 'react-toastify';
+import { truncateText } from '@/pages/admin';
 
 interface InstituteListContainerProps {
   setTrigger: (value: boolean) => void;
@@ -151,28 +150,28 @@ export default function InstituteListContainer({ setTrigger }: InstituteListCont
       console.log('create');
 
       if (editingInstitute) {
-        const updateInstituteData: UpdateInstituteParams = {
-          instituteId: editingInstitute.instituteId,
-          name: values.instituteName,
-          description: values.instituteDescription,
-          partnerType: values.partnerType as InstitutePartner,
-          instituteType: values.instituteType as InstituteType,
-          phone: values.phone,
-          district: values.district as Region,
-          address: {
-            address: values.address,
-            number: Number(values.location.number),
-            neighborhood: values.location.neighborhood,
-            city: values.location.city,
-            state: values.location.state,
-            cep: values.location.cep,
-            latitude: Number(values.location.latitude),
-            longitude: Number(values.location.longitude),
-          },
-          logo: values.logoPhoto,
-          price: values.price,
-        };
-        await instituteApiDispatch(updateInstitute(updateInstituteData));
+        // const updateInstituteData: UpdateInstituteParams = {
+        //   instituteId: editingInstitute.instituteId,
+        //   name: values.instituteName,
+        //   description: values.instituteDescription,
+        //   partnerType: values.partnerType as InstitutePartner,
+        //   instituteType: values.instituteType as InstituteType,
+        //   phone: values.phone,
+        //   district: values.district as Region,
+        //   address: {
+        //     address: values.address,
+        //     number: Number(values.location.number),
+        //     neighborhood: values.location.neighborhood,
+        //     city: values.location.city,
+        //     state: values.location.state,
+        //     cep: values.location.cep,
+        //     latitude: Number(values.location.latitude),
+        //     longitude: Number(values.location.longitude),
+        //   },
+        //   logo: values.logoPhoto,
+        //   price: values.price,
+        // };
+        // await instituteApiDispatch(updateInstitute(updateInstituteData));
       } else {
         const instituteData: CreateInstituteParams = {
           name: values.instituteName,
@@ -182,7 +181,7 @@ export default function InstituteListContainer({ setTrigger }: InstituteListCont
           phone: values.phone,
           district: values.district as Region,
           address: {
-            address: values.address,
+            address: values.location.address,
             number: Number(values.location.number),
             neighborhood: values.location.neighborhood,
             city: values.location.city,
@@ -225,9 +224,9 @@ export default function InstituteListContainer({ setTrigger }: InstituteListCont
           </SheetTrigger>
           <SheetContent className='flex flex-col'>
             <SheetHeader>
-              <SheetTitle>Adicionar um novo instituto</SheetTitle>
+              <SheetTitle>{editingInstitute ? `${editingInstitute.name}` : "Adicionar um novo Insituto"}</SheetTitle>
               <SheetDescription>
-                Preencha o formulário abaixo para adicionar um novo instituto
+                {!editingInstitute && ("Preencha o formulário abaixo para adicionar um novo instituto")}
               </SheetDescription>
             </SheetHeader>
             <div className='w-full flex-grow pt-4 pr-4 overflow-y-auto'>
@@ -265,7 +264,7 @@ export default function InstituteListContainer({ setTrigger }: InstituteListCont
                   <div className='w-6 h-6 rounded-full overflow-hidden'>
                     <img src={institute.logo} alt={institute.name} />
                   </div>
-                  <span className='text-foreground'>{institute.name}</span>
+                  <span className='text-foreground'>{truncateText(institute.name, 24)}</span>
                 </SidebarMenuButton>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild title='Mais ações' disabled={localActionLoading}>
