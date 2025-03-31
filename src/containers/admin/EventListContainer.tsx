@@ -98,7 +98,6 @@ export default function EventListContainer({ trigger }: EventListContainerProps)
   const handleDeleteEvent = async (eventId: string) => {
     setIsDeleteLoading(true);
     await eventDispatch(deleteEvent(eventId));
-    toast.success('Evento deletado com sucesso');
     setIsDeleteLoading(false);
   };
 

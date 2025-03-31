@@ -199,10 +199,18 @@ export const deleteEvent = (eventId: string) => async (store: EventStore) => {
     store.searchEvents.setData(
       store.searchEvents.data.filter((event) => event.eventId !== eventId)
     );
-
+    
+    toast.success('Evento deletado com sucesso');
     return { success: true };
   } catch (error) {
     const err = error as AxiosError<string>;
+    if (err.message === "Network Error") {
+      toast.error('Sessão expirada. Por favor, faça login novamente.');
+      const navigate = useNavigate();
+      navigate('/auth/login');
+    } else {
+      toast.error('Erro ao deletar evento');
+    }
     store.events.setError(err.response?.data);
     return { success: false, message: err.response?.data };
   } finally {
@@ -252,7 +260,7 @@ export const createEvent =
     } catch (error) {
       console.log("ERRO AO CRIAR EVENTO: ", error);
       const axiosError = error as AxiosError;
-      if (axiosError.response?.status === 401) {
+      if (axiosError.message === "Network Error") {
         toast.error('Sessão expirada. Por favor, faça login novamente.');
         const navigate = useNavigate();
         navigate('/auth/login');

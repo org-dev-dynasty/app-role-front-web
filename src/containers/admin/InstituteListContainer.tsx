@@ -50,7 +50,6 @@ import { getAllEventsByFilter } from '@/context/event/actions';
 import { InstitutePartner } from '@/constants/institutePartner';
 import { InstituteType } from '@/constants/instituteType';
 import { Region } from '@/constants/regions';
-import { toast } from 'react-toastify';
 import { truncateText } from '@/pages/admin';
 
 interface InstituteListContainerProps {
@@ -104,18 +103,12 @@ export default function InstituteListContainer({ setTrigger }: InstituteListCont
 
   const handleDeleteInstitute = async (institute: Institute) => {
     setLocalActionLoading(true);
-    try {
-      await instituteApiDispatch(
-        deleteInstitute({
-          instituteId: institute.instituteId,
-        })
-      );
-      toast.success('Instituto deletado com sucesso');
-    } catch (error) {
-      toast.error('Erro ao deletar instituto');
-    } finally {
-      setLocalActionLoading(false);
-    }
+    await instituteApiDispatch(
+      deleteInstitute({
+        instituteId: institute.instituteId,
+      })
+    );
+    setLocalActionLoading(false);
   };
 
   const handleEditInstitute = (institute: Institute) => {
