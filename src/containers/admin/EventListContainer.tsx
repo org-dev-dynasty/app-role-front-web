@@ -33,7 +33,6 @@ import {
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
 import { classNames } from 'primereact/utils';
-import { toast } from 'react-toastify';
 import { truncateText } from '@/pages/admin';
 
 interface EventListContainerProps {
