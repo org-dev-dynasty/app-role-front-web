@@ -143,7 +143,7 @@ export abstract class AuthenticatedService {
       if (this._authService.tokens) {
         config.headers[
           'Authorization'
-        ] = `Bearer ${this._authService.tokens.idToken}`;
+        ] = `${this._authService.tokens.idToken}`;
       }
 
       return config;

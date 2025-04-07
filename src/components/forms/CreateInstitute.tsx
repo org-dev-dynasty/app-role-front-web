@@ -6,12 +6,11 @@ import { z } from 'zod';
 import { Institute } from '@/api/services/instituteService/types';
 
 import {
-  INSTITUTE_PARTNER,
-  institutePartnerFields,
+  institutePartnerFields
 } from '@/constants/institutePartner';
-import { INSTITUTE_TYPE, instituteTypeFields } from '@/constants/instituteType';
+import { instituteTypeFields } from '@/constants/instituteType';
 import { priceFields } from '@/constants/price';
-import { regionFields, REGIONS } from '@/constants/regions';
+import { regionFields } from '@/constants/regions';
 
 import { addressValidation } from '@/utils/validations';
 
@@ -45,7 +44,6 @@ const formSchema = z.object({
   partnerType: z.string(),
   instituteType: z.string(),
   phone: z.string(),
-  address: z.string(),
   logoPhoto: z.instanceof(File),
   location: addressValidation,
   price: z.number(),
@@ -60,28 +58,8 @@ interface SinInFormProps {
 }
 
 const createDefaultValues = (institute?: Institute) => {
-  if (!institute) {
-    return {
-      instituteName: 'Instituto Legal',
-      instituteDescription: 'Descrição legal do instituto',
-      partnerType: INSTITUTE_PARTNER.GLOBAL_PARTNER,
-      instituteType: INSTITUTE_TYPE.ESTABELECIMENTO_FIXO,
-      phone: '11999999999',
-      address: 'Rua Fiação da Saúde, 361',
-      price: 3,
-      district: REGIONS.ZONA_SUL,
-      location: {
-        cep: '04144020',
-        address: 'Rua Fiação da Saúde',
-        number: '361',
-        neighborhood: 'Vila da Saúde',
-        city: 'São Paulo',
-        state: 'SP',
-        latitude: '-23.61757',
-        longitude: '-46.63765',
-      },
-    };
-  }
+
+  console.log(institute);
 
   return {
     instituteName: institute ? institute.name : '',
@@ -89,18 +67,18 @@ const createDefaultValues = (institute?: Institute) => {
     partnerType: institute ? institute.partnerType : '',
     instituteType: institute ? institute.instituteType : '',
     phone: institute ? institute.phone : '',
-    address: institute ? institute.address.address : '',
-    price: institute?.price,
-    district: institute ? institute.district : '',
+    price: Number(institute?.price) || undefined,
     location: {
-      cep: '',
-      address: '',
-      number: '',
-      neighborhood: '',
-      city: '',
-      state: '',
-      latitude: '',
-      longitude: '',
+      district: institute ? institute.address.district : '',
+      cep: institute ? institute.address.cep : '',
+      street: institute ? institute.address.address : '',
+      address: institute ? (institute.address.street || institute.address.address) : '',
+      number: institute ? String(institute.address.number) : '',
+      neighborhood: institute ? institute.address.neighborhood : '',
+      city: institute ? institute.address.city : '',
+      state: institute ? institute.address.state : '',
+      latitude: institute ? String(institute.address.latitude) : '',
+      longitude: institute ? String(institute.address.longitude) : '',
     },
   };
 };
@@ -115,8 +93,6 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
   function onSubmit(values: CreateInstituteFormData) {
     onSuccess?.(values);
   }
-
-  console.log(form.formState.errors);
 
   return (
     <Form {...form}>
@@ -135,7 +111,7 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
             <FormItem>
               <FormLabel>Nome do instituto</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} disabled={institute ? true : false} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -150,8 +126,8 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
               <FormLabel>Descrição do instituto</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder='Crie uma descrição para o instituto'
                   {...field}
+                  disabled={institute ? true : false}
                 />
               </FormControl>
               <FormMessage />
@@ -159,41 +135,48 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name='logoPhoto'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Logo</FormLabel>
-              <FormControl>
-                <ImageInput
-                  onChange={(files: any) => {
-                    field.onChange(files?.[0] ?? undefined);
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {institute ? (
+          <div>
+            <FormLabel>Logo</FormLabel>
+            <img src={institute.logo} alt="" />
+          </div>
+        )
+          : < FormField
+            control={form.control}
+            name='logoPhoto'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Logo</FormLabel>
+                <FormControl>
+                  <ImageInput
+                    onChange={(files: any) => {
+                      field.onChange(files?.[0] ?? undefined);
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />}
         <Separator />
         <h2 className='text-xl font-bold'>Contato e localização</h2>
 
-        <FormField
-          control={form.control}
-          name='phone'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Telefone</FormLabel>
-              <FormControl>
-                <PhoneInput placeholder='(99) 99999-9999' {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {!institute &&
+          <FormField
+            control={form.control}
+            name='phone'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Telefone</FormLabel>
+                <FormControl>
+                  <PhoneInput placeholder='(99) 99999-9999' {...field} disabled={institute ? true : false} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />}
 
-        <FormField
+        {!institute && (<FormField
           control={form.control}
           name='location'
           render={({ field }) => (
@@ -204,7 +187,7 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
               </FormControl>
             </FormItem>
           )}
-        />
+        />)}
 
         <FormField
           control={form.control}
@@ -217,6 +200,7 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
                   value={value.cep}
                   onChange={(e) => onChange({ ...value, cep: e.target.value })}
                   {...props}
+                  disabled={institute ? true : false}
                 />
               </FormControl>
               <FormMessage />
@@ -232,6 +216,7 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
               <FormLabel>Endereço</FormLabel>
               <FormControl>
                 <Input
+                  disabled={institute ? true : false}
                   value={value.address}
                   onChange={(e) =>
                     onChange({ ...value, address: e.target.value })
@@ -252,6 +237,7 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
               <FormLabel>Número</FormLabel>
               <FormControl>
                 <Input
+                  disabled={institute ? true : false}
                   value={value.number}
                   onChange={(e) =>
                     onChange({ ...value, number: e.target.value })
@@ -272,6 +258,7 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
               <FormLabel>Bairro</FormLabel>
               <FormControl>
                 <Input
+                  disabled={institute ? true : false}
                   value={value.neighborhood}
                   onChange={(e) =>
                     onChange({ ...value, neighborhood: e.target.value })
@@ -292,6 +279,7 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
               <FormLabel>Cidade</FormLabel>
               <FormControl>
                 <Input
+                  disabled={institute ? true : false}
                   value={value.city}
                   onChange={(e) => onChange({ ...value, city: e.target.value })}
                   {...props}
@@ -310,6 +298,7 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
               <FormLabel>Estado</FormLabel>
               <FormControl>
                 <Input
+                  disabled={institute ? true : false}
                   value={value.state}
                   onChange={(e) =>
                     onChange({ ...value, state: e.target.value })
@@ -326,22 +315,25 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
           name='district'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Região</FormLabel>
-              <Select
-                value={field.value.toString()}
-                onValueChange={(value) => field.onChange(Number(value))}
-              >
+              <FormLabel>Zona do Instituto</FormLabel>
+              {institute ? (
+                <Select disabled onValueChange={field.onChange} defaultValue={field.value}>
+                  <div className='p-2 border-[1px] border-[#1c1c1c] text-[#999] rounded-lg'> {institute.address.district?.replace(/_/g, ' ')} </div>
+                </Select>
+              ) : (<Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder='Selecione um valor' />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {regionFields.map(({ value, label }) => (
-                    <SelectItem value={value}>{label}</SelectItem>
+                  {regionFields.map((regionField) => (
+                    <SelectItem key={regionField.value} value={regionField.value}>
+                      {regionField.label}
+                    </SelectItem>
                   ))}
                 </SelectContent>
-              </Select>
+              </Select>)}
               <FormMessage />
             </FormItem>
           )}
@@ -399,8 +391,9 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
             <FormItem>
               <FormLabel>Preço</FormLabel>
               <Select
-                value={field.value.toString()}
+                defaultValue={String(field.value)}
                 onValueChange={(value) => field.onChange(Number(value))}
+                disabled={institute ? true : false}
               >
                 <FormControl>
                   <SelectTrigger>
@@ -424,7 +417,8 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Tipo de instituto</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} defaultValue={field.value}
+                disabled={institute ? true : false}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder='Selecione um valor' />
@@ -447,7 +441,8 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Tipo de parceiro</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} defaultValue={field.value}
+                disabled={institute ? true : false}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder='Selecione um valor' />
@@ -463,9 +458,9 @@ export function CreateInstituteForm({ onSuccess, institute }: SinInFormProps) {
             </FormItem>
           )}
         />
-        <Button type='submit' className='w-full'>
-          {institute ? 'Atualizar Instituto' : 'Criar Instituto'}
-        </Button>
+        {!institute && (<Button type='submit' className='w-full'>
+          'Criar Instituto'
+        </Button>)}
       </form>
     </Form>
   );
