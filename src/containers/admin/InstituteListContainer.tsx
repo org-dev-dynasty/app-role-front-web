@@ -1,12 +1,12 @@
-import { MoreHorizontal, Plus } from 'lucide-react';
+
+import { Loader2, MoreHorizontal, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import {
   clearSelectedInstitute,
   createInstitute,
   deleteInstitute,
   getAllInstitutes,
-  getInstitute,
-  updateInstitute,
+  getInstitute
 } from '@/context/institute/actions';
 
 import { useInstitute } from '@/hooks/useInstitute';
@@ -14,8 +14,7 @@ import { useInstituteDispatch } from '@/hooks/useInstituteDispatch';
 
 import {
   CreateInstituteParams,
-  Institute,
-  UpdateInstituteParams,
+  Institute
 } from '@/api/services/instituteService/types';
 
 import {
@@ -51,8 +50,13 @@ import { getAllEventsByFilter } from '@/context/event/actions';
 import { InstitutePartner } from '@/constants/institutePartner';
 import { InstituteType } from '@/constants/instituteType';
 import { Region } from '@/constants/regions';
+import { truncateText } from '@/pages/admin';
 
-export const InstituteListContainer = () => {
+interface InstituteListContainerProps {
+  setTrigger: (value: boolean) => void;
+}
+
+export default function InstituteListContainer({ setTrigger }: InstituteListContainerProps) {
   const {
     institutes: { data: allInstitutes, selected: selectedInstitute },
   } = useInstitute();
@@ -60,46 +64,57 @@ export const InstituteListContainer = () => {
   const instituteApiDispatch = useInstituteDispatch();
   const eventDispatch = useEventDispatch();
 
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [localActionLoading, setLocalActionLoading] = useState<boolean>(false)
+
   const [openInstituteSheet, setOpenInstituteSheet] = useState<boolean>(false);
   const [editingInstitute, setEditingInstitute] = useState<Institute>();
 
   const handleSelectInstitute = async (institute: Institute) => {
+
     if (institute.instituteId === selectedInstitute?.instituteId) {
-      instituteApiDispatch(
-        clearSelectedInstitute()
-      );
-      return
-    }
-
-    const response = await instituteApiDispatch(
-      getInstitute({ instituteId: institute.instituteId })
-    );
-    localStorage.setItem('instituteName' , institute.name);
-
-    if (!response.success) {
+      instituteApiDispatch(clearSelectedInstitute());
+      localStorage.removeItem('instituteId');
+      localStorage.removeItem('instituteName');
+      setTrigger(false); // Resetar o trigger
       return;
     }
+    try {
+      setTrigger(false);
+      setTimeout(() => setTrigger(true), 100);
 
-    eventDispatch(
-      getAllEventsByFilter({
-        search: { instituteId: institute.instituteId },
-        page: 1,
-      })
-    );
+      const response = await instituteApiDispatch(
+        getInstitute({ instituteId: institute.instituteId })
+      );
+      localStorage.setItem('instituteName', institute.name);
+
+      if (!response.success) return;
+
+      await eventDispatch(
+        getAllEventsByFilter({
+          search: { instituteId: institute.instituteId },
+          page: 1,
+        })
+      );
+    } finally {
+      setLocalActionLoading(false);
+    }
   };
 
-  const handleDeleteInstitute = (institute: Institute) => {
-    instituteApiDispatch(
+  const handleDeleteInstitute = async (institute: Institute) => {
+    setLocalActionLoading(true);
+    await instituteApiDispatch(
       deleteInstitute({
         instituteId: institute.instituteId,
       })
     );
-  }
+    setLocalActionLoading(false);
+  };
 
-  // const handleEditInstitute = (institute: Institute) => {
-  //   setEditingInstitute(institute);
-  //   setOpenInstituteSheet(true);
-  // };
+  const handleEditInstitute = (institute: Institute) => {
+    setEditingInstitute(institute);
+    setOpenInstituteSheet(true);
+  };
 
   const handleOpenChange = (currentOpenState: boolean) => {
     setOpenInstituteSheet(currentOpenState);
@@ -110,69 +125,80 @@ export const InstituteListContainer = () => {
   };
 
   const fetchInstitutes = async () => {
-    await instituteApiDispatch(
-      getAllInstitutes({
-        page: 1,
-      })
-    );
+    setIsLoading(true);
+    try {
+      await instituteApiDispatch(
+        getAllInstitutes({
+          page: 1,
+        })
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const onCreateInstitute = async (values: CreateInstituteFormData) => {
-    console.log('create');
+    setLocalActionLoading(true);
+    try {
+      console.log('create');
 
-    if (editingInstitute) {
-      const updateInstituteData: UpdateInstituteParams = {
-        instituteId: editingInstitute.instituteId,
-        name: values.instituteName,
-        description: values.instituteDescription,
-        partnerType: values.partnerType as InstitutePartner,
-        instituteType: values.instituteType as InstituteType,
-        phone: values.phone,
-        district: values.district as Region,
-        address: {
-          address: values.address,
-          number: Number(values.location.number),
-          neighborhood: values.location.neighborhood,
-          city: values.location.city,
-          state: values.location.state,
-          cep: values.location.cep,
-          latitude: Number(values.location.latitude),
-          longitude: Number(values.location.longitude),
-        },
-        logo: values.logoPhoto,
-        price: values.price,
-      };
-      await instituteApiDispatch(updateInstitute(updateInstituteData));
-    } else {
-      const instituteData: CreateInstituteParams = {
-        name: values.instituteName,
-        description: values.instituteDescription,
-        partnerType: values.partnerType as InstitutePartner,
-        instituteType: values.instituteType as InstituteType,
-        phone: values.phone,
-        district: values.district as Region,
-        address: {
-          address: values.address,
-          number: Number(values.location.number),
-          neighborhood: values.location.neighborhood,
-          city: values.location.city,
-          state: values.location.state,
-          cep: values.location.cep,
-          latitude: Number(values.location.latitude),
-          longitude: Number(values.location.longitude),
-        },
-        logo: values.logoPhoto,
-        price: values.price,
-      };
-      await instituteApiDispatch(createInstitute(instituteData));
+      if (editingInstitute) {
+        // const updateInstituteData: UpdateInstituteParams = {
+        //   instituteId: editingInstitute.instituteId,
+        //   name: values.instituteName,
+        //   description: values.instituteDescription,
+        //   partnerType: values.partnerType as InstitutePartner,
+        //   instituteType: values.instituteType as InstituteType,
+        //   phone: values.phone,
+        //   district: values.district as Region,
+        //   address: {
+        //     address: values.address,
+        //     number: Number(values.location.number),
+        //     neighborhood: values.location.neighborhood,
+        //     city: values.location.city,
+        //     state: values.location.state,
+        //     cep: values.location.cep,
+        //     latitude: Number(values.location.latitude),
+        //     longitude: Number(values.location.longitude),
+        //   },
+        //   logo: values.logoPhoto,
+        //   price: values.price,
+        // };
+        // await instituteApiDispatch(updateInstitute(updateInstituteData));
+      } else {
+        const instituteData: CreateInstituteParams = {
+          name: values.instituteName,
+          description: values.instituteDescription,
+          partnerType: values.partnerType as InstitutePartner,
+          instituteType: values.instituteType as InstituteType,
+          phone: values.phone,
+          district: values.district as Region,
+          address: {
+            address: values.location.address,
+            number: Number(values.location.number),
+            neighborhood: values.location.neighborhood,
+            city: values.location.city,
+            state: values.location.state,
+            cep: values.location.cep,
+            latitude: Number(values.location.latitude),
+            longitude: Number(values.location.longitude),
+          },
+          logo: values.logoPhoto,
+          price: values.price,
+        };
+        await instituteApiDispatch(createInstitute(instituteData));
+      }
+    } finally {
+      setLocalActionLoading(false);
+      setOpenInstituteSheet(false);
     }
-
-    setOpenInstituteSheet(false);
   };
 
   useEffect(() => {
     fetchInstitutes();
   }, []);
+
+  const showLoading = isLoading || localActionLoading;
 
   return (
     <SidebarGroup>
@@ -182,63 +208,87 @@ export const InstituteListContainer = () => {
 
       <SidebarGroupAction title='Adicionar Institutos'>
         <Sheet open={openInstituteSheet} onOpenChange={handleOpenChange}>
-          <SheetTrigger>
-            <Plus size={16} />
+          <SheetTrigger disabled={showLoading} className='shadow-none bg-light-purple rounded-sm z-50'>
+            {showLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Plus size={16} />
+            )}
           </SheetTrigger>
           <SheetContent className='flex flex-col'>
             <SheetHeader>
-              <SheetTitle>Adicionar um novo instituto</SheetTitle>
+              <SheetTitle>{editingInstitute ? `${editingInstitute.name}` : "Adicionar um novo Insituto"}</SheetTitle>
               <SheetDescription>
-                Preencha o formulário abaixo para adicionar um novo instituto
+                {!editingInstitute && ("Preencha o formulário abaixo para adicionar um novo instituto")}
               </SheetDescription>
             </SheetHeader>
             <div className='w-full flex-grow pt-4 pr-4 overflow-y-auto'>
-              <CreateInstituteForm
-                institute={editingInstitute}
-                onSuccess={onCreateInstitute}
-              />
+              {localActionLoading ? (
+                <div className="flex justify-center items-center h-full">
+                  <Loader2 className="h-8 w-8 animate-spin" />
+                </div>
+              ) : (
+                <CreateInstituteForm
+                  institute={editingInstitute}
+                  onSuccess={onCreateInstitute}
+                />
+              )}
             </div>
           </SheetContent>
         </Sheet>
       </SidebarGroupAction>
 
       <SidebarGroupContent>
-        <SidebarMenu>
-          {Array.isArray(allInstitutes) && allInstitutes.map((institute) => (
-            <SidebarMenuItem key={institute.instituteId}>
-              <SidebarMenuButton
-                onClick={() => handleSelectInstitute(institute)}
-              >
-                <div className='w-6 h-6 rounded-full overflow-hidden'>
-                  <img src={institute.logo} />
-                </div>
-                <span className='text-foreground'>{institute.name}</span>
-              </SidebarMenuButton>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild title='Mais ações'>
-                  <SidebarMenuAction>
-                    <MoreHorizontal />
-                  </SidebarMenuAction>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent side='right' align='start'>
-                  {/* <DropdownMenuItem
-                    onClick={() => {
-                      handleEditInstitute(institute);
-                    }}
-                  >
-                    <span>Editar Instituto</span>
-                  </DropdownMenuItem> */}
-                  <DropdownMenuItem onClick={() => {
-                    handleDeleteInstitute(institute);
-                  }}>
-                    <span>Deletar Instituto</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
+        {showLoading ? (
+          <div className='flex items-center h-24 justify-evenly px-10 gap-10'>
+            <div className='w-5 h-5 rounded-full bg-gray-100 animate-loader-dot delay-100'></div>
+            <div className='w-5 h-5 rounded-full bg-gray-100 animate-loader-dot delay-300'></div>
+            <div className='w-5 h-5 rounded-full bg-gray-100 animate-loader-dot delay-500'></div>
+          </div>
+        ) : (
+          <SidebarMenu>
+            {Array.isArray(allInstitutes) && allInstitutes.map((institute) => (
+              <SidebarMenuItem key={institute.instituteId}>
+                <SidebarMenuButton
+                  onClick={() => handleSelectInstitute(institute)}
+                  disabled={localActionLoading}
+                  title={institute.name}
+                >
+                  <div className='w-6 h-6 rounded-full overflow-hidden'>
+                    <img src={institute.logo} alt={institute.name} />
+                  </div>
+                  <span className='text-foreground'>{truncateText(institute.name, 24)}</span>
+                </SidebarMenuButton>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild title='Mais ações' disabled={localActionLoading}>
+                    <SidebarMenuAction>
+                      {localActionLoading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <MoreHorizontal />
+                      )}
+                    </SidebarMenuAction>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent side='right' align='start'>
+                    <DropdownMenuItem
+                      onClick={() => handleEditInstitute(institute)}
+                      disabled={localActionLoading}
+                    >
+                      {localActionLoading ? 'Processando...' : 'Ver Instituto'}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => handleDeleteInstitute(institute)}
+                      disabled={localActionLoading}
+                    >
+                      {localActionLoading ? 'Processando...' : 'Deletar Instituto'}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        )}
       </SidebarGroupContent>
     </SidebarGroup>
   );
-};
+}

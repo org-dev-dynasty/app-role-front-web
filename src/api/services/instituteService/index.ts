@@ -17,7 +17,7 @@ import { envs } from '@/utils/envs';
 const INSTITUTE_SERVICE_ROUTES = {
   GET: {
     GET_INSTITUTE: '/get-institute',
-    GET_ALL_INSTITUTES: '/get-all-institutes',
+    GET_ALL_INSTITUTES: '/get-all-institutes?',
     GET_ALL_INSTITUTES_BY_PARTNER_TYPE: '/get-all-institutes-by-partner-type',
   },
   POST: {
@@ -53,10 +53,7 @@ export class InstituteService extends AuthenticatedService {
 
   getAllInstitutes(params: GetAllInstitutesParams) {
     return this.instance.get<GetAllInstitutesResponse>(
-      INSTITUTE_SERVICE_ROUTES.GET.GET_ALL_INSTITUTES,
-      {
-        params,
-      }
+      INSTITUTE_SERVICE_ROUTES.GET.GET_ALL_INSTITUTES+`page=${params.page}`
     );
   }
 

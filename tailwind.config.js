@@ -1,3 +1,5 @@
+import { transform } from 'typescript';
+
 /** @type {import('tailwindcss').Config} */
 export default {
     darkMode: ['class'],
@@ -80,7 +82,11 @@ export default {
   				ring: 'hsl(var(--sidebar-ring))'
   			}
   		},
-  		keyframes: {
+			keyframes: {
+				'loader-dot': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-100%)' },
+        },
   			slideInRight: {
   				'0%': {
   					transform: 'translateX(100%)'
@@ -165,7 +171,8 @@ export default {
   				}
   			}
   		},
-  		animation: {
+			animation: {
+				'loader-dot': 'loader-dot 1s infinite ease-in-out',
   			slideInRight: 'slideInRight 0.5s ease-in-out forwards',
   			slideOutRight: 'slideOutRight 0.5s ease-in-out forwards',
   			infiniteSpin: 'infiniteSpin 30s linear infinite',

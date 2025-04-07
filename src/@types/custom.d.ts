@@ -13,6 +13,8 @@ declare interface Address {
   city: string;
   state: string;
   cep: string;
+  district?: string;
+  street?: string;
 }
 
 declare interface UserTokens {

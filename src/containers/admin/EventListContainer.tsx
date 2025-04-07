@@ -1,9 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
+import { useEffect, useState } from 'react';
 import { MoreHorizontal, Plus } from 'lucide-react';
-
-import mapsJSON from '@/utils/maps_styles.json';
-
 import {
   Sheet,
   SheetContent,
@@ -25,16 +21,11 @@ import {
   SidebarMenuItem
 } from '@/components/ui/sidebar';
 
-import { envs } from '@/utils/envs';
 import { CreateEventForm } from '@/components/forms/CreateEvent';
 import { useEvent } from '@/hooks/useEvent';
 import { useEventDispatch } from '@/hooks/useEventDispatch';
 import { deleteEvent, getAllEventsByFilter } from '@/context/event/actions';
 import { Event } from '@/api/services/eventService/types';
-import { useInstituteDispatch } from '@/hooks/useInstituteDispatch';
-import { getInstitute } from '@/context/institute/actions';
-import { useInstitute } from '@/hooks/useInstitute';
-import { ClipLoader } from 'react-spinners';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -42,109 +33,75 @@ import {
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
 import { classNames } from 'primereact/utils';
+import { truncateText } from '@/pages/admin';
 
-export const EventListContainer = () => {
+interface EventListContainerProps {
+  trigger: boolean;
+}
+
+export default function EventListContainer({ trigger }: EventListContainerProps) {
   const {
     searchEvents: { data: searchEvents },
   } = useEvent();
-
-  const [isLoading, setIsLoading] = useState(true); // Estado de carregamento
+  const [isLoading, setIsLoading] = useState(true);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
 
   const eventDispatch = useEventDispatch();
-  const instituteDispatch = useInstituteDispatch();
 
-  const [editingEvent, setEditingEvent] = useState<Event>();
-
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: envs.googleMapsUrl,
-    libraries: ['places'],
-  });
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [seeingEvent, setSeeingEvent] = useState<Event>();
   const [openEventSheet, setOpenEventSheet] = useState(false);
 
-  const mapRef = React.useRef<google.maps.Map | null>(null);
+  const [internalTrigger, setInternalTrigger] = useState(false);
 
-  const onLoad = (map: google.maps.Map) => {
-    mapRef.current = map;
-
-    mapRef.current.setClickableIcons(false);
-    mapRef.current?.setZoom(12);
-    mapRef.current?.setOptions(mapsJSON);
-  };
-
-  const onUnmount = () => {
-    mapRef.current = null;
-  };
-
-  const containerStyle = {
-    width: '100%',
-    height: '100%',
-  };
-
-  const center = {
-    lat: -23.5489,
-    lng: -46.6388,
-  };
+  useEffect(() => {
+    setIsLoading(true);
+    if (trigger) {
+      setInternalTrigger(true);
+    }
+  }, [trigger]);
 
   const fetchEvents = async () => {
     const instituteID = localStorage.getItem('instituteId');
     if (instituteID) {
-      await eventDispatch(
-        getAllEventsByFilter({
-          page: 1,
-          search: {
-            instituteId: instituteID,
-          },
-        })
-      );
+      setIsLoading(true);
+      try {
+        await eventDispatch(
+          getAllEventsByFilter({
+            page: 1,
+            search: {
+              instituteId: instituteID,
+            },
+          })
+        );
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
-  
+
+  useEffect(() => {
+    if (internalTrigger) {
+      fetchEvents();
+      setInternalTrigger(false);
+    }
+  }, [internalTrigger]);
+
   const instName = localStorage.getItem('instituteName');
-  const truncateText = (text: string, maxLength: number): string => {
-    if (text.length > maxLength) {
-      return text.substring(0, maxLength) + '...';
-    }
-    return text;
-  };
 
-  const fetchInstitute = async () => {
-    const instId = localStorage.getItem('instituteId');
-    if (instId) {
-      await instituteDispatch(
-        getInstitute({
-          instituteId: instId,
-        })
-      );
-    }
-    setIsLoading(false); // Finaliza o carregamento
-  };
-
-  const {
-    institutes: { selected: selectedInstitute },
-  } = useInstitute();
-
-  const handleEditEvent = (event: Event) => {
-    setEditingEvent(event);
+  const handleSeeEvent = (event: Event) => {
+    setSeeingEvent(event);
     setOpenEventSheet(true);
   };
 
   const handleDeleteEvent = async (eventId: string) => {
+    setIsDeleteLoading(true);
     await eventDispatch(deleteEvent(eventId));
+    setIsDeleteLoading(false);
   };
 
-  useEffect(() => {
-    fetchEvents();
-    fetchInstitute();
-  }, []);
-
   function handleSelectEvent(event: Event) {
-    console.log(event);
-  }
-
-  if (isLoading) {
-    return <div>Carregando...</div>; // Exibe um indicador de carregamento
+    console.log('Selected event:', event);
   }
 
   return (
@@ -153,36 +110,35 @@ export const EventListContainer = () => {
         'w-full h-full flex relative'
       )}
     >
-      <div className={classNames('absolute shadow-none top-0 left-0 w-full h-16 transform pointer-events-none z-10',
-        selectedInstitute && '-translate-x-full'
+      <div className={classNames('absolute duration-100 transition-transform shadow-none top-0 left-0 w-full h-16 transform pointer-events-none z-10',
       )}>
 
         <Sidebar className='z-50 pointer-events-auto shadow-none'>
           <SidebarContent className='shadow-none'>
             <SidebarGroup>
               <SidebarGroupLabel asChild>
-                <span>
-                  Eventos de {instName ? truncateText(instName, 19) : 'Carregando...'}
+                <span title={instName ? instName : ""} className='text-sm font-semibold text-light-purple'>
+                  {instName && ("Eventos de " + truncateText(instName, 19))}
                 </span>
               </SidebarGroupLabel>
             </SidebarGroup>
 
             <SidebarGroupAction title='Adicionar evento'>
               <Sheet open={openEventSheet} onOpenChange={setOpenEventSheet}>
-                <SheetTrigger className='shadow-none'>
+                {instName && (<SheetTrigger className='shadow-none bg-light-purple rounded-sm z-50' onClick={() => setSeeingEvent(undefined)}>
                   <Plus size={16} />
-                </SheetTrigger>
+                </SheetTrigger>)}
                 <SheetContent className='flex flex-col'>
                   <SheetHeader>
-                    <SheetTitle>Adicionar um novo evento</SheetTitle>
+                    <SheetTitle title={seeingEvent?.name} >{seeingEvent ? `${truncateText(seeingEvent?.name, 31)}` : "Adicionar um novo evento"}</SheetTitle>
                     <SheetDescription>
-                      Preencha o formulário abaixo para adicionar um novo evento
+                      {!seeingEvent && ("Preencha o formulário abaixo para adicionar um novo evento")}
                     </SheetDescription>
                   </SheetHeader>
                   <div className='w-full flex-grow pt-4 pr-4 overflow-y-auto'>
                     <CreateEventForm
-                      Event={editingEvent}
-                      onSuccess={() => setOpenEventSheet(false)}
+                      Event={seeingEvent}
+                      onSuccess={() => { setOpenEventSheet(false); setInternalTrigger(true); }}
                     />
                   </div>
                 </SheetContent>
@@ -190,53 +146,54 @@ export const EventListContainer = () => {
             </SidebarGroupAction>
 
             <SidebarGroupContent>
-              <SidebarMenu>
-                {searchEvents.map((event, key) => (
-                  <SidebarMenuItem key={key}>
-                    <SidebarMenuButton onClick={() => handleSelectEvent(event)}>
-                      <div className='w-6 h-6 rounded-full overflow-hidden'>
-                        <img src={event.eventPhoto} alt={`Foto do evento ${event.name}`} />
-                      </div>
-                      <span>{event.name}</span>
-                    </SidebarMenuButton>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <SidebarMenuAction>
-                          <MoreHorizontal />
-                        </SidebarMenuAction>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent side='right' align='start'>
-                        <DropdownMenuItem onClick={() => handleEditEvent(event)}>
-                          <span>Editar Evento</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => handleDeleteEvent(event.eventId)}
-                        >
-                          <span>Deletar Evento</span>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </SidebarMenuItem>
-                ))}
+              <SidebarMenu className='w-full overflow-y-scroll pb-28'>
+                {instName ? ((isLoading || isDeleteLoading) ? (
+                  <div className="flex items-center h-24 justify-evenly px-10">
+                    <div className="w-5 h-5 rounded-full bg-gray-100 animate-loader-dot delay-100"></div>
+                    <div className="w-5 h-5 rounded-full bg-gray-100 animate-loader-dot delay-300"></div>
+                    <div className="w-5 h-5 rounded-full bg-gray-100 animate-loader-dot delay-500"></div>
+                  </div>
+                ) : searchEvents?.length === 0 ? (
+                  <div className="text-center py-4 text-gray-500">
+                    Nenhum evento encontrado
+                  </div>
+                ) : (
+                  searchEvents?.map((event, key) => (
+                    <SidebarMenuItem key={key}>
+                      <SidebarMenuButton onClick={() => handleSelectEvent(event)}>
+                        <div className='w-6 h-6 rounded-full overflow-hidden'>
+                          <img src={event.eventPhoto} alt={`Foto do evento ${event.name}`} />
+                        </div>
+                        <span title={event.name}>{truncateText(event.name, 22)}</span>
+                      </SidebarMenuButton>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <SidebarMenuAction>
+                            <MoreHorizontal />
+                          </SidebarMenuAction>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent side='right' align='start'>
+                          <DropdownMenuItem onClick={() => handleSeeEvent(event)}>
+                            <span>Ver Evento</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleDeleteEvent(event.eventId)}
+                          >
+                            <span>Deletar Evento</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </SidebarMenuItem>
+                  )))) : (
+                  <div className="text-center py-4 text-gray-500">
+                    Selecione um instituto
+                  </div>
+                )}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarContent>
         </Sidebar>
       </div>
-      {isLoaded ? (
-        <GoogleMap
-          mapContainerStyle={containerStyle}
-          center={center}
-          onLoad={onLoad}
-          onUnmount={onUnmount}
-        >
-          <Marker position={center} onClick={(e) => console.log(e)} />
-        </GoogleMap>
-      ) : (
-        <div className='flex justify-center items-center w-full flex-grow'>
-          <ClipLoader />
-        </div>
-      )}
     </div>
   );
-};
+}
