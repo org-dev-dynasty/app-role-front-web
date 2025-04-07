@@ -2,10 +2,7 @@
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-
 import { Button } from '@/components/ui/button';
-
-
 import {
   Form,
   FormControl,
@@ -14,7 +11,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import {
@@ -47,21 +43,21 @@ import { Region, regionFields } from '@/constants/regions';
 
 const formSchema = z.object({
   name: z.string(),
-  description: z.string(),
+  description: z.string().min(10, 'Descrição muito curta'),
   menuLink: z.string().optional(),
   ticketUrl: z.string().optional(),
   category: z.string(),
   eventDate: z.coerce.date(),
   ageRange: z.string(),
   eventPhoto: z.instanceof(File),
-  district: z.string(),
+  district: z.string().min(1, "Selecione um distrito"),
   galleryImages: z.instanceof(File).array(),
   price: z.number(),
   instituteId: z.string(),
-  musicType: z.array(z.string()).optional(),
-  features: z.array(z.string()).optional(),
+  musicType: z.array(z.string()),
+  features: z.array(z.string()),
   address: addressValidation,
-  packageType: z.array(z.string()).optional(),
+  packageType: z.array(z.string()),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -84,7 +80,8 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
       description: Event ? Event.description : '',
       category: Event ? Event.category : '',
       eventDate: Event ? new Date(Event.eventDate) : undefined,
-      address: Event ? { ...Event.address, number: Event.address.number.toString(), latitude: Event.address.latitude.toString(), longitude: Event.address.longitude.toString() } : {
+      menuLink: Event ? Event.menuLink : undefined,
+      address: Event ? { ...Event.address, cep: Event.address.cep, address: Event.address.street, number: Event.address.number.toString(), latitude: Event.address.latitude.toString(), longitude: Event.address.longitude.toString() } : {
         address: '',
         cep: '',
         city: '',
@@ -95,7 +92,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
         longitude: '',
       },
       ageRange: Event ? Event.ageRange : '',
-      price: Event ? Number(Event.price) : undefined,
+      price: Event ? Event.price : undefined,
       musicType: Event ? Event.musicType : undefined,
       features: Event ? Event.features : undefined,
       eventPhoto: Event ? (Event.eventPhoto as unknown as File) : undefined,
@@ -106,9 +103,11 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
     },
   });
 
+  console.log("Event: ", Event);
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     onSuccess?.();
-    console.log(values);
+    console.log("VALORES: ", values);
     if (Event) {
       //conferir se está indo certo (provavelmente não)
       // eventDispatch(updateEvent(
@@ -136,7 +135,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
         packageType: values.packageType as ("COMBO" | "ANIVERSARIO" | "CAMAROTE")[],
         eventPhoto: values.eventPhoto,
         district: values.district as Region
-        
+
       };
       eventDispatch(createEvent(
         eventData
@@ -159,7 +158,11 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
             <FormItem>
               <FormLabel>Nome do evento</FormLabel>
               <FormControl>
-                <Input {...field} />
+                {Event ? (
+                  <Input disabled {...field} />
+                ) : (
+                  <Input {...field} />
+                )}
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -173,34 +176,47 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
             <FormItem>
               <FormLabel>Descrição do evento</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder='Crie uma descrição para o evento'
-                  {...field}
-                />
+                {Event ? (
+                  <Textarea disabled {...field} />
+                ) : (
+                  <Textarea {...field} />
+                )}
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <FormField
-          control={form.control}
-          name='eventPhoto'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Imagem do evento</FormLabel>
-              <FormControl>
-                <ImageInput maxSize={4} onChange={(files: any) => {
-                  console.log(files);
-                  field.onChange(files?.[0] ?? undefined);
-                }} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {Event?.eventId ? (
+          <div className='flex flex-col gap-2'>
+            <FormLabel>Imagem do evento</FormLabel>
+            <img src={Event.eventPhoto} alt="" />
+          </div>
+        ) : (
+          <FormField
+            control={form.control}
+            name='eventPhoto'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Imagem do evento</FormLabel>
+                <FormControl>
+                  <ImageInput maxSize={4} onChange={(files: any) => {
+                    console.log(files);
+                    field.onChange(files?.[0] ?? undefined);
+                  }} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
-        <FormField
+        {Event?.eventId ? (
+          <div className='flex flex-col gap-2'>
+            <FormLabel>Galeria do evento</FormLabel>
+            {Event.galleryLink[0] ? (<img src={Event.galleryLink[0]} alt="" />) : (<p className='text-gray-500'>Nenhuma imagem na galeria</p>)}
+          </div>
+        ) : (<FormField
           control={form.control}
           name='galleryImages'
           render={({ field }) => (
@@ -214,7 +230,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
               <FormMessage />
             </FormItem>
           )}
-        />
+        />)}
 
         <Separator />
         <h2 className='text-xl font-bold'>Contato e localização</h2>
@@ -228,13 +244,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
               <FormControl>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-[280px] justify-start text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
+                    <Button disabled={Event ? true : false} variant='outline' className={cn('w-full', { 'text-gray-400': !field.value })}>
                       <CalendarIcon />
                       {field.value ? field.value.toLocaleDateString() : "Selecione uma data"}
                     </Button>
@@ -254,18 +264,19 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name='address'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Buscar endereço</FormLabel>
-              <FormControl>
-                <AddressInput onChange={field.onChange} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+        {!Event && (
+          <FormField
+            control={form.control}
+            name='address'
+            render={({ field }) => (
+              <FormItem >
+                <FormLabel>Buscar endereço</FormLabel>
+                <FormControl>
+                  <AddressInput onChange={field.onChange} />
+                </FormControl>
+              </FormItem>
+            )}
+          />)}
 
         <FormField
           control={form.control}
@@ -275,6 +286,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
               <FormLabel>CEP</FormLabel>
               <FormControl>
                 <Input
+                  disabled={Event ? true : false}
                   value={value.cep}
                   onChange={(e) => onChange({ ...value, cep: e.target.value })}
                   {...props}
@@ -293,6 +305,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
               <FormLabel>Endereço</FormLabel>
               <FormControl>
                 <Input
+                  disabled={Event ? true : false}
                   value={value.address}
                   onChange={(e) =>
                     onChange({ ...value, address: e.target.value })
@@ -313,6 +326,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
               <FormLabel>Número</FormLabel>
               <FormControl>
                 <Input
+                  disabled={Event ? true : false}
                   value={value.number}
                   onChange={(e) =>
                     onChange({ ...value, number: e.target.value })
@@ -333,6 +347,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
               <FormLabel>Bairro</FormLabel>
               <FormControl>
                 <Input
+                  disabled={Event ? true : false}
                   value={value.neighborhood}
                   onChange={(e) =>
                     onChange({ ...value, neighborhood: e.target.value })
@@ -353,6 +368,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
               <FormLabel>Cidade</FormLabel>
               <FormControl>
                 <Input
+                  disabled={Event ? true : false}
                   value={value.city}
                   onChange={(e) => onChange({ ...value, city: e.target.value })}
                   {...props}
@@ -371,6 +387,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
               <FormLabel>Estado</FormLabel>
               <FormControl>
                 <Input
+                  disabled={Event ? true : false}
                   value={value.state}
                   onChange={(e) =>
                     onChange({ ...value, state: e.target.value })
@@ -389,7 +406,15 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Zona do evento</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              {Event ? (
+                <Select disabled onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder={Event.address.district} />
+                    </SelectTrigger>
+                  </FormControl>
+                </Select>
+              ) : (<Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder='Selecione um valor' />
@@ -399,10 +424,10 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
                   {regionFields.map((regionField) => (
                     <SelectItem key={regionField.value} value={regionField.value}>
                       {regionField.label}
-                    </SelectItem>  
+                    </SelectItem>
                   ))}
                 </SelectContent>
-              </Select>
+              </Select>)}
               <FormMessage />
             </FormItem>
           )}
@@ -459,7 +484,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Faixa de idade do evento</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select disabled={Event ? true : false} onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder='Selecione um valor' />
@@ -469,7 +494,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
                   {ageRangeFields.map((ageRange) => (
                     <SelectItem key={ageRange.value} value={ageRange.value}>
                       {ageRange.label}
-                    </SelectItem>  
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -484,7 +509,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Tipo de evento</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select disabled={Event ? true : false} onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder='Selecione um valor' />
@@ -511,10 +536,10 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Preço</FormLabel>
-              <Select onValueChange={(value) => field.onChange(Number(value))}>
+              <Select disabled={Event ? true : false} onValueChange={(value) => field.onChange(Number(value))}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder='Selecione um valor' />
+                    <SelectValue placeholder={Event ? "$".repeat(Event.price) : 'Selecione um valor'} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -536,7 +561,15 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Tipo de música</FormLabel>
-              <ToggleGroup type="multiple" className='flex-wrap' size={"lg"} onValueChange={field.onChange} defaultValue={field.value} variant='outline'>
+              {Event ? (
+                <ToggleGroup disabled={true} type="multiple" className='flex-wrap' size={"lg"} onValueChange={field.onChange} defaultValue={field.value} variant='outline'>
+                  {Event.musicType.map((musicType) => (
+                    <ToggleGroupItem key={musicType} value={musicType} aria-label={`Toggle ${musicType}`}>
+                      {musicType.match(/_/g) ? musicType.replace(/_/g, ' ') : musicType}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+              ) : (<ToggleGroup type="multiple" className='flex-wrap' size={"lg"} onValueChange={field.onChange} defaultValue={field.value} variant='outline'>
                 <ToggleGroupItem value="SERTANEJO" aria-label="Toggle Sertanejo" >
                   Sertanejo
                 </ToggleGroupItem>
@@ -570,7 +603,7 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
                 <ToggleGroupItem value="MPB" aria-label="Toggle MPB" >
                   MPB
                 </ToggleGroupItem>
-              </ToggleGroup>
+              </ToggleGroup>)}
               <FormMessage />
             </FormItem>
           )}
@@ -582,38 +615,47 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Adicionais</FormLabel>
-              <ToggleGroup type="multiple" className='flex-wrap' size={"lg"} onValueChange={field.onChange} defaultValue={field.value} variant='outline'>
-                <ToggleGroupItem value="ESTACIONAMENTO" aria-label="Toggle Estacionamento" >
-                  Estacionamento
-                </ToggleGroupItem>
-                <ToggleGroupItem value="FUMODROMO" aria-label="Toggle Fumódromo" >
-                  Fumódromo
-                </ToggleGroupItem>
-                <ToggleGroupItem value="VALET" aria-label="Toggle Valet" >
-                  Valet
-                </ToggleGroupItem>
-                <ToggleGroupItem value="AREA_ABERTA" aria-label="Toggle Área aberta" >
-                  Área aberta
-                </ToggleGroupItem>
-                <ToggleGroupItem value="WELCOME_SHOT" aria-label="Toggle Welcome shot" >
-                  Welcome shot
-                </ToggleGroupItem>
-                <ToggleGroupItem value="MESAS" aria-label="Toggle Mesas" >
-                  Mesas
-                </ToggleGroupItem>
-                <ToggleGroupItem value="OPEN_BAR" aria-label="Toggle Open bar" >
-                  Open bar
-                </ToggleGroupItem>
-                <ToggleGroupItem value="AO_VIVO" aria-label="Toggle Ao vivo" >
-                  Ao vivo
-                </ToggleGroupItem>
-                <ToggleGroupItem value="ESQUENTA" aria-label="Toggle Esquenta" >
-                  Esquenta
-                </ToggleGroupItem>
-                <ToggleGroupItem value="AFTER" aria-label="Toggle AFTER" >
-                  AFTER
-                </ToggleGroupItem>
-              </ToggleGroup>
+              {Event ? (
+                <ToggleGroup disabled={true} type="multiple" className='flex-wrap' size={"lg"} onValueChange={field.onChange} defaultValue={field.value} variant='outline'>
+                  {Event.features.map((feature) => (
+                    <ToggleGroupItem key={feature} value={feature} aria-label={`Toggle ${feature}`}>
+                      {feature.match(/_/g) ? feature.replace(/_/g, ' ') : feature}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+              ) :
+                (<ToggleGroup type="multiple" className='flex-wrap' size={"lg"} onValueChange={field.onChange} defaultValue={field.value} variant='outline'>
+                  <ToggleGroupItem value="ESTACIONAMENTO" aria-label="Toggle Estacionamento" >
+                    Estacionamento
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="FUMODROMO" aria-label="Toggle Fumódromo" >
+                    Fumódromo
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="VALET" aria-label="Toggle Valet" >
+                    Valet
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="AREA_ABERTA" aria-label="Toggle Área aberta" >
+                    Área aberta
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="WELCOME_SHOT" aria-label="Toggle Welcome shot" >
+                    Welcome shot
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="MESAS" aria-label="Toggle Mesas" >
+                    Mesas
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="OPEN_BAR" aria-label="Toggle Open bar" >
+                    Open bar
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="AO_VIVO" aria-label="Toggle Ao vivo" >
+                    Ao vivo
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="ESQUENTA" aria-label="Toggle Esquenta" >
+                    Esquenta
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="AFTER" aria-label="Toggle AFTER" >
+                    AFTER
+                  </ToggleGroupItem>
+                </ToggleGroup>)}
               <FormMessage />
             </FormItem>
           )}
@@ -625,7 +667,15 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Pacotes</FormLabel>
-              <ToggleGroup type="multiple" className='flex-wrap' size={"lg"} onValueChange={field.onChange} defaultValue={field.value} variant='outline'>
+              {Event ? (
+                <ToggleGroup disabled={true} type="multiple" className='flex-wrap' size={"lg"} onValueChange={field.onChange} defaultValue={field.value} variant='outline'>
+                  {Event.packageType.map((packageType) => (
+                    <ToggleGroupItem key={packageType} value={packageType} aria-label={`Toggle ${packageType}`}>
+                      {packageType}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+              ) : (<ToggleGroup type="multiple" className='flex-wrap' size={"lg"} onValueChange={field.onChange} defaultValue={field.value} variant='outline'>
                 <ToggleGroupItem value="COMBO" aria-label="Toggle COMBO" >
                   Combo
                 </ToggleGroupItem>
@@ -635,45 +685,47 @@ export function CreateEventForm({ onSuccess, Event }: SinInFormProps) {
                 <ToggleGroupItem value="CAMAROTE" aria-label="Toggle CAMAROTE" >
                   Camarote
                 </ToggleGroupItem>
-              </ToggleGroup>
+              </ToggleGroup>)}
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <FormField
+        {((Event?.ticketUrl != '' || null || undefined) || !Event) && (<FormField
           control={form.control}
           name='ticketUrl'
           render={({ field }) => (
             <FormItem>
               <FormLabel>URL do ticket</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input disabled={Event ? true : false} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
-        />
+        />)}
 
-        <FormField
+        {((Event?.menuLink != '' || null || undefined) || !Event) && (<FormField
           control={form.control}
           name='menuLink'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Link do menu</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input disabled={Event ? true : false} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
-        />
+        />)}
 
-        <div className='sticky bottom-0 pt-2 bg-background'>
-          <Button type='submit' className='w-full'>
-            Criar evento
-          </Button>
-        </div>
+        {!Event && (
+          <div className='sticky bottom-0 pt-2 bg-background'>
+            <Button type='submit' className='w-full'>
+              Criar evento
+            </Button>
+          </div>
+        )}
       </form>
     </Form>
   );

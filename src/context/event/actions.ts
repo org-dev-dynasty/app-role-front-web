@@ -7,6 +7,8 @@ import {
   GetAllEventsParams,
 } from '@/api/services/eventService/types';
 import { eventService } from '@/config/services';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 export const getAllEvents =
   (params: GetAllEventsParams) => async (store: EventStore) => {
@@ -194,13 +196,21 @@ export const deleteEvent = (eventId: string) => async (store: EventStore) => {
   try {
     await eventService.deleteEvent({eventId: eventId });
 
-    store.events.setData(
-      store.events.data.filter((event) => event.eventId !== eventId)
+    store.searchEvents.setData(
+      store.searchEvents.data.filter((event) => event.eventId !== eventId)
     );
-
+    
+    toast.success('Evento deletado com sucesso');
     return { success: true };
   } catch (error) {
     const err = error as AxiosError<string>;
+    if (err.message === "Network Error") {
+      toast.error('Sessão expirada. Por favor, faça login novamente.');
+      const navigate = useNavigate();
+      navigate('/auth/login');
+    } else {
+      toast.error('Erro ao deletar evento');
+    }
     store.events.setError(err.response?.data);
     return { success: false, message: err.response?.data };
   } finally {
@@ -244,10 +254,19 @@ export const createEvent =
       const { data } = await eventService.createEvent(eventReady);
 
       store.events.setData([...store.events.data, data.event]);
-
+      toast.success('Evento criado com sucesso');
+      store.events.setLoading(false);
       return { success: true, event: data };
     } catch (error) {
       console.log("ERRO AO CRIAR EVENTO: ", error);
+      const axiosError = error as AxiosError;
+      if (axiosError.message === "Network Error") {
+        toast.error('Sessão expirada. Por favor, faça login novamente.');
+        const navigate = useNavigate();
+        navigate('/auth/login');
+      } else {
+        toast.error('Erro ao criar evento');
+      }
       const err = error as AxiosError<string>;
       store.events.setError(err.response?.data);
       return { success: false, message: err.response?.data };
